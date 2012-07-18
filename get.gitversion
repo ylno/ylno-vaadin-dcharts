@@ -1,0 +1,28 @@
+#! /bin/sh -e
+
+GIT_DIR=".git"
+GIT_VERSION=".gitversion"
+CURRENT_DIR=`pwd`
+
+if [ ! -d "$GIT_DIR" ];
+then
+	VER="0"
+	REV="000000"
+else
+	#GIT_OBJECTS=`git count-objects | awk '{print $1}'`
+	GIT_OBJECTS=`find .git/objects -type f | wc -l`
+	if [ $GIT_OBJECTS -eq 0 ];
+	then
+		VER="0"
+		REV="000000"
+	else
+		VER=`git rev-list --all --abbrev-commit HEAD | wc -l | awk '{print $1}'`
+		REV=`git rev-parse --short HEAD`
+	fi
+fi
+
+# delete GIT_VERSION '.gitversion'
+rm -f "$CURRENT_DIR/$GIT_VERSION"
+
+# save version and revision to file '.gitversion'
+echo "git.version=$VER-$REV" >> "$CURRENT_DIR/$GIT_VERSION"

@@ -1,0 +1,20 @@
+==============================================================
+ ${project.name}
+ Copyright (C) ${copyright} ${project.organization.name}
+==============================================================
+
+The ${project.name} is Copyright ${project.organization.name}. It is
+licensed under the Apache 2.0 license.
+
+This product includes software developed at Vaadin Ltd
+(http://www.vaadin.com/) which is distributed under the 
+Apache 2.0 license.
+
+This product includes the jqPlot library (http://www.jqplot.com/).
+The jqPlot library is conceived, developed and maintained by
+Chris Leonello. The jqPlot library is dual licensed under
+the MIT and GPL version 2 licenses. 
+
+You can obtain a copy of licences:
+- the MIT license at http://opensource.org/licenses/mit-license.html
+- the GPLv2 license at http://www.gnu.org/licenses/old-licenses/gpl-2.0.html

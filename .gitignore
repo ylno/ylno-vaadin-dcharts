@@ -1,0 +1,8 @@
+.classpath
+.metadata
+.project
+.settings
+target
+*~
+src/main/webapp/VAADIN/*
+!src/main/webapp/VAADIN/themes
