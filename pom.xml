@@ -35,13 +35,13 @@
 		<Vaadin-Package-Version>1</Vaadin-Package-Version>
 		<Vaadin-Widgetsets>org.dussan.vaadin.dcharts.DchartsWidgetset</Vaadin-Widgetsets>
 		<Vaadin-Addon>${project.artifactId}-${project.version}-${git.version}/${project.artifactId}-${project.version}-${git.version}.jar</Vaadin-Addon>
-		<JqPlot-Version>1.0.0b2_r1012</JqPlot-Version>
+		<JqPlot-Version>1.0.4r1121</JqPlot-Version>
 		<!-- com.google -->
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
 		<com.google.gwt.gwt-dev>2.4.0</com.google.gwt.gwt-dev>
 		<com.google.gwt.gwt-user>2.4.0</com.google.gwt.gwt-user>
 		<!-- com.vaadin -->
-		<com.vaadin.vaadin>6.7.7</com.vaadin.vaadin>
+		<com.vaadin.vaadin>6.8.7</com.vaadin.vaadin>
 		<com.vaadin.vaadin-maven-plugin>1.0.2</com.vaadin.vaadin-maven-plugin>
 		<!-- javax.validation -->
 		<javax.validation.validation-api>1.0.0.GA</javax.validation.validation-api>
@@ -276,6 +276,9 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${org.apache.maven.plugins.maven-jar-plugin}</version>
 				<configuration>
+					<excludes>
+						<exclude>**/org/dussan/vaadin/dtable/DChartsApplication.*</exclude>
+					</excludes>
 					<archive>
 						<index>true</index>
 						<addMavenDescriptor>false</addMavenDescriptor>

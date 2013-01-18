@@ -54,7 +54,7 @@ public class VDCharts extends SimplePanel implements Paintable {
 		// inject JqPlot css
 		JqPlot.CODE.css().ensureInjected();
 
-		// inject canvas emulator 
+		// inject canvas emulator for Microsoft Internet Explorer
 		if (BrowserInfo.get().isIE6() || BrowserInfo.get().isIE7()
 				|| BrowserInfo.get().isIE8()) {
 			JavaScriptInjector.inject(JqPlot.CODE.exCanvas().getText());
