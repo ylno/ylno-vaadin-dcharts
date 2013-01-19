@@ -5,7 +5,7 @@
 	<groupId>org.dussan.vaadin</groupId>
 	<artifactId>dcharts</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<name>dCharts Widget</name>
 
 	<licenses>
@@ -277,7 +277,7 @@
 				<version>${org.apache.maven.plugins.maven-jar-plugin}</version>
 				<configuration>
 					<excludes>
-						<exclude>**/org/dussan/vaadin/dtable/DChartsApplication.*</exclude>
+						<exclude>**/org/dussan/vaadin/dcharts/DChartsApplication.*</exclude>
 					</excludes>
 					<archive>
 						<index>true</index>
