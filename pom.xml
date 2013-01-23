@@ -5,7 +5,7 @@
 	<groupId>org.dussan.vaadin</groupId>
 	<artifactId>dcharts</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 	<name>dCharts Widget</name>
 
 	<licenses>
@@ -127,6 +127,7 @@
 
 	<build>
 		<finalName>${project.artifactId}-${project.version}-${git.version}</finalName>
+		<outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/classes</outputDirectory>
 
 		<extensions>
 			<extension>
@@ -221,6 +222,21 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
+					<!-- Copy web.xml to build directory if want to run application in hosted mode -->
+                    <execution>
+	                    <id>xmlCopy</id>
+	                    <phase>compile</phase>
+	                    <goals>
+	                        <goal>run</goal>
+	                    </goals>
+	                    <configuration>
+	                        <tasks>
+	                            <copy
+	                                file="${basedir}/src/main/webapp/WEB-INF/web.xml"
+	                                toFile="${project.build.directory}/${project.artifactId}/WEB-INF/web.xml" />
+	                        </tasks>
+	                    </configuration>
+                     </execution>
 				</executions>
 			</plugin>
 
@@ -304,11 +320,11 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>${org.codehaus.mojo.gwt-maven-plugin}</version>
 				<configuration>
-					<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+					<webappDirectory>${project.build.directory}/${project.artifactId}/VAADIN/widgetsets</webappDirectory>
+					<hostedWebapp>${project.build.directory}/${project.artifactId}</hostedWebapp>
 					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
 					<runTarget>${project.artifactId}</runTarget>
-					<hostedWebapp>src/main/webapp</hostedWebapp>
-					<noServer>true</noServer>
+					<noServer>false</noServer>
 					<port>8080</port>
 					<soyc>false</soyc>
 				</configuration>
@@ -355,6 +371,11 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<version>${org.mortbay.jetty.maven-jetty-plugin}</version>
 				<configuration>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>8080</port>
+						</connector>
+					</connectors>
 					<stopPort>9966</stopPort>
 					<stopKey>${project.artifactId}</stopKey>
 					<!-- Redeploy every x seconds if changes are detected, 0 for no automatic 

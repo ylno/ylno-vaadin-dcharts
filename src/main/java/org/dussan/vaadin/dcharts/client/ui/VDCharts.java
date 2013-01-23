@@ -30,8 +30,14 @@ import com.vaadin.terminal.gwt.client.UIDL;
 
 public class VDCharts extends SimplePanel implements Paintable {
 
+	private static final String DCHARTS = "v-dcharts";
 	private Boolean isAttached = null;
-	private String id = null;
+	private Boolean showChart = null;
+	private String decimalSeparator = null;
+	private String thousandsSeparator = null;
+	private String dataSeries = null;
+	private String options = null;
+
 	protected String uidl = null;
 	protected ApplicationConnection client = null;
 	private Element title = null;
@@ -39,10 +45,12 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 	public VDCharts() {
 		// global id
-		id = "v-dcharts-" + ((long) (Math.random() * 10000000000000000L));
+		decimalSeparator = ".";
+		thousandsSeparator = ",";
 
-		getElement().setId(id);
-		setStyleName("v-dcharts");
+		getElement().setId(
+				DCHARTS + "-" + ((long) (Math.random() * 10000000000000000L)));
+		setStyleName(DCHARTS);
 		isAttached = false;
 	}
 
@@ -65,15 +73,45 @@ public class VDCharts extends SimplePanel implements Paintable {
 		JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer().getText());
 	}
 
+	private static native void activateResizeHandler(VDCharts chart,
+			boolean activate)
+	/*-{
+		$wnd.jQuery($doc).ready(function($){
+			var resizeTimer = null;
+			if (activate) {
+				$wnd.jQuery($wnd).bind('resize', function() {
+				    if (resizeTimer) {
+				    	clearTimeout(resizeTimer);
+				    }
+				    resizeTimer = setTimeout(function() {
+				    	chart.@org.dussan.vaadin.dcharts.client.ui.VDCharts::refreshChart()();
+				    }, 100);
+				});
+			} else {
+				$wnd.jQuery($wnd).unbind('resize');
+			}
+		});
+	}-*/;
+
 	private static native void showChart(String id, String dataSeries,
-			String options)
+			String options, String decimalSeparator, String thousandsSeparator)
 	/*-{
 	 	eval("var _options="+options+";");
 	 	eval("var _dataSeries="+dataSeries+";");
 		$wnd.jQuery(document).ready(function($){
+			$wnd.jQuery('#'.concat(id)).empty();
+			$.jqplot.sprintf.decimalMark=decimalSeparator;
+			$.jqplot.sprintf.thousandsSeparator=thousandsSeparator;
 			$.jqplot(id, _dataSeries, _options);
 		});
 	}-*/;
+
+	private void refreshChart() {
+		if (isAttached && showChart) {
+			showChart(chart.getId(), dataSeries, options, decimalSeparator,
+					thousandsSeparator);
+		}
+	}
 
 	@Override
 	protected void onLoad() {
@@ -90,6 +128,15 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 		// load JqPlot libraries
 		loadJqPlotLibrary();
+
+		// load resize handler
+		activateResizeHandler(this, true);
+	}
+
+	@Override
+	protected void onUnload() {
+		// unload resize handler
+		activateResizeHandler(this, false);
 	}
 
 	private void activateJqPlotPlugins(String options) {
@@ -222,12 +269,28 @@ public class VDCharts extends SimplePanel implements Paintable {
 			}
 		}
 
-		String dataSeries = new String("[]");
+		if (uidl.hasAttribute("decimalSeparator")) {
+			String decimalSeparator = uidl
+					.getStringAttribute("decimalSeparator");
+			if (decimalSeparator != null && decimalSeparator.length() > 0) {
+				this.decimalSeparator = decimalSeparator;
+			}
+		}
+
+		if (uidl.hasAttribute("thousandsSeparator")) {
+			String thousandsSeparator = uidl
+					.getStringAttribute("thousandsSeparator");
+			if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
+				this.thousandsSeparator = thousandsSeparator;
+			}
+		}
+
+		dataSeries = new String("[]");
 		if (uidl.hasAttribute("dataSeries")) {
 			dataSeries = uidl.getStringAttribute("dataSeries");
 		}
 
-		String options = new String("{}");
+		options = new String("{}");
 		if (uidl.hasAttribute("options")) {
 			options = uidl.getStringAttribute("options");
 			options = checkEnabledAnimationEffects(options);
@@ -235,12 +298,13 @@ public class VDCharts extends SimplePanel implements Paintable {
 		}
 		options = setChartDimensions(options);
 
-		boolean showChart = uidl.getBooleanAttribute("showChart");
+		showChart = uidl.getBooleanAttribute("showChart");
 		if (showChart) {
 			getElement().getStyle().clearDisplay();
 			if (!isAttached) {
 				isAttached = true;
-				showChart(chart.getId(), dataSeries, options);
+				showChart(chart.getId(), dataSeries, options, decimalSeparator,
+						thousandsSeparator);
 			}
 		} else {
 			getElement().getStyle().setDisplay(Display.NONE);

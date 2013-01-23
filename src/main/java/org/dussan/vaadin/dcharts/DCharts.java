@@ -15,6 +15,9 @@
  */
 package org.dussan.vaadin.dcharts;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import org.dussan.vaadin.dcharts.client.ui.VDCharts;
@@ -32,12 +35,15 @@ public class DCharts extends AbstractComponent {
 
 	private static final long serialVersionUID = -7224003274781707144L;
 	private boolean showChart = false;
-	private String title = null;
-	private String idChart = null;
+	private String decimalSeparator = null;
+	private String thousandsSeparator = null;
 	private int marginTop = 0;
 	private int marginRight = 0;
 	private int marginBottom = 0;
 	private int marginLeft = 0;
+
+	private String title = null;
+	private String idChart = null;
 	private DataSeries dataSeries = null;
 	private Options options = null;
 
@@ -119,6 +125,43 @@ public class DCharts extends AbstractComponent {
 	public DCharts setIdChart(String idChart) {
 		this.idChart = idChart;
 		return this;
+	}
+
+	public void autoSelectDecimalAndThousandsSeparator(Locale locale) {
+		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getDecimalSeparator());
+		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getGroupingSeparator());
+	}
+
+	public void autoSelectDecimalSeparator(Locale locale) {
+		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getDecimalSeparator());
+	}
+
+	public void autoSelectThousandsSeparator(Locale locale) {
+		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getGroupingSeparator());
+	}
+
+	public String getDecimalSeparator() {
+		return decimalSeparator;
+	}
+
+	public void setDecimalSeparator(String decimalSeparator) {
+		this.decimalSeparator = decimalSeparator;
+	}
+
+	public String getThousandsSeparator() {
+		return thousandsSeparator;
+	}
+
+	public void setThousandsSeparator(String thousandsSeparator) {
+		this.thousandsSeparator = thousandsSeparator;
 	}
 
 	public DCharts setMargins(int marginTop, int marginRight, int marginBottom,
@@ -215,6 +258,14 @@ public class DCharts extends AbstractComponent {
 
 			if (idChart != null && idChart.length() > 0) {
 				target.addAttribute("idChart", (String) idChart);
+			}
+
+			if (decimalSeparator != null && decimalSeparator.length() > 0) {
+				target.addAttribute("decimalSeparator", decimalSeparator);
+			}
+
+			if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
+				target.addAttribute("thousandsSeparator", thousandsSeparator);
 			}
 
 			if (dataSeries != null && !dataSeries.isEmpty()) {
