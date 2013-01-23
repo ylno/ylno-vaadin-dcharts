@@ -15,15 +15,19 @@
  */
 package org.dussan.vaadin.dcharts;
 
+import java.util.Locale;
+
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
+import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
 import org.dussan.vaadin.dcharts.options.Axes;
 import org.dussan.vaadin.dcharts.options.Highlighter;
 import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
+import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Label;
@@ -39,7 +43,8 @@ public class DChartsApplication extends Application {
 		setMainWindow(mainWindow);
 
 		DCharts chart = new DCharts();
-		chart.setWidth("600px");
+		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
+		chart.setWidth("100%");
 		chart.setHeight("250px");
 		mainWindow.addComponent(chart);
 
@@ -48,14 +53,16 @@ public class DChartsApplication extends Application {
 				+ "  ,  dChart jqPlot version: " + DCharts.getJqPlotVersion());
 		mainWindow.addComponent(version);
 
-		DataSeries dataSeries = new DataSeries().add(2, 6, 7, 10);
+		DataSeries dataSeries = new DataSeries().add(2000.20, 1116, 7, 10);
 
 		SeriesDefaults seriesDefaults = new SeriesDefaults()
 				.setRenderer(SeriesRenderers.BAR);
 
-		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(
-				AxisRenderers.CATEGORY).setTicks(
-				new Ticks().add("a", "b", "c", "d")));
+		Axes axes = new Axes().addAxis(
+				new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(
+						new Ticks().add("a", "b", "c", "d"))).addAxis(
+				new XYaxis(XYaxes.Y).setTickOptions(new AxisTickRenderer()
+						.setFormatString("%'.2f")));
 
 		Highlighter highlighter = new Highlighter().setShow(false);
 
