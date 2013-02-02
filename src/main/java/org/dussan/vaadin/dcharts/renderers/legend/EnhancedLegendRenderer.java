@@ -25,7 +25,7 @@ public class EnhancedLegendRenderer extends
 	private static final long serialVersionUID = -4747614600285420366L;
 	private Integer numberRows = null;
 	private Integer numberColumns = null;
-	private SeriesToggles seriesToggle = null;
+	private Object seriesToggle = null;
 	private Boolean disableIEFading = null;
 
 	public EnhancedLegendRenderer() {
@@ -33,11 +33,29 @@ public class EnhancedLegendRenderer extends
 	}
 
 	public EnhancedLegendRenderer(int numberRows, int numberColumns,
-			SeriesToggles seriesToggles, boolean disableIEFading) {
+			boolean seriesToggle, boolean disableIEFading) {
 		super(new DefaultEnhancedLegendRenderer());
 		setNumberRows(numberRows);
 		setNumberColumns(numberColumns);
-		setSeriesToggle(seriesToggles);
+		setSeriesToggle(seriesToggle);
+		setDisableIEFading(disableIEFading);
+	}
+
+	public EnhancedLegendRenderer(int numberRows, int numberColumns,
+			int seriesToggle, boolean disableIEFading) {
+		super(new DefaultEnhancedLegendRenderer());
+		setNumberRows(numberRows);
+		setNumberColumns(numberColumns);
+		setSeriesToggle(seriesToggle);
+		setDisableIEFading(disableIEFading);
+	}
+
+	public EnhancedLegendRenderer(int numberRows, int numberColumns,
+			SeriesToggles seriesToggle, boolean disableIEFading) {
+		super(new DefaultEnhancedLegendRenderer());
+		setNumberRows(numberRows);
+		setNumberColumns(numberColumns);
+		setSeriesToggle(seriesToggle);
 		setDisableIEFading(disableIEFading);
 	}
 
@@ -59,12 +77,23 @@ public class EnhancedLegendRenderer extends
 		return this;
 	}
 
-	public SeriesToggles getSeriesToggle() {
+	public Object getSeriesToggle() {
 		return seriesToggle;
 	}
 
-	public EnhancedLegendRenderer setSeriesToggle(SeriesToggles seriesToggles) {
-		this.seriesToggle = seriesToggles;
+	public EnhancedLegendRenderer setSeriesToggle(boolean seriesToggle) {
+		this.seriesToggle = Boolean.valueOf(seriesToggle);
+		return this;
+	}
+
+	public EnhancedLegendRenderer setSeriesToggle(int seriesToggle) {
+		this.seriesToggle = Integer.valueOf(seriesToggle < 0 ? 100
+				: seriesToggle);
+		return this;
+	}
+
+	public EnhancedLegendRenderer setSeriesToggle(SeriesToggles seriesToggle) {
+		this.seriesToggle = seriesToggle;
 		return this;
 	}
 

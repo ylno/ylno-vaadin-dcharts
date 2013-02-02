@@ -18,30 +18,34 @@ package org.dussan.vaadin.dcharts.defaults;
 import org.dussan.vaadin.dcharts.base.renderers.MarkerRenderer;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
+import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
 
 public class DefaultHighlighter {
 
-	public static final Boolean show = Boolean.TRUE;
-	public static final MarkerRenderer markerRenderer = new MarkerRenderer()
+	public static final Boolean SHOW = Boolean.TRUE;
+	public static final MarkerRenderer MARKER_RENDERER = new MarkerRenderer()
 			.setShadow(false);
-	public static final Boolean showMarker = Boolean.TRUE;
-	public static final Float lineWidthAdjust = 2.5f;
-	public static final Integer sizeAdjust = 5;
-	public static final Boolean showTooltip = Boolean.TRUE;
-	public static final TooltipLocations tooltipLocation = TooltipLocations.NORTH_WEST;
-	public static final Boolean fadeTooltip = Boolean.TRUE;
-	public static final TooltipFadeSpeeds tooltipFadeSpeed = TooltipFadeSpeeds.FAST;
-	public static final Integer tooltipOffset = 2;
-	public static final TooltipAxes tooltipAxes = TooltipAxes.BOTH;
-	public static final String tooltipSeparator = ", ";
+	public static final Boolean SHOW_MARKER = Boolean.TRUE;
+	public static final Float LINE_WIDTH_ADJUST = 2.5f;
+	public static final Integer SIZE_ADJUST = 5;
+	public static final Boolean SHOW_TOOLTIP = Boolean.TRUE;
+	public static final Boolean KEEP_TOOLTIP_INSIDE_CHART = Boolean.TRUE;
+	public static final Boolean TOOLTIP_ALWAYS_VISIBLE = Boolean.FALSE;
+	public static final TooltipMoveSpeeds TOOLTIP_MOVE_SPEED = TooltipMoveSpeeds.FAST;
+	public static final TooltipLocations TOOLTIP_LOCATION = TooltipLocations.EAST;
+	public static final Boolean FADE_TOOLTIP = Boolean.TRUE;
+	public static final TooltipFadeSpeeds tooltip_Fade_Speed = TooltipFadeSpeeds.FAST;
+	public static final Integer TOOLTIP_OFFSET = 2;
+	public static final TooltipAxes TOOLTIP_AXES = TooltipAxes.BOTH;
+	public static final String TOOLTIP_SEPARATOR = ", ";
 	// TODO: to be done
-	public static final String tooltipContentEditor = null;
-	public static final Boolean useAxesFormatters = Boolean.TRUE;
-	public static final String tooltipFormatString = "%.5P";
-	public static final String formatString = null;
-	public static final Integer yvalues = 1;
-	public static final Boolean bringSeriesToFront = Boolean.FALSE;
+	public static final String TOOLTIP_CONTENT_EDITOR = null;
+	public static final Boolean USE_AXES_FORMATTERS = Boolean.TRUE;
+	public static final String TOOLTIP_FORMAT_STRING = "%.5P";
+	public static final String FORMAT_STRING = null;
+	public static final Integer YVALUES = 1;
+	public static final Boolean BRING_SERIES_TOFRONT = Boolean.FALSE;
 
 	public DefaultHighlighter() {
 	}

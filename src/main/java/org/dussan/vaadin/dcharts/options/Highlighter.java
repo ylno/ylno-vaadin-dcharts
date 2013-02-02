@@ -21,6 +21,7 @@ import org.dussan.vaadin.dcharts.defaults.DefaultHighlighter;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
+import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
 
 public class Highlighter extends Option<Highlighter> {
@@ -32,9 +33,12 @@ public class Highlighter extends Option<Highlighter> {
 	private Float lineWidthAdjust = null;
 	private Integer sizeAdjust = null;
 	private Boolean showTooltip = null;
+	private Boolean keepTooltipInsideChart = null;
+	private Boolean tooltipAlwaysVisible = null;
+	private Object tooltipMoveSpeed = null;
 	private TooltipLocations tooltipLocation = null;
 	private Boolean fadeTooltip = null;
-	private TooltipFadeSpeeds tooltipFadeSpeed = null;
+	private Object tooltipFadeSpeed = null;
 	private Integer tooltipOffset = null;
 	private TooltipAxes tooltipAxes = null;
 	private String tooltipSeparator = null;
@@ -52,9 +56,78 @@ public class Highlighter extends Option<Highlighter> {
 
 	public Highlighter(boolean show, MarkerRenderer markerRenderer,
 			boolean showMarker, float lineWidthAdjust, int sizeAdjust,
-			boolean showTooltip, TooltipLocations tooltipLocation,
-			boolean fadeTooltip, TooltipFadeSpeeds tooltipFadeSpeed,
-			int tooltipOffset, TooltipAxes tooltipAxes,
+			boolean showTooltip, boolean keepTooltipInsideChart,
+			boolean tooltipAlwaysVisible, TooltipMoveSpeeds tooltipMoveSpeed,
+			TooltipLocations tooltipLocation, boolean fadeTooltip,
+			TooltipFadeSpeeds tooltipFadeSpeed, int tooltipOffset,
+			TooltipAxes tooltipAxes, String tooltipSeparator,
+			String tooltipContentEditor, boolean useAxesFormatters,
+			String tooltipFormatString, String formatString, int yvalues,
+			boolean bringSeriesToFront) {
+		super(new DefaultHighlighter());
+		setShow(show);
+		setMarkerRenderer(markerRenderer);
+		setShowMarker(showMarker);
+		setLineWidthAdjust(lineWidthAdjust);
+		setSizeAdjust(sizeAdjust);
+		setShowTooltip(showTooltip);
+		setKeepTooltipInsideChart(keepTooltipInsideChart);
+		setTooltipAlwaysVisible(tooltipAlwaysVisible);
+		setTooltipMoveSpeed(tooltipMoveSpeed);
+		setTooltipLocation(tooltipLocation);
+		setFadeTooltip(fadeTooltip);
+		setTooltipFadeSpeed(tooltipFadeSpeed);
+		setTooltipOffset(tooltipOffset);
+		setTooltipAxes(tooltipAxes);
+		setTooltipSeparator(tooltipSeparator);
+		setTooltipContentEditor(tooltipContentEditor);
+		setUseAxesFormatters(useAxesFormatters);
+		setTooltipFormatString(tooltipFormatString);
+		setFormatString(formatString);
+		setYvalues(yvalues);
+		setBringSeriesToFront(bringSeriesToFront);
+	}
+
+	public Highlighter(boolean show, MarkerRenderer markerRenderer,
+			boolean showMarker, float lineWidthAdjust, int sizeAdjust,
+			boolean showTooltip, boolean keepTooltipInsideChart,
+			boolean tooltipAlwaysVisible, int tooltipMoveSpeed,
+			TooltipLocations tooltipLocation, boolean fadeTooltip,
+			TooltipFadeSpeeds tooltipFadeSpeed, int tooltipOffset,
+			TooltipAxes tooltipAxes, String tooltipSeparator,
+			String tooltipContentEditor, boolean useAxesFormatters,
+			String tooltipFormatString, String formatString, int yvalues,
+			boolean bringSeriesToFront) {
+		super(new DefaultHighlighter());
+		setShow(show);
+		setMarkerRenderer(markerRenderer);
+		setShowMarker(showMarker);
+		setLineWidthAdjust(lineWidthAdjust);
+		setSizeAdjust(sizeAdjust);
+		setShowTooltip(showTooltip);
+		setKeepTooltipInsideChart(keepTooltipInsideChart);
+		setTooltipAlwaysVisible(tooltipAlwaysVisible);
+		setTooltipMoveSpeed(tooltipMoveSpeed);
+		setTooltipLocation(tooltipLocation);
+		setFadeTooltip(fadeTooltip);
+		setTooltipFadeSpeed(tooltipFadeSpeed);
+		setTooltipOffset(tooltipOffset);
+		setTooltipAxes(tooltipAxes);
+		setTooltipSeparator(tooltipSeparator);
+		setTooltipContentEditor(tooltipContentEditor);
+		setUseAxesFormatters(useAxesFormatters);
+		setTooltipFormatString(tooltipFormatString);
+		setFormatString(formatString);
+		setYvalues(yvalues);
+		setBringSeriesToFront(bringSeriesToFront);
+	}
+
+	public Highlighter(boolean show, MarkerRenderer markerRenderer,
+			boolean showMarker, float lineWidthAdjust, int sizeAdjust,
+			boolean showTooltip, boolean keepTooltipInsideChart,
+			boolean tooltipAlwaysVisible, TooltipMoveSpeeds tooltipMoveSpeed,
+			TooltipLocations tooltipLocation, boolean fadeTooltip,
+			int tooltipFadeSpeed, int tooltipOffset, TooltipAxes tooltipAxes,
 			String tooltipSeparator, String tooltipContentEditor,
 			boolean useAxesFormatters, String tooltipFormatString,
 			String formatString, int yvalues, boolean bringSeriesToFront) {
@@ -65,6 +138,42 @@ public class Highlighter extends Option<Highlighter> {
 		setLineWidthAdjust(lineWidthAdjust);
 		setSizeAdjust(sizeAdjust);
 		setShowTooltip(showTooltip);
+		setKeepTooltipInsideChart(keepTooltipInsideChart);
+		setTooltipAlwaysVisible(tooltipAlwaysVisible);
+		setTooltipMoveSpeed(tooltipMoveSpeed);
+		setTooltipLocation(tooltipLocation);
+		setFadeTooltip(fadeTooltip);
+		setTooltipFadeSpeed(tooltipFadeSpeed);
+		setTooltipOffset(tooltipOffset);
+		setTooltipAxes(tooltipAxes);
+		setTooltipSeparator(tooltipSeparator);
+		setTooltipContentEditor(tooltipContentEditor);
+		setUseAxesFormatters(useAxesFormatters);
+		setTooltipFormatString(tooltipFormatString);
+		setFormatString(formatString);
+		setYvalues(yvalues);
+		setBringSeriesToFront(bringSeriesToFront);
+	}
+
+	public Highlighter(boolean show, MarkerRenderer markerRenderer,
+			boolean showMarker, float lineWidthAdjust, int sizeAdjust,
+			boolean showTooltip, boolean keepTooltipInsideChart,
+			boolean tooltipAlwaysVisible, int tooltipMoveSpeed,
+			TooltipLocations tooltipLocation, boolean fadeTooltip,
+			int tooltipFadeSpeed, int tooltipOffset, TooltipAxes tooltipAxes,
+			String tooltipSeparator, String tooltipContentEditor,
+			boolean useAxesFormatters, String tooltipFormatString,
+			String formatString, int yvalues, boolean bringSeriesToFront) {
+		super(new DefaultHighlighter());
+		setShow(show);
+		setMarkerRenderer(markerRenderer);
+		setShowMarker(showMarker);
+		setLineWidthAdjust(lineWidthAdjust);
+		setSizeAdjust(sizeAdjust);
+		setShowTooltip(showTooltip);
+		setKeepTooltipInsideChart(keepTooltipInsideChart);
+		setTooltipAlwaysVisible(tooltipAlwaysVisible);
+		setTooltipMoveSpeed(tooltipMoveSpeed);
 		setTooltipLocation(tooltipLocation);
 		setFadeTooltip(fadeTooltip);
 		setTooltipFadeSpeed(tooltipFadeSpeed);
@@ -133,12 +242,45 @@ public class Highlighter extends Option<Highlighter> {
 		return this;
 	}
 
+	public Boolean getKeepTooltipInsideChart() {
+		return keepTooltipInsideChart;
+	}
+
+	public Highlighter setKeepTooltipInsideChart(boolean keepTooltipInsideChart) {
+		this.keepTooltipInsideChart = keepTooltipInsideChart;
+		return this;
+	}
+
+	public Boolean getTooltipAlwaysVisible() {
+		return tooltipAlwaysVisible;
+	}
+
+	public Highlighter setTooltipAlwaysVisible(boolean tooltipAlwaysVisible) {
+		this.tooltipAlwaysVisible = tooltipAlwaysVisible;
+		return this;
+	}
+
+	public Object getTooltipMoveSpeed() {
+		return tooltipMoveSpeed;
+	}
+
+	public Highlighter setTooltipMoveSpeed(int tooltipMoveSpeed) {
+		this.tooltipMoveSpeed = tooltipMoveSpeed < 0 ? DefaultHighlighter.TOOLTIP_MOVE_SPEED
+				: Integer.valueOf(tooltipMoveSpeed);
+		return this;
+	}
+
+	public Highlighter setTooltipMoveSpeed(TooltipMoveSpeeds tooltipMoveSpeed) {
+		this.tooltipMoveSpeed = tooltipMoveSpeed;
+		return this;
+	}
+
 	public TooltipLocations getTooltipLocation() {
 		return tooltipLocation;
 	}
 
-	public Highlighter setTooltipLocation(TooltipLocations tooltipLocations) {
-		this.tooltipLocation = tooltipLocations;
+	public Highlighter setTooltipLocation(TooltipLocations tooltipLocation) {
+		this.tooltipLocation = tooltipLocation;
 		return this;
 	}
 
@@ -151,8 +293,14 @@ public class Highlighter extends Option<Highlighter> {
 		return this;
 	}
 
-	public TooltipFadeSpeeds getTooltipFadeSpeed() {
+	public Object getTooltipFadeSpeed() {
 		return tooltipFadeSpeed;
+	}
+
+	public Highlighter setTooltipFadeSpeed(int tooltipFadeSpeed) {
+		this.tooltipFadeSpeed = Integer.valueOf(tooltipFadeSpeed < 0 ? 50
+				: tooltipFadeSpeed);
+		return this;
 	}
 
 	public Highlighter setTooltipFadeSpeed(TooltipFadeSpeeds tooltipFadeSpeeds) {
