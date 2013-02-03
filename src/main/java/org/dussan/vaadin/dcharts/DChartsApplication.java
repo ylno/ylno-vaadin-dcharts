@@ -20,8 +20,10 @@ import java.util.Locale;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
+import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
+import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
 import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.LabelRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
@@ -77,7 +79,9 @@ public class DChartsApplication extends Application {
 
 		Highlighter highlighter = new Highlighter().setShow(true)
 				.setTooltipMoveSpeed(TooltipMoveSpeeds.FAST)
-				.setTooltipAlwaysVisible(true);
+				.setTooltipAlwaysVisible(true)
+				.setTooltipLocation(TooltipLocations.EAST)
+				.setTooltipAxes(TooltipAxes.XY_BAR);
 
 		Options options = new Options().setSeriesDefaults(seriesDefaults)
 				.setAxes(axes).setHighlighter(highlighter);
