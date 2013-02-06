@@ -17,18 +17,20 @@ package org.dussan.vaadin.dcharts.metadata;
 
 public enum SeriesToggles {
 
+	FALSE(Boolean.FALSE), //
 	FAST("fast"), //
 	NORMAL("normal"), //
-	SLOW("slow");
+	SLOW("slow"), //
+	TRUE(Boolean.TRUE);
 
-	private String toggle;
+	private Object toggle;
 
-	private SeriesToggles(String toogle) {
+	private SeriesToggles(Object toogle) {
 		this.toggle = toogle;
 	}
 
 	public String getToggle() {
-		return toggle.toLowerCase();
+		return toggle.toString().toLowerCase();
 	}
 
 	@Override

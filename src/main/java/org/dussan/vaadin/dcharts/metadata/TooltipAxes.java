@@ -21,7 +21,19 @@ public enum TooltipAxes {
 	Y("y"), //
 	XY("xy"), //
 	YX("yx"), //
-	BOTH("both");
+	BOTH("both"), //
+	X_BAR("xbar"), //
+	Y_BAR("ybar"), //
+	XY_BAR("xybar"), //
+	YX_BAR("yxbar"), //
+	X_BUBBLE("xbubble"), //
+	Y_BUBBLE("ybubble"), //
+	XY_BUBBLE("xybubble"), //
+	YX_BUBBLE("yxbubble"), //
+	X_PYRAMID("xpyramid"), //
+	Y_PYRAMID("ypyramid"), //
+	XY_PYRAMID("xypyramid"), //
+	YX_PYRAMID("yxpyramid");
 
 	private String axes;
 

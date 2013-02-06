@@ -17,13 +17,16 @@ package org.dussan.vaadin.dcharts.defaults;
 
 public class DefaultBands {
 
-	public static final Boolean show = Boolean.FALSE;
-	public static final Object[] hiData = null;
-	public static final Object[] lowData = null;
-	public static final String color = null;
-	public static final Boolean showLines = Boolean.FALSE;
-	public static final Boolean fill = Boolean.TRUE;
-	public static final String fillColor = null;
-	public static final String interval = "3%";
+	public static final Boolean SHOW = Boolean.FALSE;
+	public static final Object[] HI_DATA = null;
+	public static final Object[] LOW_DATA = null;
+	public static final String COLOR = null;
+	public static final Boolean SHOW_LINES = Boolean.FALSE;
+	public static final Boolean FILL = Boolean.TRUE;
+	public static final String FILL_COLOR = null;
+	public static final String INTERVAL = "3%";
+
+	public DefaultBands() {
+	}
 
 }

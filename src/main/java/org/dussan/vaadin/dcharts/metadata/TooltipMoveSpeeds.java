@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dussan.vaadin.dcharts.metadata.ticks;
+package org.dussan.vaadin.dcharts.metadata;
 
-public enum TickFormatters {
+public enum TooltipMoveSpeeds {
 
-	DATE("$wnd.jQuery.jqplot.DateTickFormatter"), //
-	DEFAULT("$wnd.jQuery.jqplot.DefaultTickFormatter"), //
-	PERCENT("$wnd.jQuery.jqplot.PercentTickFormatter");
+	SLOW("slow"), //
+	DEF("def"), //
+	FAST("fast");
 
-	private String formatter;
+	private String speed;
 
-	private TickFormatters(String formatter) {
-		this.formatter = formatter;
+	private TooltipMoveSpeeds(String speed) {
+		this.speed = speed;
 	}
 
-	public String getFormatter() {
-		return formatter;
+	public String getSpeed() {
+		return speed;
 	}
 
 	@Override
 	public String toString() {
-		return getFormatter();
+		return getSpeed();
 	}
 
 }

@@ -24,8 +24,8 @@ public class AxisRenderer<T> extends BaseElement<T> {
 	public AxisRenderer() {
 	}
 
-	public AxisRenderer(Object defaultAxisRendere) {
-		super(defaultAxisRendere);
+	public AxisRenderer(Object defaultAxisRenderer) {
+		super(defaultAxisRenderer);
 	}
 
 	@Override
