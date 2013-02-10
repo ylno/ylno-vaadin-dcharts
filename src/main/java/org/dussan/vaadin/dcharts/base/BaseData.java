@@ -60,9 +60,24 @@ public class BaseData<T> implements Serializable {
 		return (T) this;
 	}
 
+	public Object getSeriesValue(int seriesIndex, int pointIndex) {
+		List<Object> series = this.series;
+		if (hasSubSeries() && !subSeries.isEmpty()) {
+			series.add(subSeries.toArray(new Object[][] {}));
+		}
+
+		try {
+			Object[] serie = (Object[]) series.get(seriesIndex);
+			return serie[pointIndex];
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public String getValue() {
 		if (hasSubSeries() && !subSeries.isEmpty()) {
 			series.add(subSeries.toArray(new Object[][] {}));
+			subSeries = new ArrayList<Object>();
 		}
 
 		StringBuilder dataSeries = new StringBuilder();

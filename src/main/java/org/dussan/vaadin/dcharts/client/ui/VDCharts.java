@@ -15,8 +15,19 @@
  */
 package org.dussan.vaadin.dcharts.client.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.dussan.vaadin.dcharts.client.events.EventObject;
 import org.dussan.vaadin.dcharts.client.js.JqPlot;
 import org.dussan.vaadin.dcharts.client.js.injector.JavaScriptInjector;
+import org.dussan.vaadin.dcharts.client.handlers.BarDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.BubbleDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.DonutDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.LineDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.PieDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.PyramidDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.ResizeHandler;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -38,10 +49,16 @@ public class VDCharts extends SimplePanel implements Paintable {
 	private String dataSeries = null;
 	private String options = null;
 
+	private Boolean enableChartDataMouseEnterEvent = null;
+	private Boolean enableChartDataMouseLeaveEvent = null;
+	private Boolean enableChartDataClickEvent = null;
+	private Boolean enableChartDataRightClickEvent = null;
+
 	protected String uidl = null;
 	protected ApplicationConnection client = null;
 	private Element title = null;
 	private Element chart = null;
+	private EventObject eventObject = null;
 
 	public VDCharts() {
 		// global id
@@ -52,6 +69,12 @@ public class VDCharts extends SimplePanel implements Paintable {
 				DCHARTS + "-" + ((long) (Math.random() * 10000000000000000L)));
 		setStyleName(DCHARTS);
 		isAttached = false;
+
+		// enable/disable mouse events
+		enableChartDataMouseEnterEvent = false;
+		enableChartDataMouseLeaveEvent = false;
+		enableChartDataClickEvent = false;
+		enableChartDataRightClickEvent = false;
 	}
 
 	private void loadJQueryLibrary() {
@@ -72,26 +95,6 @@ public class VDCharts extends SimplePanel implements Paintable {
 		JavaScriptInjector.inject(JqPlot.CODE.jqPlot().getText());
 		JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer().getText());
 	}
-
-	private static native void activateResizeHandler(VDCharts chart,
-			boolean activate)
-	/*-{
-		$wnd.jQuery($doc).ready(function($){
-			var resizeTimer = null;
-			if (activate) {
-				$wnd.jQuery($wnd).bind('resize', function() {
-				    if (resizeTimer) {
-				    	clearTimeout(resizeTimer);
-				    }
-				    resizeTimer = setTimeout(function() {
-				    	chart.@org.dussan.vaadin.dcharts.client.ui.VDCharts::refreshChart()();
-				    }, 100);
-				});
-			} else {
-				$wnd.jQuery($wnd).unbind('resize');
-			}
-		});
-	}-*/;
 
 	private static native void showChart(String id, String dataSeries,
 			String options, String decimalSeparator, String thousandsSeparator)
@@ -130,22 +133,53 @@ public class VDCharts extends SimplePanel implements Paintable {
 		loadJqPlotLibrary();
 
 		// load resize handler
-		activateResizeHandler(this, true);
+		ResizeHandler.activate(this, false);
 	}
 
 	@Override
 	protected void onUnload() {
 		// unload resize handler
-		activateResizeHandler(this, false);
+		ResizeHandler.activate(this, false);
 	}
 
 	private void activateJqPlotPlugins(String options) {
+		if (enableChartDataClickEvent) {
+			LineDataHandler.activateClick(this, chart.getId());
+		}
+		if (enableChartDataRightClickEvent) {
+			LineDataHandler.activateRightClick(this, chart.getId());
+		}
+
 		if (options.contains("$wnd.jQuery.jqplot.BarRenderer")) {
 			JavaScriptInjector.inject(JqPlot.CODE.barRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				BarDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				BarDataHandler.activateMouseLeave(this, chart.getId());
+			}
+			if (enableChartDataClickEvent) {
+				BarDataHandler.activateClick(this, chart.getId());
+			}
+			if (enableChartDataRightClickEvent) {
+				BarDataHandler.activateRightClick(this, chart.getId());
+			}
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.BubbleRenderer")) {
 			JavaScriptInjector.inject(JqPlot.CODE.bubbleRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				BubbleDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				BubbleDataHandler.activateMouseLeave(this, chart.getId());
+			}
+			if (enableChartDataClickEvent) {
+				BubbleDataHandler.activateClick(this, chart.getId());
+			}
+			if (enableChartDataRightClickEvent) {
+				BubbleDataHandler.activateRightClick(this, chart.getId());
+			}
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.CategoryAxisRenderer")) {
@@ -168,6 +202,18 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 		if (options.contains("$wnd.jQuery.jqplot.DonutRenderer")) {
 			JavaScriptInjector.inject(JqPlot.CODE.donutRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				DonutDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				DonutDataHandler.activateMouseLeave(this, chart.getId());
+			}
+			if (enableChartDataClickEvent) {
+				DonutDataHandler.activateClick(this, chart.getId());
+			}
+			if (enableChartDataRightClickEvent) {
+				DonutDataHandler.activateRightClick(this, chart.getId());
+			}
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.EnhancedLegendRenderer")) {
@@ -181,6 +227,18 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 		if (options.contains("$wnd.jQuery.jqplot.PieRenderer")) {
 			JavaScriptInjector.inject(JqPlot.CODE.pieRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				PieDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				PieDataHandler.activateMouseLeave(this, chart.getId());
+			}
+			if (enableChartDataClickEvent) {
+				PieDataHandler.activateClick(this, chart.getId());
+			}
+			if (enableChartDataRightClickEvent) {
+				PieDataHandler.activateRightClick(this, chart.getId());
+			}
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.PyramidAxisRenderer")) {
@@ -195,6 +253,12 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 		if (options.contains("$wnd.jQuery.jqplot.PyramidRenderer")) {
 			JavaScriptInjector.inject(JqPlot.CODE.pyramidRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				PyramidDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				PyramidDataHandler.activateMouseLeave(this, chart.getId());
+			}
 		}
 
 		if (options.contains("cursor:")) {
@@ -234,6 +298,20 @@ public class VDCharts extends SimplePanel implements Paintable {
 		return value.toString();
 	}
 
+	private void sendMessage(String id, String event, String data) {
+		if (eventObject == null
+				|| !eventObject.equals(new EventObject(id, event, data))) {
+			Map<String, Object> request = new HashMap<String, Object>();
+			request.put("id", id == null ? new String() : id);
+			request.put("event", event == null ? new String() : event);
+			request.put("data", data == null ? "" : data);
+			eventObject = new EventObject(id, event, data);
+
+			// send request to server
+			client.updateVariable(uidl, "request", request, true);
+		}
+	}
+
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 		if (client.updateComponent(this, uidl, true)) {
 			return;
@@ -254,6 +332,26 @@ public class VDCharts extends SimplePanel implements Paintable {
 		chart.getStyle().setMarginRight(right, Unit.PX);
 		getElement().getStyle().setMarginBottom(bottom, Unit.PX);
 		getElement().getStyle().setMarginLeft(left, Unit.PX);
+
+		if (uidl.hasAttribute("enableChartDataMouseEnterEvent")) {
+			enableChartDataMouseEnterEvent = uidl
+					.getBooleanAttribute("enableChartDataMouseEnterEvent");
+		}
+
+		if (uidl.hasAttribute("enableChartDataMouseLeaveEvent")) {
+			enableChartDataMouseLeaveEvent = uidl
+					.getBooleanAttribute("enableChartDataMouseLeaveEvent");
+		}
+
+		if (uidl.hasAttribute("enableChartDataClickEvent")) {
+			enableChartDataClickEvent = uidl
+					.getBooleanAttribute("enableChartDataClickEvent");
+		}
+
+		if (uidl.hasAttribute("enableChartDataRightClickEvent")) {
+			enableChartDataRightClickEvent = uidl
+					.getBooleanAttribute("enableChartDataRightClickEvent");
+		}
 
 		if (uidl.hasAttribute("title")) {
 			String title = uidl.getStringAttribute("title");

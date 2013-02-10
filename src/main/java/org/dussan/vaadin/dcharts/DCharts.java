@@ -17,23 +17,38 @@ package org.dussan.vaadin.dcharts;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
 import org.dussan.vaadin.dcharts.client.ui.VDCharts;
 import org.dussan.vaadin.dcharts.data.DataSeries;
+import org.dussan.vaadin.dcharts.events.ChartData;
+import org.dussan.vaadin.dcharts.events.click.ChartDataClickEvent;
+import org.dussan.vaadin.dcharts.events.click.ChartDataClickHandler;
+import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterEvent;
+import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterHandler;
+import org.dussan.vaadin.dcharts.events.mouseleave.ChartDataMouseLeaveEvent;
+import org.dussan.vaadin.dcharts.events.mouseleave.ChartDataMouseLeaveHandler;
+import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickEvent;
+import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickHandler;
+import org.dussan.vaadin.dcharts.helpers.ChartDataHelper;
 import org.dussan.vaadin.dcharts.helpers.ManifestHelper;
 import org.dussan.vaadin.dcharts.options.Options;
 
+import com.google.gwt.event.shared.HandlerManager;
 import com.vaadin.terminal.PaintException;
 import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.ClientWidget;
+import com.vaadin.ui.Window.Notification;
 
 @ClientWidget(VDCharts.class)
 public class DCharts extends AbstractComponent {
 
 	private static final long serialVersionUID = -7224003274781707144L;
+	private HandlerManager handlerManager = null;
+
 	private boolean showChart = false;
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
@@ -47,9 +62,22 @@ public class DCharts extends AbstractComponent {
 	private DataSeries dataSeries = null;
 	private Options options = null;
 
+	private Boolean enableChartDataMouseEnterEvent = null;
+	private Boolean enableChartDataMouseLeaveEvent = null;
+	private Boolean enableChartDataClickEvent = null;
+	private Boolean enableChartDataRightClickEvent = null;
+
 	public DCharts() {
 		// don't remove: it define dynamic widget's width
 		setWidth("100%");
+		idChart = "dCharts" + (new Date().getTime());
+		handlerManager = new HandlerManager(this);
+
+		// enable/disable mouse events
+		enableChartDataMouseEnterEvent = false;
+		enableChartDataMouseLeaveEvent = false;
+		enableChartDataClickEvent = false;
+		enableChartDataRightClickEvent = false;
 	}
 
 	public DCharts(String title, String idChart, DataSeries dataSeries,
@@ -227,6 +255,41 @@ public class DCharts extends AbstractComponent {
 		return this;
 	}
 
+	public boolean isEnableChartDataMouseEnterEvent() {
+		return enableChartDataMouseEnterEvent;
+	}
+
+	public void setEnableChartDataMouseEnterEvent(
+			boolean enableChartDataMouseEnterEvent) {
+		this.enableChartDataMouseEnterEvent = enableChartDataMouseEnterEvent;
+	}
+
+	public boolean isEnableChartDataMouseLeaveEvent() {
+		return enableChartDataMouseLeaveEvent;
+	}
+
+	public void setEnableChartDataMouseLeaveEvent(
+			boolean enableChartDataMouseLeaveEvent) {
+		this.enableChartDataMouseLeaveEvent = enableChartDataMouseLeaveEvent;
+	}
+
+	public boolean isEnableChartDataClickEvent() {
+		return enableChartDataClickEvent;
+	}
+
+	public void setEnableChartDataClickEvent(boolean enableChartDataClickEvent) {
+		this.enableChartDataClickEvent = enableChartDataClickEvent;
+	}
+
+	public boolean isEnableChartDataRightClickEvent() {
+		return enableChartDataRightClickEvent;
+	}
+
+	public void setEnableChartDataRightClickEvent(
+			boolean enableChartDataRightClickEvent) {
+		this.enableChartDataRightClickEvent = enableChartDataRightClickEvent;
+	}
+
 	public DCharts show() {
 		this.showChart = true;
 		if (!showChart
@@ -251,6 +314,15 @@ public class DCharts extends AbstractComponent {
 			target.addAttribute("marginRight", marginRight);
 			target.addAttribute("marginBottom", marginBottom);
 			target.addAttribute("marginLeft", marginLeft);
+
+			target.addAttribute("enableChartDataMouseEnterEvent",
+					isEnableChartDataMouseEnterEvent());
+			target.addAttribute("enableChartDataMouseLeaveEvent",
+					isEnableChartDataMouseLeaveEvent());
+			target.addAttribute("enableChartDataClickEvent",
+					isEnableChartDataClickEvent());
+			target.addAttribute("enableChartDataRightClickEvent",
+					isEnableChartDataRightClickEvent());
 
 			if (title != null && title.length() > 0) {
 				target.addAttribute("title", (String) title);
@@ -287,8 +359,120 @@ public class DCharts extends AbstractComponent {
 		super.changeVariables(source, variables);
 		Map<String, Object> request = (Map<String, Object>) variables
 				.get("request");
+
 		if (request == null || request.isEmpty()) {
 			requestRepaint();
+		} else {
+			ChartData chartData = ChartDataHelper.process(request);
+			if (chartData.getSeriesIndex() != null
+					&& chartData.getPointIndex() != null) {
+				chartData.setOriginData(dataSeries.getSeriesValue(chartData
+						.getSeriesIndex().intValue(), chartData.getPointIndex()
+						.intValue()));
+			}
+
+			if (chartData != null) {
+				switch (chartData.getChartEventType()) {
+				case BAR_MOUSE_ENTER:
+				case BUBBLE_MOUSE_ENTER:
+				case DONUT_MOUSE_ENTER:
+				case PIE_MOUSE_ENTER:
+				case PYRAMID_MOUSE_ENTER:
+					handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+							chartData));
+					break;
+
+				case BAR_MOUSE_LEAVE:
+				case BUBBLE_MOUSE_LEAVE:
+				case DONUT_MOUSE_LEAVE:
+				case PIE_MOUSE_LEAVE:
+				case PYRAMID_MOUSE_LEAVE:
+					handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+							chartData));
+					break;
+
+				case BAR_CLICK:
+				case BUBBLE_CLICK:
+				case DONUT_CLICK:
+				case LINE_CLICK:
+				case PIE_CLICK:
+					handlerManager
+							.fireEvent(new ChartDataClickEvent(chartData));
+					break;
+
+				case BAR_RIGHT_CLICK:
+				case BUBBLE_RIGHT_CLICK:
+				case DONUT_RIGHT_CLICK:
+				case LINE_RIGHT_CLICK:
+				case PIE_RIGHT_CLICK:
+					handlerManager.fireEvent(new ChartDataRightClickEvent(
+							chartData));
+					break;
+
+				case NOT_DEFINED:
+				default:
+					String caption = "UNKNOWN EVENT";
+					String description = "Cannot process unknown chart data event!";
+					getWindow().showNotification(caption, description,
+							Notification.TYPE_ERROR_MESSAGE);
+					break;
+				}
+			}
+		}
+	}
+
+	public void addHandler(ChartDataMouseEnterHandler handler) {
+		if (isEnableChartDataMouseEnterEvent()) {
+			handlerManager.addHandler(ChartDataMouseEnterEvent.getType(),
+					handler);
+		}
+	}
+
+	public void removeHandler(ChartDataMouseEnterHandler handler) {
+		if (handlerManager.isEventHandled(ChartDataMouseEnterEvent.getType())) {
+			handlerManager.removeHandler(ChartDataMouseEnterEvent.getType(),
+					handler);
+		}
+	}
+
+	public void addHandler(ChartDataMouseLeaveHandler handler) {
+		if (isEnableChartDataMouseLeaveEvent()) {
+			handlerManager.addHandler(ChartDataMouseLeaveEvent.getType(),
+					handler);
+		}
+	}
+
+	public void removeHandler(ChartDataMouseLeaveHandler handler) {
+		if (handlerManager.isEventHandled(ChartDataMouseLeaveEvent.getType())) {
+			handlerManager.removeHandler(ChartDataMouseLeaveEvent.getType(),
+					handler);
+		}
+	}
+
+	public void addHandler(ChartDataClickHandler handler) {
+		if (isEnableChartDataClickEvent()) {
+			handlerManager.addHandler(ChartDataClickEvent.getType(), handler);
+		}
+	}
+
+	public void removeHandler(ChartDataClickHandler handler) {
+		if (handlerManager.isEventHandled(ChartDataClickEvent.getType())) {
+			handlerManager
+					.removeHandler(ChartDataClickEvent.getType(), handler);
+		}
+	}
+
+	public void addHandler(ChartDataRightClickHandler handler) {
+		if (isEnableChartDataRightClickEvent()) {
+			handlerManager.addHandler(ChartDataRightClickEvent.getType(),
+					handler);
+		}
+	}
+
+	public void removeHandler(ChartDataRightClickHandler handler) {
+		if (handlerManager.isEventHandled(ChartDataRightClickEvent.getType())) {
+			handlerManager.removeHandler(ChartDataRightClickEvent.getType(),
+					handler);
 		}
 	}
 
