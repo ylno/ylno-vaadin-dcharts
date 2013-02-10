@@ -15,11 +15,21 @@
  */
 package org.dussan.vaadin.dcharts;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
+import org.dussan.vaadin.dcharts.events.ChartData;
+import org.dussan.vaadin.dcharts.events.click.ChartDataClickEvent;
+import org.dussan.vaadin.dcharts.events.click.ChartDataClickHandler;
+import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterEvent;
+import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterHandler;
+import org.dussan.vaadin.dcharts.events.mouseleave.ChartDataMouseLeaveEvent;
+import org.dussan.vaadin.dcharts.events.mouseleave.ChartDataMouseLeaveHandler;
+import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickEvent;
+import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickHandler;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
@@ -37,10 +47,51 @@ import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 import com.vaadin.Application;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 public class DChartsApplication extends Application {
 
 	private static final long serialVersionUID = 6965636231736806289L;
+
+	private void showNotification(String event, ChartData chartData) {
+		String caption = "<span style='color:#ff6600'>Event: " + event
+				+ "</span>";
+		StringBuilder description = new StringBuilder();
+		description.append("<b>Chart id:</b> " + chartData.getChartId());
+
+		if (chartData.getSeriesIndex() != null) {
+			description.append("<br /><b>Series index:</b> "
+					+ chartData.getSeriesIndex());
+		}
+
+		if (chartData.getPointIndex() != null) {
+			description.append("<br /><b>Point index:</b> "
+					+ chartData.getPointIndex());
+		}
+
+		if (chartData.getData() != null) {
+			description.append("<br /><b>Chart data:</b> "
+					+ Arrays.toString(chartData.getData()));
+		}
+
+		if (chartData.getOriginData() != null) {
+			if (chartData.getOriginData() instanceof Object[]) {
+				description
+						.append("<br /><b>Origin data:</b> "
+								+ Arrays.toString((Object[]) chartData
+										.getOriginData()));
+			} else {
+				description.append("<br /><b>Origin data:</b> "
+						+ chartData.getOriginData().toString());
+			}
+		}
+
+		Notification notification = new Notification(caption,
+				description.toString(), Notification.TYPE_TRAY_NOTIFICATION);
+		notification.setDelayMsec(3000);
+		notification.setHtmlContentAllowed(true);
+		getMainWindow().showNotification(notification);
+	}
 
 	@Override
 	public void init() {
@@ -83,10 +134,44 @@ public class DChartsApplication extends Application {
 				.setTooltipLocation(TooltipLocations.EAST)
 				.setTooltipAxes(TooltipAxes.XY_BAR);
 
-		Options options = new Options().setSeriesDefaults(seriesDefaults)
-				.setAxes(axes).setHighlighter(highlighter);
+		Options options = new Options().setCaptureRightClick(true)
+				.setSeriesDefaults(seriesDefaults).setAxes(axes)
+				.setHighlighter(highlighter);
 
 		chart.setDataSeries(dataSeries).setOptions(options).show();
+
+		chart.setEnableChartDataMouseEnterEvent(true);
+		chart.setEnableChartDataMouseLeaveEvent(true);
+		chart.setEnableChartDataClickEvent(true);
+		chart.setEnableChartDataRightClickEvent(true);
+
+		chart.addHandler(new ChartDataMouseEnterHandler() {
+			@Override
+			public void onChartDataMouseEnter(ChartDataMouseEnterEvent event) {
+				showNotification("CHART DATA MOUSE ENTER", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataMouseLeaveHandler() {
+			@Override
+			public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
+				showNotification("CHART DATA MOUSE LEAVE", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataClickHandler() {
+			@Override
+			public void onChartDataClick(ChartDataClickEvent event) {
+				showNotification("CHART DATA CLICK", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataRightClickHandler() {
+			@Override
+			public void onChartDataRightClick(ChartDataRightClickEvent event) {
+				showNotification("CHART DATA RIGHT CLICK", event.getChartData());
+			}
+		});
 	}
 
 }
