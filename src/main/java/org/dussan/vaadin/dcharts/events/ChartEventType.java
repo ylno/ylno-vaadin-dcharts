@@ -32,6 +32,9 @@ public enum ChartEventType {
 	DONUT_RIGHT_CLICK("donutRightClick"), //
 	LINE_CLICK("lineClick"), //
 	LINE_RIGHT_CLICK("lineRightClick"), //
+	OHLC_MOUSE_ENTER("ohlcMouseEnter"), //
+	OHLC_MOUSE_LEAVE("ohlcMouseLeave"), //
+	OHLC_CLICK("ohlcClick"), //
 	PIE_MOUSE_ENTER("pieMouseEnter"), //
 	PIE_MOUSE_LEAVE("pieMouseLeave"), //
 	PIE_CLICK("pieClick"), //

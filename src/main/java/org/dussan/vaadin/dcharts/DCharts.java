@@ -376,6 +376,7 @@ public class DCharts extends AbstractComponent {
 				case BAR_MOUSE_ENTER:
 				case BUBBLE_MOUSE_ENTER:
 				case DONUT_MOUSE_ENTER:
+				case OHLC_MOUSE_ENTER:
 				case PIE_MOUSE_ENTER:
 				case PYRAMID_MOUSE_ENTER:
 					handlerManager.fireEvent(new ChartDataMouseEnterEvent(
@@ -385,6 +386,7 @@ public class DCharts extends AbstractComponent {
 				case BAR_MOUSE_LEAVE:
 				case BUBBLE_MOUSE_LEAVE:
 				case DONUT_MOUSE_LEAVE:
+				case OHLC_MOUSE_LEAVE:
 				case PIE_MOUSE_LEAVE:
 				case PYRAMID_MOUSE_LEAVE:
 					handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
@@ -395,6 +397,7 @@ public class DCharts extends AbstractComponent {
 				case BUBBLE_CLICK:
 				case DONUT_CLICK:
 				case LINE_CLICK:
+				case OHLC_CLICK:
 				case PIE_CLICK:
 					handlerManager
 							.fireEvent(new ChartDataClickEvent(chartData));

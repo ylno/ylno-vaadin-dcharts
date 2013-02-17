@@ -13,45 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dussan.vaadin.dcharts.metadata;
+package org.dussan.vaadin.dcharts.metadata.ticks;
 
-public enum TooltipAxes {
+public enum BodyWidth {
 
-	X("x"), //
-	Y("y"), //
-	XY("xy"), //
-	YX("yx"), //
-	BOTH("both"), //
-	X_BAR("xbar"), //
-	Y_BAR("ybar"), //
-	XY_BAR("xybar"), //
-	YX_BAR("yxbar"), //
-	X_BUBBLE("xbubble"), //
-	Y_BUBBLE("ybubble"), //
-	XY_BUBBLE("xybubble"), //
-	YX_BUBBLE("yxbubble"), //
-	X_OHLC("xohlc"), //
-	Y_OHLC("yohlc"), //
-	XY_OHLC("xyohlc"), //
-	YX_OHLC("yxohlc"), //
-	X_PYRAMID("xpyramid"), //
-	Y_PYRAMID("ypyramid"), //
-	XY_PYRAMID("xypyramid"), //
-	YX_PYRAMID("yxpyramid");
+	AUTO("auto");
 
-	private String axes;
+	private String width;
 
-	private TooltipAxes(String axes) {
-		this.axes = axes;
+	private BodyWidth(String width) {
+		this.width = width;
 	}
 
-	public String getAxes() {
-		return axes;
+	public String getWidth() {
+		return width;
 	}
 
 	@Override
 	public String toString() {
-		return getAxes();
+		return getWidth();
 	}
 
 }

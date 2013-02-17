@@ -25,6 +25,7 @@ import org.dussan.vaadin.dcharts.client.handlers.BarDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.BubbleDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.DonutDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.LineDataHandler;
+import org.dussan.vaadin.dcharts.client.handlers.OhlcDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.PieDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.PyramidDataHandler;
 import org.dussan.vaadin.dcharts.client.handlers.ResizeHandler;
@@ -258,6 +259,19 @@ public class VDCharts extends SimplePanel implements Paintable {
 			}
 			if (enableChartDataMouseLeaveEvent) {
 				PyramidDataHandler.activateMouseLeave(this, chart.getId());
+			}
+		}
+
+		if (options.contains("$wnd.jQuery.jqplot.OHLCRenderer")) {
+			JavaScriptInjector.inject(JqPlot.CODE.ohlcRenderer().getText());
+			if (enableChartDataMouseEnterEvent) {
+				OhlcDataHandler.activateMouseEnter(this, chart.getId());
+			}
+			if (enableChartDataMouseLeaveEvent) {
+				OhlcDataHandler.activateMouseLeave(this, chart.getId());
+			}
+			if (enableChartDataClickEvent) {
+				OhlcDataHandler.activateClick(this, chart.getId());
 			}
 		}
 

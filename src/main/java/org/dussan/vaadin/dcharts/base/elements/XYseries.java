@@ -34,6 +34,7 @@ import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BubbleRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.DonutRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.LineRenderer;
+import org.dussan.vaadin.dcharts.renderers.series.OhlcRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.PieRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.PyramidRenderer;
 
@@ -333,6 +334,8 @@ public class XYseries extends BaseElement<XYseries> {
 			setRenderer(SeriesRenderers.LINE);
 		} else if (seriesRenderer instanceof PieRenderer) {
 			setRenderer(SeriesRenderers.PIE);
+		} else if (seriesRenderer instanceof OhlcRenderer) {
+			setRenderer(SeriesRenderers.OHLC);
 		} else if (seriesRenderer instanceof PyramidRenderer) {
 			setRenderer(SeriesRenderers.PYRAMID);
 		}
