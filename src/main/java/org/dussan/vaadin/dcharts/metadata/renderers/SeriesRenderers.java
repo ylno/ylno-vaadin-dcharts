@@ -21,6 +21,7 @@ public enum SeriesRenderers {
 	BUBBLE("$wnd.jQuery.jqplot.BubbleRenderer"), //
 	DONUT("$wnd.jQuery.jqplot.DonutRenderer"), //
 	LINE("$wnd.jQuery.jqplot.LineRenderer"), //
+	OHLC("$wnd.jQuery.jqplot.OHLCRenderer"), //
 	PIE("$wnd.jQuery.jqplot.PieRenderer"), //
 	PYRAMID("$wnd.jQuery.jqplot.PyramidRenderer");
 
