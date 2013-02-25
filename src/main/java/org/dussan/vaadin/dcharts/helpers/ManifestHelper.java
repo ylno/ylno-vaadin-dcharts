@@ -26,6 +26,7 @@ public class ManifestHelper implements Serializable {
 
 	private static final long serialVersionUID = -1377412482123878104L;
 
+	@SuppressWarnings("resource")
 	public final static Manifest getManifest() {
 		try {
 			URL url = ManifestHelper.class.getResource(ManifestHelper.class

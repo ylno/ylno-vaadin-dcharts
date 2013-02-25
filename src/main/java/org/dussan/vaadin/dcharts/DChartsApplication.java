@@ -102,6 +102,7 @@ public class DChartsApplication extends Application {
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
 		chart.setWidth("100%");
 		chart.setHeight("250px");
+		chart.setCaption("test");
 		mainWindow.addComponent(chart);
 
 		Label version = new Label("dCharts version: " + DCharts.getVersion()
