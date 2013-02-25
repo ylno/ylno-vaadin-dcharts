@@ -57,7 +57,6 @@ public class DCharts extends AbstractComponent {
 	private int marginBottom = 0;
 	private int marginLeft = 0;
 
-	private String title = null;
 	private String idChart = null;
 	private DataSeries dataSeries = null;
 	private Options options = null;
@@ -80,18 +79,18 @@ public class DCharts extends AbstractComponent {
 		enableChartDataRightClickEvent = false;
 	}
 
-	public DCharts(String title, String idChart, DataSeries dataSeries,
+	public DCharts(String caption, String idChart, DataSeries dataSeries,
 			Options options) {
 		super();
-		this.title = title;
+		setCaption(caption);
 		this.idChart = idChart;
 		this.dataSeries = dataSeries;
 		this.options = options;
 	}
 
-	public DCharts(String title, DataSeries dataSeries, Options options) {
+	public DCharts(String caption, DataSeries dataSeries, Options options) {
 		super();
-		this.title = title;
+		setCaption(caption);
 		this.dataSeries = dataSeries;
 		this.options = options;
 	}
@@ -102,9 +101,9 @@ public class DCharts extends AbstractComponent {
 		this.options = options;
 	}
 
-	public DCharts(String title, DataSeries dataSeries) {
+	public DCharts(String caption, DataSeries dataSeries) {
 		super();
-		this.title = title;
+		setCaption(caption);
 		this.dataSeries = dataSeries;
 	}
 
@@ -135,15 +134,6 @@ public class DCharts extends AbstractComponent {
 					.getValue("JqPlot-Version");
 		}
 		return null;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public DCharts setTitle(String title) {
-		this.title = title;
-		return this;
 	}
 
 	public String getIdChart() {
@@ -323,10 +313,6 @@ public class DCharts extends AbstractComponent {
 					isEnableChartDataClickEvent());
 			target.addAttribute("enableChartDataRightClickEvent",
 					isEnableChartDataRightClickEvent());
-
-			if (title != null && title.length() > 0) {
-				target.addAttribute("title", (String) title);
-			}
 
 			if (idChart != null && idChart.length() > 0) {
 				target.addAttribute("idChart", (String) idChart);

@@ -40,7 +40,6 @@ public class PointLabels extends BaseElement<PointLabels> {
 
 	public PointLabels() {
 		super(new DefaultPointLabels());
-		setShow(true);
 	}
 
 	public PointLabels(boolean show, PointLabelLocations location,

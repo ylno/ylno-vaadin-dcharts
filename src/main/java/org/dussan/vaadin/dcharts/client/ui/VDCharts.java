@@ -57,7 +57,6 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 	protected String uidl = null;
 	protected ApplicationConnection client = null;
-	private Element title = null;
 	private Element chart = null;
 	private EventObject eventObject = null;
 
@@ -119,10 +118,6 @@ public class VDCharts extends SimplePanel implements Paintable {
 
 	@Override
 	protected void onLoad() {
-		title = DOM.createDiv();
-		title.addClassName("title");
-		getElement().appendChild(title);
-
 		chart = DOM.createDiv();
 		chart.setId("chart-" + ((int) (Math.random() * 1000000)));
 		getElement().appendChild(chart);
@@ -306,7 +301,7 @@ public class VDCharts extends SimplePanel implements Paintable {
 			value.append("{width: '");
 			value.append(getOffsetWidth());
 			value.append("px', height: '");
-			value.append(getOffsetHeight() - title.getClientHeight());
+			value.append(getOffsetHeight());
 			value.append("px', " + options.substring(1));
 		}
 		return value.toString();
@@ -365,13 +360,6 @@ public class VDCharts extends SimplePanel implements Paintable {
 		if (uidl.hasAttribute("enableChartDataRightClickEvent")) {
 			enableChartDataRightClickEvent = uidl
 					.getBooleanAttribute("enableChartDataRightClickEvent");
-		}
-
-		if (uidl.hasAttribute("title")) {
-			String title = uidl.getStringAttribute("title");
-			if (title != null && title.length() > 0) {
-				this.title.setInnerText(title);
-			}
 		}
 
 		if (uidl.hasAttribute("idChart")) {
