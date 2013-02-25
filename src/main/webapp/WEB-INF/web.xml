@@ -23,7 +23,7 @@
 	<display-name>dCharts</display-name>
 	<context-param>
 		<param-name>productionMode</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>dCharts Application</servlet-name>
