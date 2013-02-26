@@ -35,7 +35,7 @@
 		<Vaadin-Package-Version>1</Vaadin-Package-Version>
 		<Vaadin-Widgetsets>org.dussan.vaadin.dcharts.DchartsWidgetset</Vaadin-Widgetsets>
 		<Vaadin-Addon>${project.artifactId}-${project.version}-${git.version}/${project.artifactId}-${project.version}-${git.version}.jar</Vaadin-Addon>
-		<JqPlot-Version>1.0.4r1121</JqPlot-Version>
+		<JqPlot-Version>1.0.7r1224</JqPlot-Version>
 		<!-- com.google -->
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
 		<com.google.gwt.gwt-dev>2.4.0</com.google.gwt.gwt-dev>
