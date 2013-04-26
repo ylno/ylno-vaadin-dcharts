@@ -24,7 +24,7 @@ public class BubbleDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBubbleDataMouseEnter', function(ev, data) {
 				var event = 'bubbleMouseEnter';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -34,7 +34,7 @@ public class BubbleDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBubbleDataMouseLeave', function(ev, data) {
 				var event = 'bubbleMouseLeave';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -44,7 +44,7 @@ public class BubbleDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBubbleDataClick', function(ev, data) {
 				var event = 'bubbleClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -54,7 +54,7 @@ public class BubbleDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBubbleDataRightClick', function(ev, data) {
 				var event = 'bubbleRightClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;

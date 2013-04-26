@@ -32,11 +32,11 @@ public class ChartDataHelper {
 	private static final String EVENT_SPLITTER = "_::_";
 	private static final String DATA_SPLITTER = "_:::_";
 
-	private static boolean isNumber(Object value) {
-		return (value != null && NumberUtils.isNumber(value.toString()));
+	private static boolean isNumber(String value) {
+		return (value != null && NumberUtils.isNumber(value));
 	}
 
-	private static boolean isLongNumber(Object value) {
+	private static boolean isLongNumber(String value) {
 		if (isNumber(value)) {
 			Double number = convertToDouble(value);
 			return (number == Math.floor(number));
@@ -44,32 +44,31 @@ public class ChartDataHelper {
 		return false;
 	}
 
-	private static Long converToLong(Object value) {
+	private static Long converToLong(String value) {
 		if (isNumber(value)) {
-			return Long.parseLong(value.toString());
+			return Long.parseLong(value);
 		}
 		return null;
 	}
 
-	private static Double convertToDouble(Object value) {
+	private static Double convertToDouble(String value) {
 		if (isNumber(value)) {
-			return Double.parseDouble(value.toString());
+			return Double.parseDouble(value);
 		}
 		return null;
 	}
 
-	private static List<Object> convertToArray(Object datas, String splitter) {
-		List<Object> tempData = new ArrayList<Object>();
-		if (datas.toString().contains(splitter)) {
-			tempData.addAll(Arrays.asList(datas.toString().split(splitter)));
+	private static List<Object> convertToArray(String datas, String splitter) {
+		List<String> tempData = new ArrayList<String>();
+		if (datas.contains(splitter)) {
+			tempData.addAll(Arrays.asList(datas.split(splitter)));
 		} else {
 			tempData.add(datas);
 		}
 
 		List<Object> objectData = new ArrayList<Object>();
-		for (Object data : tempData) {
-			if (!splitter.equals(DATA_SPLITTER)
-					&& data.toString().contains(DATA_SPLITTER)) {
+		for (String data : tempData) {
+			if (!splitter.equals(DATA_SPLITTER) && data.contains(DATA_SPLITTER)) {
 				objectData.add(convertToArray(data, DATA_SPLITTER));
 			} else {
 				if (isNumber(data)) {
@@ -79,21 +78,20 @@ public class ChartDataHelper {
 						objectData.add(convertToDouble(data));
 					}
 				} else {
-					objectData.add(data.toString());
+					objectData.add(data);
 				}
 			}
 		}
-
 		return objectData;
 	}
 
-	public static ChartData process(Map<String, Object> chartData) {
+	public static ChartData process(Map<String, String> chartData) {
 		try {
 			if (chartData.containsKey(ID) && chartData.containsKey(EVENT_TYPE)
 					&& chartData.containsKey(DATA)) {
-				String chartId = chartData.get(ID).toString();
+				String chartId = chartData.get(ID);
 				ChartEventType chartEventType = ChartEventType
-						.fromString(chartData.get(EVENT_TYPE).toString());
+						.fromString(chartData.get(EVENT_TYPE));
 				Long seriesIndex = null;
 				Long pointIndex = null;
 

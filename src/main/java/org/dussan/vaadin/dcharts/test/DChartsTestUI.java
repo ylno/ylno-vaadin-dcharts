@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dussan.vaadin.dcharts;
+package org.dussan.vaadin.dcharts.test;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
@@ -44,14 +45,17 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.label.CanvasAxisLabelRenderer;
 import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 
-import com.vaadin.Application;
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
-public class DChartsApplication extends Application {
+public class DChartsTestUI extends UI {
 
-	private static final long serialVersionUID = 6965636231736806289L;
+	private static final long serialVersionUID = -7077515649056486386L;
 
 	private void showNotification(String event, ChartData chartData) {
 		String caption = "<span style='color:#ff6600'>Event: " + event
@@ -87,28 +91,30 @@ public class DChartsApplication extends Application {
 		}
 
 		Notification notification = new Notification(caption,
-				description.toString(), Notification.TYPE_TRAY_NOTIFICATION);
+				description.toString(), Type.TRAY_NOTIFICATION);
 		notification.setDelayMsec(3000);
 		notification.setHtmlContentAllowed(true);
-		getMainWindow().showNotification(notification);
+		notification.show(Page.getCurrent());
 	}
 
 	@Override
-	public void init() {
-		Window mainWindow = new Window("dCharts Application");
-		setMainWindow(mainWindow);
+	protected void init(VaadinRequest request) {
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
+		setContent(layout);
+		Page.getCurrent().setTitle("dCharts Application");
 
 		DCharts chart = new DCharts();
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
-		chart.setWidth("100%");
-		chart.setHeight("250px");
+		chart.setWidth("300px");
+		chart.setHeight("300px");
 		chart.setCaption("test");
-		mainWindow.addComponent(chart);
+		layout.addComponent(chart);
 
 		Label version = new Label("dCharts version: " + DCharts.getVersion()
 				+ "  ,  dChart git version: " + DCharts.getGitVersion()
 				+ "  ,  dChart jqPlot version: " + DCharts.getJqPlotVersion());
-		mainWindow.addComponent(version);
+		layout.addComponent(version);
 
 		DataSeries dataSeries = new DataSeries().add(2000.20, 1116, 7, 10);
 
