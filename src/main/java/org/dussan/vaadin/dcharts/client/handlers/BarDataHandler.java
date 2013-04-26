@@ -24,7 +24,7 @@ public class BarDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBarDataMouseEnter', function(ev, data) {
 				var event = 'barMouseEnter';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -34,7 +34,7 @@ public class BarDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBarDataMouseLeave', function(ev, data) {
 				var event = 'barMouseLeave';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -44,7 +44,7 @@ public class BarDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBarDataClick', function(ev, data) {
 				var event = 'barClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -54,7 +54,7 @@ public class BarDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotBarDataRightClick', function(ev, data) {
 				var event = 'barRightClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;

@@ -24,7 +24,7 @@ public class LineDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotLineDataClick', function(ev, data) {
 				var event = 'lineClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -34,7 +34,7 @@ public class LineDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotLineDataRightClick', function(ev, data) {
 				var event = 'lineRightClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;

@@ -24,7 +24,7 @@ public class OhlcDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataMouseEnter', function(ev, data) {
 				var event = 'ohlcMouseEnter';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -34,7 +34,7 @@ public class OhlcDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataMouseLeave', function(ev, data) {
 				var event = 'ohlcMouseLeave';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;
@@ -44,7 +44,7 @@ public class OhlcDataHandler {
 		$wnd.jQuery($doc).ready(function($){
 			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataClick', function(ev, data) {
 				var event = 'ohlcClick';
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendMessage(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		});
 	}-*/;

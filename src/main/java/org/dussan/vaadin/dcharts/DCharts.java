@@ -17,11 +17,12 @@ package org.dussan.vaadin.dcharts;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.dussan.vaadin.dcharts.client.ui.VDCharts;
+import org.dussan.vaadin.dcharts.client.rpc.DChartsServerRpc;
+import org.dussan.vaadin.dcharts.client.state.DChartsState;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.events.ChartData;
 import org.dussan.vaadin.dcharts.events.click.ChartDataClickEvent;
@@ -37,19 +38,35 @@ import org.dussan.vaadin.dcharts.helpers.ManifestHelper;
 import org.dussan.vaadin.dcharts.options.Options;
 
 import com.google.gwt.event.shared.HandlerManager;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.ClientWidget;
-import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.VerticalLayout;
 
-@ClientWidget(VDCharts.class)
-public class DCharts extends AbstractComponent {
+public class DCharts extends AbstractSingleComponentContainer {
 
 	private static final long serialVersionUID = -7224003274781707144L;
-	private HandlerManager handlerManager = null;
+	private static final int DECIMAL_SEPARATOR = 0;
+	private static final int THOUSANDS_SEPARATOR = 1;
+	private static final int DATA_SERIES = 2;
+	private static final int OPTIONS = 3;
+	private static final int SHOW_CHART = 4;
+	private static final int REPLOT_CHART = 5;
+	private static final int REFRESH_CHART = 6;
+	private static final int MARGIN_TOP = 7;
+	private static final int MARGIN_RIGHT = 8;
+	private static final int MARGIN_BOTTOM = 9;
+	private static final int MARGIN_LEFT = 10;
+	private static final int MOUSE_ENTER_EVENT = 11;
+	private static final int MOUSE_LEAVE_EVENT = 12;
+	private static final int CLICK_EVENT = 13;
+	private static final int RIGHT_CLICK_EVENT = 14;
 
-	private boolean showChart = false;
+	private Map<Integer, String> chartData = null;
+	private HandlerManager handlerManager = null;
+	private DataSeries dataSeries = null;
+	private Options options = null;
+
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
 	private int marginTop = 0;
@@ -57,299 +74,76 @@ public class DCharts extends AbstractComponent {
 	private int marginBottom = 0;
 	private int marginLeft = 0;
 
-	private String idChart = null;
-	private DataSeries dataSeries = null;
-	private Options options = null;
-
 	private Boolean enableChartDataMouseEnterEvent = null;
 	private Boolean enableChartDataMouseLeaveEvent = null;
 	private Boolean enableChartDataClickEvent = null;
 	private Boolean enableChartDataRightClickEvent = null;
 
 	public DCharts() {
-		// don't remove: it define dynamic widget's width
-		setWidth("100%");
-		idChart = "dCharts" + (new Date().getTime());
 		handlerManager = new HandlerManager(this);
-
-		// enable/disable mouse events
 		enableChartDataMouseEnterEvent = false;
 		enableChartDataMouseLeaveEvent = false;
 		enableChartDataClickEvent = false;
 		enableChartDataRightClickEvent = false;
+		chartData = new HashMap<Integer, String>();
+
+		setId("aaaaaaaaa");
+		setSizeFull();
+		addChartContainer();
+		registerRpc(new DChartsServerRpc() {
+			private static final long serialVersionUID = -3805014254043430235L;
+
+			@Override
+			public void onEventFired(Map<String, String> eventData) {
+				processEvent(eventData);
+			}
+		});
 	}
 
 	public DCharts(String caption, String idChart, DataSeries dataSeries,
 			Options options) {
-		super();
+		this();
 		setCaption(caption);
-		this.idChart = idChart;
 		this.dataSeries = dataSeries;
 		this.options = options;
 	}
 
 	public DCharts(String caption, DataSeries dataSeries, Options options) {
-		super();
+		this();
 		setCaption(caption);
 		this.dataSeries = dataSeries;
 		this.options = options;
 	}
 
 	public DCharts(DataSeries dataSeries, Options options) {
-		super();
+		this();
 		this.dataSeries = dataSeries;
 		this.options = options;
 	}
 
 	public DCharts(String caption, DataSeries dataSeries) {
-		super();
+		this();
 		setCaption(caption);
 		this.dataSeries = dataSeries;
 	}
 
 	public DCharts(DataSeries dataSeries) {
-		super();
+		this();
 		this.dataSeries = dataSeries;
 	}
 
-	public static String getVersion() {
-		if (ManifestHelper.getManifest() != null) {
-			return ManifestHelper.getManifest().getMainAttributes()
-					.getValue("Implementation-Version");
-		}
-		return null;
+	private void addChartContainer() {
+		VerticalLayout container = new VerticalLayout();
+		container.setSizeFull();
+		container.setId("dCharts-"
+				+ ((long) (Math.random() * 10000000000000000L)));
+		setContent(container);
+		markAsDirty();
 	}
 
-	public static String getGitVersion() {
-		if (ManifestHelper.getManifest() != null) {
-			return ManifestHelper.getManifest().getMainAttributes()
-					.getValue("Git-Version");
-		}
-		return null;
-	}
-
-	public static String getJqPlotVersion() {
-		if (ManifestHelper.getManifest() != null) {
-			return ManifestHelper.getManifest().getMainAttributes()
-					.getValue("JqPlot-Version");
-		}
-		return null;
-	}
-
-	public String getIdChart() {
-		return idChart;
-	}
-
-	public DCharts setIdChart(String idChart) {
-		this.idChart = idChart;
-		return this;
-	}
-
-	public void autoSelectDecimalAndThousandsSeparator(Locale locale) {
-		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
-				.getNumberInstance(locale)).getDecimalFormatSymbols()
-				.getDecimalSeparator());
-		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
-				.getNumberInstance(locale)).getDecimalFormatSymbols()
-				.getGroupingSeparator());
-	}
-
-	public void autoSelectDecimalSeparator(Locale locale) {
-		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
-				.getNumberInstance(locale)).getDecimalFormatSymbols()
-				.getDecimalSeparator());
-	}
-
-	public void autoSelectThousandsSeparator(Locale locale) {
-		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
-				.getNumberInstance(locale)).getDecimalFormatSymbols()
-				.getGroupingSeparator());
-	}
-
-	public String getDecimalSeparator() {
-		return decimalSeparator;
-	}
-
-	public void setDecimalSeparator(String decimalSeparator) {
-		this.decimalSeparator = decimalSeparator;
-	}
-
-	public String getThousandsSeparator() {
-		return thousandsSeparator;
-	}
-
-	public void setThousandsSeparator(String thousandsSeparator) {
-		this.thousandsSeparator = thousandsSeparator;
-	}
-
-	public DCharts setMargins(int marginTop, int marginRight, int marginBottom,
-			int marginLeft) {
-		this.marginTop = marginTop;
-		this.marginRight = marginRight;
-		this.marginBottom = marginBottom;
-		this.marginLeft = marginLeft;
-		return this;
-	}
-
-	public int getMarginTop() {
-		return marginTop;
-	}
-
-	public DCharts setMarginTop(int marginTop) {
-		this.marginTop = marginTop;
-		return this;
-	}
-
-	public int getMarginRight() {
-		return marginRight;
-	}
-
-	public DCharts setMarginRight(int marginRight) {
-		this.marginRight = marginRight;
-		return this;
-	}
-
-	public int getMarginBottom() {
-		return marginBottom;
-	}
-
-	public DCharts setMarginBottom(int marginBottom) {
-		this.marginBottom = marginBottom;
-		return this;
-	}
-
-	public int getMarginLeft() {
-		return marginLeft;
-	}
-
-	public DCharts setMarginLeft(int marginLeft) {
-		this.marginLeft = marginLeft;
-		return this;
-	}
-
-	public DataSeries getDataSeries() {
-		return dataSeries;
-	}
-
-	public DCharts setDataSeries(DataSeries dataSeries) {
-		this.dataSeries = dataSeries;
-		return this;
-	}
-
-	public Options getOptions() {
-		return options;
-	}
-
-	public DCharts setOptions(Options options) {
-		this.options = options;
-		return this;
-	}
-
-	public boolean isEnableChartDataMouseEnterEvent() {
-		return enableChartDataMouseEnterEvent;
-	}
-
-	public void setEnableChartDataMouseEnterEvent(
-			boolean enableChartDataMouseEnterEvent) {
-		this.enableChartDataMouseEnterEvent = enableChartDataMouseEnterEvent;
-	}
-
-	public boolean isEnableChartDataMouseLeaveEvent() {
-		return enableChartDataMouseLeaveEvent;
-	}
-
-	public void setEnableChartDataMouseLeaveEvent(
-			boolean enableChartDataMouseLeaveEvent) {
-		this.enableChartDataMouseLeaveEvent = enableChartDataMouseLeaveEvent;
-	}
-
-	public boolean isEnableChartDataClickEvent() {
-		return enableChartDataClickEvent;
-	}
-
-	public void setEnableChartDataClickEvent(boolean enableChartDataClickEvent) {
-		this.enableChartDataClickEvent = enableChartDataClickEvent;
-	}
-
-	public boolean isEnableChartDataRightClickEvent() {
-		return enableChartDataRightClickEvent;
-	}
-
-	public void setEnableChartDataRightClickEvent(
-			boolean enableChartDataRightClickEvent) {
-		this.enableChartDataRightClickEvent = enableChartDataRightClickEvent;
-	}
-
-	public DCharts show() {
-		this.showChart = true;
-		if (!showChart
-				|| (showChart && dataSeries != null && !dataSeries.isEmpty())) {
-			requestRepaint();
-		}
-		return this;
-	}
-
-	public DCharts hide() {
-		this.showChart = false;
-		requestRepaint();
-		return this;
-	}
-
-	@Override
-	public void paintContent(PaintTarget target) throws PaintException {
-		super.paintContent(target);
-		if (showChart) {
-			target.addAttribute("showChart", (boolean) showChart);
-			target.addAttribute("marginTop", marginTop);
-			target.addAttribute("marginRight", marginRight);
-			target.addAttribute("marginBottom", marginBottom);
-			target.addAttribute("marginLeft", marginLeft);
-
-			target.addAttribute("enableChartDataMouseEnterEvent",
-					isEnableChartDataMouseEnterEvent());
-			target.addAttribute("enableChartDataMouseLeaveEvent",
-					isEnableChartDataMouseLeaveEvent());
-			target.addAttribute("enableChartDataClickEvent",
-					isEnableChartDataClickEvent());
-			target.addAttribute("enableChartDataRightClickEvent",
-					isEnableChartDataRightClickEvent());
-
-			if (idChart != null && idChart.length() > 0) {
-				target.addAttribute("idChart", (String) idChart);
-			}
-
-			if (decimalSeparator != null && decimalSeparator.length() > 0) {
-				target.addAttribute("decimalSeparator", decimalSeparator);
-			}
-
-			if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
-				target.addAttribute("thousandsSeparator", thousandsSeparator);
-			}
-
-			if (dataSeries != null && !dataSeries.isEmpty()) {
-				target.addAttribute("dataSeries",
-						(String) dataSeries.getValue());
-			}
-
-			if (options != null && !options.isEmpty()) {
-				target.addAttribute("options", (String) options.getValue());
-			}
-		} else if (!showChart) {
-			target.addAttribute("showChart", (boolean) showChart);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void changeVariables(Object source, Map<String, Object> variables) {
-		super.changeVariables(source, variables);
-		Map<String, Object> request = (Map<String, Object>) variables
-				.get("request");
-
-		if (request == null || request.isEmpty()) {
-			requestRepaint();
-		} else {
-			ChartData chartData = ChartDataHelper.process(request);
+	private void processEvent(Map<String, String> eventData) {
+		if (eventData != null && !eventData.isEmpty()) {
+			ChartData chartData = ChartDataHelper.process(eventData);
 			if (chartData.getSeriesIndex() != null
 					&& chartData.getPointIndex() != null) {
 				chartData.setOriginData(dataSeries.getSeriesValue(chartData
@@ -402,12 +196,241 @@ public class DCharts extends AbstractComponent {
 				default:
 					String caption = "UNKNOWN EVENT";
 					String description = "Cannot process unknown chart data event!";
-					getWindow().showNotification(caption, description,
-							Notification.TYPE_ERROR_MESSAGE);
+					Notification.show(caption, description, Type.ERROR_MESSAGE);
 					break;
 				}
 			}
 		}
+	}
+
+	@Override
+	protected DChartsState getState() {
+		return (DChartsState) super.getState();
+	}
+
+	@Override
+	public void beforeClientResponse(boolean initial) {
+		super.beforeClientResponse(initial);
+		if (chartData != null && chartData.size() > 0) {
+			Map<Integer, String> cloneData = new HashMap<Integer, String>();
+			cloneData.putAll(chartData);
+			getState().setChartData(cloneData);
+			chartData.clear();
+		}
+	}
+
+	public static String getVersion() {
+		if (ManifestHelper.getManifest() != null) {
+			return ManifestHelper.getManifest().getMainAttributes()
+					.getValue("Implementation-Version");
+		}
+		return null;
+	}
+
+	public static String getGitVersion() {
+		if (ManifestHelper.getManifest() != null) {
+			return ManifestHelper.getManifest().getMainAttributes()
+					.getValue("Git-Version");
+		}
+		return null;
+	}
+
+	public static String getJqPlotVersion() {
+		if (ManifestHelper.getManifest() != null) {
+			return ManifestHelper.getManifest().getMainAttributes()
+					.getValue("JqPlot-Version");
+		}
+		return null;
+	}
+
+	public void autoSelectDecimalAndThousandsSeparator(Locale locale) {
+		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getDecimalSeparator());
+		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getGroupingSeparator());
+	}
+
+	public void autoSelectDecimalSeparator(Locale locale) {
+		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getDecimalSeparator());
+	}
+
+	public void autoSelectThousandsSeparator(Locale locale) {
+		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
+				.getNumberInstance(locale)).getDecimalFormatSymbols()
+				.getGroupingSeparator());
+	}
+
+	public String getDecimalSeparator() {
+		return decimalSeparator;
+	}
+
+	public void setDecimalSeparator(String decimalSeparator) {
+		if (decimalSeparator != null && decimalSeparator.length() > 0) {
+			this.decimalSeparator = decimalSeparator;
+			chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
+		}
+	}
+
+	public String getThousandsSeparator() {
+		return thousandsSeparator;
+	}
+
+	public void setThousandsSeparator(String thousandsSeparator) {
+		this.thousandsSeparator = thousandsSeparator;
+		if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
+			this.thousandsSeparator = thousandsSeparator;
+			chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
+		}
+
+	}
+
+	public DCharts setMargins(int marginTop, int marginRight, int marginBottom,
+			int marginLeft) {
+		this.marginTop = marginTop;
+		this.marginRight = marginRight;
+		this.marginBottom = marginBottom;
+		this.marginLeft = marginLeft;
+		chartData.put(MARGIN_TOP, Integer.toString(marginTop));
+		chartData.put(MARGIN_RIGHT, Integer.toString(marginRight));
+		chartData.put(MARGIN_BOTTOM, Integer.toString(marginBottom));
+		chartData.put(MARGIN_LEFT, Integer.toString(marginLeft));
+		return this;
+	}
+
+	public int getMarginTop() {
+		return marginTop;
+	}
+
+	public DCharts setMarginTop(int marginTop) {
+		this.marginTop = marginTop;
+		chartData.put(MARGIN_TOP, Integer.toString(marginTop));
+		return this;
+	}
+
+	public int getMarginRight() {
+		return marginRight;
+	}
+
+	public DCharts setMarginRight(int marginRight) {
+		this.marginRight = marginRight;
+		chartData.put(MARGIN_RIGHT, Integer.toString(marginRight));
+		return this;
+	}
+
+	public int getMarginBottom() {
+		return marginBottom;
+	}
+
+	public DCharts setMarginBottom(int marginBottom) {
+		this.marginBottom = marginBottom;
+		chartData.put(MARGIN_BOTTOM, Integer.toString(marginBottom));
+		return this;
+	}
+
+	public int getMarginLeft() {
+		return marginLeft;
+	}
+
+	public DCharts setMarginLeft(int marginLeft) {
+		this.marginLeft = marginLeft;
+		chartData.put(MARGIN_LEFT, Integer.toString(marginLeft));
+		return this;
+	}
+
+	public DataSeries getDataSeries() {
+		return dataSeries;
+	}
+
+	public DCharts setDataSeries(DataSeries dataSeries) {
+		if (dataSeries != null && !dataSeries.isEmpty()) {
+			this.dataSeries = dataSeries;
+			chartData.put(DATA_SERIES, dataSeries.getValue());
+		}
+		return this;
+	}
+
+	public Options getOptions() {
+		return options;
+	}
+
+	public DCharts setOptions(Options options) {
+		if (options != null && !options.isEmpty()) {
+			this.options = options;
+			chartData.put(OPTIONS, options.getValue());
+		}
+		return this;
+	}
+
+	public boolean isEnableChartDataMouseEnterEvent() {
+		return enableChartDataMouseEnterEvent;
+	}
+
+	public void setEnableChartDataMouseEnterEvent(
+			boolean enableChartDataMouseEnterEvent) {
+		this.enableChartDataMouseEnterEvent = enableChartDataMouseEnterEvent;
+		chartData.put(MOUSE_ENTER_EVENT,
+				Boolean.toString(enableChartDataMouseEnterEvent));
+	}
+
+	public boolean isEnableChartDataMouseLeaveEvent() {
+		return enableChartDataMouseLeaveEvent;
+	}
+
+	public void setEnableChartDataMouseLeaveEvent(
+			boolean enableChartDataMouseLeaveEvent) {
+		this.enableChartDataMouseLeaveEvent = enableChartDataMouseLeaveEvent;
+		chartData.put(MOUSE_LEAVE_EVENT,
+				Boolean.toString(enableChartDataMouseLeaveEvent));
+	}
+
+	public boolean isEnableChartDataClickEvent() {
+		return enableChartDataClickEvent;
+	}
+
+	public void setEnableChartDataClickEvent(boolean enableChartDataClickEvent) {
+		this.enableChartDataClickEvent = enableChartDataClickEvent;
+		chartData.put(CLICK_EVENT, Boolean.toString(enableChartDataClickEvent));
+	}
+
+	public boolean isEnableChartDataRightClickEvent() {
+		return enableChartDataRightClickEvent;
+	}
+
+	public void setEnableChartDataRightClickEvent(
+			boolean enableChartDataRightClickEvent) {
+		this.enableChartDataRightClickEvent = enableChartDataRightClickEvent;
+		chartData.put(RIGHT_CLICK_EVENT,
+				Boolean.toString(enableChartDataRightClickEvent));
+	}
+
+	public DCharts show() {
+		if (dataSeries != null && !dataSeries.isEmpty()) {
+			chartData.put(SHOW_CHART, Boolean.TRUE.toString());
+			markAsDirty();
+		}
+		return this;
+	}
+
+	public DCharts hide() {
+		chartData.put(SHOW_CHART, Boolean.FALSE.toString());
+		markAsDirty();
+		return this;
+	}
+
+	public DCharts replot(boolean resetAxes) {
+		chartData.put(REPLOT_CHART, Boolean.toString(resetAxes));
+		markAsDirty();
+		return this;
+	}
+
+	public DCharts refresh() {
+		chartData.put(REFRESH_CHART, Boolean.TRUE.toString());
+		markAsDirty();
+		return this;
 	}
 
 	public void addHandler(ChartDataMouseEnterHandler handler) {

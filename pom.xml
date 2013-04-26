@@ -38,17 +38,16 @@
 		<JqPlot-Version>1.0.7r1224</JqPlot-Version>
 		<!-- com.google -->
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
-		<com.google.gwt.gwt-dev>2.4.0</com.google.gwt.gwt-dev>
-		<com.google.gwt.gwt-user>2.4.0</com.google.gwt.gwt-user>
 		<!-- com.vaadin -->
-		<com.vaadin.vaadin>6.8.7</com.vaadin.vaadin>
-		<com.vaadin.vaadin-maven-plugin>1.0.2</com.vaadin.vaadin-maven-plugin>
-		<!-- javax.validation -->
+		<com.vaadin.vaadin>7.0.5</com.vaadin.vaadin>
+		<!-- javax -->
+		<javax.servlet.servlet-api>2.4</javax.servlet.servlet-api>
 		<javax.validation.validation-api>1.0.0.GA</javax.validation.validation-api>
 		<!-- org.apache -->
 		<org.apache.commons.commons-lang3>3.1</org.apache.commons.commons-lang3>
 		<org.apache.maven.plugins.maven-antrun-plugin>1.7</org.apache.maven.plugins.maven-antrun-plugin>
 		<org.apache.maven.plugins.maven-assembly-plugin>2.3</org.apache.maven.plugins.maven-assembly-plugin>
+		<org.apache.maven.plugins.maven-clean-plugin>2.4.1</org.apache.maven.plugins.maven-clean-plugin>
 		<org.apache.maven.plugins.maven-compiler-plugin>2.3.2</org.apache.maven.plugins.maven-compiler-plugin>
 		<org.apache.maven.plugins.maven-jar-plugin>2.4</org.apache.maven.plugins.maven-jar-plugin>
 		<org.apache.maven.wagon.wagon-ftp>2.2</org.apache.maven.wagon.wagon-ftp>
@@ -95,14 +94,27 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin</artifactId>
+			<artifactId>vaadin-server</artifactId>
 			<version>${com.vaadin.vaadin}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>${com.google.gwt.gwt-user}</version>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client-compiled</artifactId>
+			<version>${com.vaadin.vaadin}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-client</artifactId>
+			<version>${com.vaadin.vaadin}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+			<version>${com.vaadin.vaadin}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -122,6 +134,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${org.apache.commons.commons-lang3}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${javax.servlet.servlet-api}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -222,21 +240,21 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-					<!-- Copy web.xml to build directory if want to run application in hosted mode -->
-                    <execution>
-	                    <id>xmlCopy</id>
-	                    <phase>compile</phase>
-	                    <goals>
-	                        <goal>run</goal>
-	                    </goals>
-	                    <configuration>
-	                        <tasks>
-	                            <copy
-	                                file="${basedir}/src/main/webapp/WEB-INF/web.xml"
-	                                toFile="${project.build.directory}/${project.artifactId}/WEB-INF/web.xml" />
-	                        </tasks>
-	                    </configuration>
-                     </execution>
+					<!-- Copy web.xml to build directory if want to run application in hosted 
+						mode -->
+					<execution>
+						<id>xmlCopy</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<copy file="${basedir}/src/main/webapp/WEB-INF/web.xml"
+									toFile="${project.build.directory}/${project.artifactId}/WEB-INF/web.xml" />
+							</tasks>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 
@@ -293,7 +311,7 @@
 				<version>${org.apache.maven.plugins.maven-jar-plugin}</version>
 				<configuration>
 					<excludes>
-						<exclude>**/org/dussan/vaadin/dcharts/DChartsApplication.*</exclude>
+						<exclude>**/org/dussan/vaadin/dcharts/test/**</exclude>
 					</excludes>
 					<archive>
 						<index>true</index>
@@ -314,50 +332,42 @@
 				</configuration>
 			</plugin>
 
-			<!-- Compiles your custom GWT components with the GWT compiler -->
+			<!-- As we are doing "inplace" GWT compilation, ensure the widgetset -->
+			<!-- directory is cleaned properly -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${org.codehaus.mojo.gwt-maven-plugin}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>${org.apache.maven.plugins.maven-clean-plugin}</version>
 				<configuration>
-					<webappDirectory>${project.build.directory}/${project.artifactId}/VAADIN/widgetsets</webappDirectory>
-					<hostedWebapp>${project.build.directory}/${project.artifactId}</hostedWebapp>
-					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-					<runTarget>${project.artifactId}</runTarget>
-					<noServer>false</noServer>
-					<port>8080</port>
-					<soyc>false</soyc>
+					<filesets>
+						<fileset>
+							<directory>src/main/gwt-unitCache</directory>
+						</fileset>
+						<fileset>
+							<directory>src/main/webapp/VAADIN</directory>
+						</fileset>
+						<fileset>
+							<directory>src/main/webapp/org.dussan.vaadin.dcharts.DchartsWidgetset</directory>
+						</fileset>
+						<fileset>
+							<directory>src/main/webapp/WEB-INF/deploy</directory>
+						</fileset>
+					</filesets>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>resources</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-dev</artifactId>
-						<version>${com.google.gwt.gwt-dev}</version>
-					</dependency>
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-user</artifactId>
-						<version>${com.google.gwt.gwt-user}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 			<plugin>
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
-				<version>${com.vaadin.vaadin-maven-plugin}</version>
+				<!-- <version>${com.vaadin.vaadin}</version> -->
 				<executions>
 					<execution>
-						<configuration></configuration>
+						<configuration>
+							<validateOnly>false</validateOnly>
+						</configuration>
 						<goals>
+							<goal>compile</goal>
+							<goal>resources</goal>
 							<goal>update-widgetset</goal>
 						</goals>
 					</execution>
@@ -413,6 +423,39 @@
 
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>com.vaadin</groupId>
+					<artifactId>vaadin-maven-plugin</artifactId>
+					<version>${com.vaadin.vaadin}</version>
+					<configuration>
+						<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+						<hostedWebapp>src/main/webapp</hostedWebapp>
+						<modules>
+							<module>org.dussan.vaadin.dcharts.DchartsWidgetset</module>
+						</modules>
+						<extraJvmArgs>-Xmx1024M -Xss1024k -Xms1024M</extraJvmArgs>
+						<runTarget>${project.artifactId}</runTarget>
+						<noServer>true</noServer>
+						<port>8080</port>
+						<force>true</force>
+						<strict>true</strict>
+						<style>OBF</style>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>debug</goal>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<goal>debug</goal>
+								<goal>run</goal>
+								<validateOnly>true</validateOnly>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -447,10 +490,10 @@
 										<artifactId>
 											vaadin-maven-plugin
 										</artifactId>
-										<versionRange>
-											[1.0.2]
-										</versionRange>
+										<versionRange>[7.0.3,)</versionRange>
 										<goals>
+											<goal>compile</goal>
+											<goal>resources</goal>
 											<goal>
 												update-widgetset
 											</goal>

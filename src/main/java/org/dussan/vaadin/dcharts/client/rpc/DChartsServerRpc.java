@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.v-dcharts {
-	background-color: transparent !important;
-	color: #000000;
-	cursor: default;
-	overflow: hidden;
-}
+package org.dussan.vaadin.dcharts.client.rpc;
 
-.jqplot-target {
-    font-size: 1.2em !important;
+import java.util.Map;
+
+import com.vaadin.shared.communication.ServerRpc;
+
+public interface DChartsServerRpc extends ServerRpc {
+
+	public void onEventFired(Map<String, String> eventData);
+
 }

@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.v-dcharts {
-	background-color: transparent !important;
-	color: #000000;
-	cursor: default;
-	overflow: hidden;
-}
+package org.dussan.vaadin.dcharts.metadata;
 
-.jqplot-target {
-    font-size: 1.2em !important;
+public enum LabelPositions {
+
+	BOTTOM("bottom"), //
+	INSIDE("inside");
+
+	private String position;
+
+	private LabelPositions(String position) {
+		this.position = position;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	@Override
+	public String toString() {
+		return getPosition();
+	}
+
 }

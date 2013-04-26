@@ -20,27 +20,32 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
-	<display-name>dCharts</display-name>
+	<display-name>dCharts Test Application</display-name>
+
+
 	<context-param>
+		<description>Vaadin production mode</description>
 		<param-name>productionMode</param-name>
 		<param-value>false</param-value>
 	</context-param>
+
 	<servlet>
-		<servlet-name>dCharts Application</servlet-name>
-		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<servlet-name>Vaadin Application Servlet</servlet-name>
+		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
-			<param-name>application</param-name>
-			<param-value>org.dussan.vaadin.dcharts.DChartsApplication</param-value>
+			<description>dCharts UI Test</description>
+			<param-name>UI</param-name>
+			<param-value>org.dussan.vaadin.dcharts.test.DChartsTestUI</param-value>
 		</init-param>
 		<init-param>
-			<description>
-			Application widgetset</description>
+			<description>dCharts Widgetset</description>
 			<param-name>widgetset</param-name>
 			<param-value>org.dussan.vaadin.dcharts.DchartsWidgetset</param-value>
 		</init-param>
 	</servlet>
+
 	<servlet-mapping>
-		<servlet-name>dCharts Application</servlet-name>
+		<servlet-name>Vaadin Application Servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 </web-app>

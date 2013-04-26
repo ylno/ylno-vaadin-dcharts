@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.v-dcharts {
-	color: #000000;
-	background-color: transparent;
-	cursor: default;
-	overflow: hidden;
-	font-size: 1.2em;
-}
+package org.dussan.vaadin.dcharts.client.state;
 
-.v-dcharts .title {
-	font-size: 12px;
+import java.util.Map;
+
+import com.vaadin.shared.AbstractComponentState;
+
+public class DChartsState extends AbstractComponentState {
+
+	private static final long serialVersionUID = -7980416855595920235L;
+	private Map<Integer, String> chartData = null;
+
+	public Map<Integer, String> getChartData() {
+		return chartData;
+	}
+
+	public void setChartData(Map<Integer, String> chartData) {
+		this.chartData = chartData;
+	}
+
 }

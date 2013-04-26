@@ -18,7 +18,8 @@ package org.dussan.vaadin.dcharts.metadata.renderers;
 public enum TickRenderers {
 
 	AXIS("$wnd.jQuery.jqplot.AxisTickRenderer"), //
-	CANVAS("$wnd.jQuery.jqplot.CanvasAxisTickRenderer");
+	CANVAS("$wnd.jQuery.jqplot.CanvasAxisTickRenderer"), //
+	METER_GAUGE("$wnd.jQuery.jqplot.MeterGaugeTickRenderer");
 
 	private String renderer;
 
