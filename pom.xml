@@ -54,7 +54,6 @@
 		<!-- org.codehaus.mojo -->
 		<org.codehaus.mojo.exec-maven-plugin>1.2.1</org.codehaus.mojo.exec-maven-plugin>
 		<org.codehaus.mojo.gmaven-plugin>1.0</org.codehaus.mojo.gmaven-plugin>
-		<org.codehaus.mojo.gwt-maven-plugin>2.4.0</org.codehaus.mojo.gwt-maven-plugin>
 		<org.codehaus.mojo.properties-maven-plugin>1.0-alpha-2</org.codehaus.mojo.properties-maven-plugin>
 		<org.codehaus.mojo.wagon-maven-plugin>1.0-beta-4</org.codehaus.mojo.wagon-maven-plugin>
 		<!-- org.mortbay.jetty -->
@@ -575,25 +574,6 @@
 										</versionRange>
 										<goals>
 											<goal>exec</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											gwt-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.4.0]
-										</versionRange>
-										<goals>
-											<goal>resources</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
