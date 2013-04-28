@@ -32,38 +32,55 @@ import org.dussan.vaadin.dcharts.client.js.injector.JavaScriptInjector;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.ui.VHorizontalLayout;
 
 public class VDCharts extends VHorizontalLayout implements
 		HasValueChangeHandlers<Object[]> {
 
-	private static final int DECIMAL_SEPARATOR = 0;
-	private static final int THOUSANDS_SEPARATOR = 1;
-	private static final int DATA_SERIES = 2;
-	private static final int OPTIONS = 3;
-	private static final int SHOW_CHART = 4;
-	private static final int REPLOT_CHART = 5;
-	private static final int REFRESH_CHART = 6;
-	private static final int MARGIN_TOP = 7;
-	private static final int MARGIN_RIGHT = 8;
-	private static final int MARGIN_BOTTOM = 9;
-	private static final int MARGIN_LEFT = 10;
-	private static final int MOUSE_ENTER_EVENT = 11;
-	private static final int MOUSE_LEAVE_EVENT = 12;
-	private static final int CLICK_EVENT = 13;
-	private static final int RIGHT_CLICK_EVENT = 14;
+	private static final int ID = 0;
+	private static final int DECIMAL_SEPARATOR = 1;
+	private static final int THOUSANDS_SEPARATOR = 2;
+	private static final int DATA_SERIES = 3;
+	private static final int OPTIONS = 4;
+	private static final int SHOW_CHART = 5;
+	private static final int REPLOT_CHART_CLEAR = 6;
+	private static final int REPLOT_CHART_RESET_AXES = 7;
+	private static final int REFRESH_CHART = 8;
+	private static final int MARGIN_TOP = 9;
+	private static final int MARGIN_RIGHT = 10;
+	private static final int MARGIN_BOTTOM = 11;
+	private static final int MARGIN_LEFT = 12;
+	private static final int MOUSE_ENTER_EVENT = 13;
+	private static final int MOUSE_LEAVE_EVENT = 14;
+	private static final int CLICK_EVENT = 15;
+	private static final int RIGHT_CLICK_EVENT = 16;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
+
+	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_LEFT = 0;
+	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT = 1;
+	private static final int DOWNLOAD_BUTTON_LOCATION_BOTTOM_LEFT = 2;
+	private static final int DOWNLOAD_BUTTON_LOCATION_BOTTOM_RIGHT = 3;
 
 	private Map<Integer, String> chartData = null;
 	private Element chart = null;
 	private EventObject eventObject = null;
+	private EventObject chartImageEventObject = null;
 
 	private Boolean showChart = null;
+	private Boolean downloadButtonEnabled = null;
+	private Integer downloadButtonLocation = null;
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
 	private String dataSeries = null;
@@ -75,6 +92,8 @@ public class VDCharts extends VHorizontalLayout implements
 	private Boolean enableChartDataRightClickEvent = null;
 
 	public VDCharts() {
+		downloadButtonEnabled = false;
+		downloadButtonLocation = DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT;
 		decimalSeparator = ".";
 		thousandsSeparator = ",";
 		setStyleName("v-dcharts");
@@ -84,6 +103,30 @@ public class VDCharts extends VHorizontalLayout implements
 		enableChartDataMouseLeaveEvent = false;
 		enableChartDataClickEvent = false;
 		enableChartDataRightClickEvent = false;
+	}
+
+	private VDCharts getThis() {
+		return this;
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		Event.addNativePreviewHandler(new NativePreviewHandler() {
+			@Override
+			public void onPreviewNativeEvent(NativePreviewEvent event) {
+				switch (event.getTypeInt()) {
+				case Event.ONCLICK:
+				case Event.ONDBLCLICK:
+					if (chart != null) {
+						sendChartImageToServer(getThis(), chart.getId());
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		});
 	}
 
 	private void loadJQueryLibrary() {
@@ -105,24 +148,48 @@ public class VDCharts extends VHorizontalLayout implements
 		JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer().getText());
 	}
 
-	private static native void showChart(String id, String dataSeries,
-			String options, String decimalSeparator, String thousandsSeparator)
+	private static native void showChart(VDCharts c, String id,
+			String dataSeries, String options, String decimalSeparator,
+			String thousandsSeparator)
 	/*-{
+	 	if(typeof $wnd.chart === 'undefined') {
+	 		$wnd.chart={};
+	 	}
 	 	eval("var _options="+options+";");
 	 	eval("var _dataSeries="+dataSeries+";");
 		$wnd.jQuery(document).ready(function($){
 			$wnd.jQuery('#'.concat(id)).empty();
 			$.jqplot.sprintf.decimalMark=decimalSeparator;
 			$.jqplot.sprintf.thousandsSeparator=thousandsSeparator;
-			$wnd.chart=$.jqplot(id, _dataSeries, _options);
+			$wnd.chart[id]=$.jqplot(id, _dataSeries, _options);
+			// send chart raw image to server
+			var event = 'rawImageData';
+			var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
+			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 		});
 	}-*/;
 
-	private static native void replotChart(String id, Boolean reset)
+	private static native void replotChart(VDCharts c, String id,
+			Boolean clearChart, Boolean resetChartAxes)
 	/*-{
-		if($wnd.chart){
+	 	if($wnd.chart[id]) {
 			$wnd.jQuery(document).ready(function($){
-				$wnd.chart.replot({resetAxes: reset});
+				$wnd.chart[id].replot({clear:clearChart,resetAxes:resetChartAxes});
+				// send chart raw image to server
+				var event = 'rawImageData';
+				var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+			});
+		}
+	}-*/;
+
+	private static native void sendChartImageToServer(VDCharts c, String id)
+	/*-{
+	 	if($wnd.chart[id]) {
+			$wnd.jQuery(document).ready(function($){
+				var event = 'rawImageData';
+				var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
+				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
 		}
 	}-*/;
@@ -290,31 +357,39 @@ public class VDCharts extends VHorizontalLayout implements
 	}
 
 	private String setChartDimensions(String options) {
+		Element button = DOM.getElementById(chart.getId() + "-button");
+		int buttonHeight = button != null ? button.getOffsetHeight() : 0;
 		StringBuilder value = new StringBuilder();
 		if (options != null && options.length() > 0) {
 			value.append("{width: '");
 			value.append(getOffsetWidth());
 			value.append("px', height: '");
-			if (getOffsetHeight() > 0) {
-				value.append(getOffsetHeight() + "px', ");
-			} else {
-				value.append(getParent().getOffsetHeight() + "px', ");
-			}
+			value.append((getOffsetHeight() - buttonHeight) + "px', ");
 			value.append(options.substring(1));
 		}
 		return value.toString();
 	}
 
+	private Map<String, String> getEventData(String id, String event,
+			String data) {
+		Map<String, String> eventData = new HashMap<String, String>();
+		eventData.put("id", id == null ? new String() : id);
+		eventData.put("event", event == null ? new String() : event);
+		eventData.put("data", data == null ? "" : data);
+		return eventData;
+	}
+
 	private void fireEvent(String id, String event, String data) {
-		if (eventObject == null
-				|| !eventObject.equals(new EventObject(id, event, data))) {
-			Map<String, String> eventData = new HashMap<String, String>();
-			eventData.put("id", id == null ? new String() : id);
-			eventData.put("event", event == null ? new String() : event);
-			eventData.put("data", data == null ? "" : data);
-			eventObject = new EventObject(id, event, data);
-			// send event data to server
-			EventProcessor.fireEvent(this, eventData);
+		EventObject tempEventObject = new EventObject(id, event, data);
+		if (!event.equals("rawImageData")
+				&& (eventObject == null || !eventObject.equals(tempEventObject))) {
+			eventObject = tempEventObject;
+			EventProcessor.fireEvent(this, getEventData(id, event, data));
+		} else if (downloadButtonEnabled
+				&& (chartImageEventObject == null || !chartImageEventObject
+						.equals(tempEventObject))) {
+			chartImageEventObject = tempEventObject;
+			EventProcessor.fireEvent(this, getEventData(id, event, data));
 		}
 	}
 
@@ -335,15 +410,45 @@ public class VDCharts extends VHorizontalLayout implements
 		loadJQueryLibrary();
 		loadJqPlotLibrary();
 
-		chart = getElement().getFirstChildElement();
+		chart = DOM.createDiv();
+		chart.setId(chartData.get(ID));
+		Element downloadButton = DOM.getElementById(chart.getId() + "-button");
+		if (!downloadButtonEnabled) {
+			getElement().appendChild(chart);
+			downloadButton.removeFromParent();
+		} else {
+			switch (downloadButtonLocation) {
+			case DOWNLOAD_BUTTON_LOCATION_TOP_LEFT:
+				chart.getStyle().setTop(downloadButton.getOffsetHeight(),
+						Unit.PX);
+				getElement().appendChild(chart);
+				downloadButton.getStyle().setFloat(Float.LEFT);
+				break;
+			case DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT:
+				chart.getStyle().setTop(downloadButton.getOffsetHeight(),
+						Unit.PX);
+				getElement().appendChild(chart);
+				downloadButton.getStyle().setFloat(Float.RIGHT);
+				break;
+			case DOWNLOAD_BUTTON_LOCATION_BOTTOM_LEFT:
+				getElement().insertFirst(chart);
+				downloadButton.getStyle().setFloat(Float.LEFT);
+				break;
+			case DOWNLOAD_BUTTON_LOCATION_BOTTOM_RIGHT:
+			default:
+				getElement().insertFirst(chart);
+				downloadButton.getStyle().setFloat(Float.RIGHT);
+				break;
+			}
+		}
 		processChartData(chartData);
 		chartData.clear();
 	}
 
 	public void refreshChart() {
 		if (isChartPrepared() && showChart) {
-			showChart(chart.getId(), dataSeries, options, decimalSeparator,
-					thousandsSeparator);
+			showChart(this, chart.getId(), dataSeries, options,
+					decimalSeparator, thousandsSeparator);
 		}
 	}
 
@@ -351,6 +456,16 @@ public class VDCharts extends VHorizontalLayout implements
 		if (chartData != null && chartData.size() > 0) {
 			if (!isChartPrepared()) {
 				this.chartData = chartData;
+
+				if (chartData.containsKey(DOWNLOAD_BUTTON_ENABLE)) {
+					downloadButtonEnabled = Boolean.parseBoolean(chartData
+							.get(DOWNLOAD_BUTTON_ENABLE));
+				}
+
+				if (chartData.containsKey(DOWNLOAD_BUTTON_LOCATION)) {
+					downloadButtonLocation = Integer.parseInt(chartData
+							.get(DOWNLOAD_BUTTON_LOCATION));
+				}
 			} else {
 				if (chartData.containsKey(MARGIN_TOP)
 						|| chartData.containsKey(MARGIN_BOTTOM)) {
@@ -423,16 +538,21 @@ public class VDCharts extends VHorizontalLayout implements
 					showChart = Boolean.parseBoolean(chartData.get(SHOW_CHART));
 					if (showChart) {
 						getElement().getStyle().clearDisplay();
-						showChart(chart.getId(), dataSeries, options,
+						showChart(this, chart.getId(), dataSeries, options,
 								decimalSeparator, thousandsSeparator);
 					} else {
 						getElement().getStyle().setDisplay(Display.NONE);
 					}
 				}
 
-				if (chartData.containsKey(REPLOT_CHART) && showChart) {
-					replotChart(chart.getId(),
-							Boolean.parseBoolean(chartData.get(REPLOT_CHART)));
+				if (chartData.containsKey(REPLOT_CHART_CLEAR)
+						&& chartData.containsKey(REPLOT_CHART_RESET_AXES)
+						&& showChart) {
+					boolean clear = Boolean.parseBoolean(chartData
+							.get(REPLOT_CHART_CLEAR));
+					boolean resetAxes = Boolean.parseBoolean(chartData
+							.get(REPLOT_CHART_RESET_AXES));
+					replotChart(this, chart.getId(), clear, resetAxes);
 				}
 
 				if (chartData.containsKey(REFRESH_CHART) && showChart) {
@@ -442,10 +562,6 @@ public class VDCharts extends VHorizontalLayout implements
 				}
 			}
 		}
-	}
-
-	public void a() {
-		replotChart(chart.getId(), true);
 	}
 
 }

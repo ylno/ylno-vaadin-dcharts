@@ -109,6 +109,7 @@ public class DChartsTestUI extends UI {
 		chart.setWidth("300px");
 		chart.setHeight("300px");
 		chart.setCaption("test");
+		chart.setEnableDownload(true);
 		layout.addComponent(chart);
 
 		Label version = new Label("dCharts version: " + DCharts.getVersion()

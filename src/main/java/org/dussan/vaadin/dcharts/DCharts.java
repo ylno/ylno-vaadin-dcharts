@@ -15,12 +15,15 @@
  */
 package org.dussan.vaadin.dcharts;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.dussan.vaadin.dcharts.client.rpc.DChartsServerRpc;
 import org.dussan.vaadin.dcharts.client.state.DChartsState;
 import org.dussan.vaadin.dcharts.data.DataSeries;
@@ -38,41 +41,53 @@ import org.dussan.vaadin.dcharts.helpers.ManifestHelper;
 import org.dussan.vaadin.dcharts.options.Options;
 
 import com.google.gwt.event.shared.HandlerManager;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.AbstractSingleComponentContainer;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.VerticalLayout;
 
 public class DCharts extends AbstractSingleComponentContainer {
 
 	private static final long serialVersionUID = -7224003274781707144L;
-	private static final int DECIMAL_SEPARATOR = 0;
-	private static final int THOUSANDS_SEPARATOR = 1;
-	private static final int DATA_SERIES = 2;
-	private static final int OPTIONS = 3;
-	private static final int SHOW_CHART = 4;
-	private static final int REPLOT_CHART = 5;
-	private static final int REFRESH_CHART = 6;
-	private static final int MARGIN_TOP = 7;
-	private static final int MARGIN_RIGHT = 8;
-	private static final int MARGIN_BOTTOM = 9;
-	private static final int MARGIN_LEFT = 10;
-	private static final int MOUSE_ENTER_EVENT = 11;
-	private static final int MOUSE_LEAVE_EVENT = 12;
-	private static final int CLICK_EVENT = 13;
-	private static final int RIGHT_CLICK_EVENT = 14;
+	private static final int ID = 0;
+	private static final int DECIMAL_SEPARATOR = 1;
+	private static final int THOUSANDS_SEPARATOR = 2;
+	private static final int DATA_SERIES = 3;
+	private static final int OPTIONS = 4;
+	private static final int SHOW_CHART = 5;
+	private static final int REPLOT_CHART_CLEAR = 6;
+	private static final int REPLOT_CHART_RESET_AXES = 7;
+	private static final int REFRESH_CHART = 8;
+	private static final int MARGIN_TOP = 9;
+	private static final int MARGIN_RIGHT = 10;
+	private static final int MARGIN_BOTTOM = 11;
+	private static final int MARGIN_LEFT = 12;
+	private static final int MOUSE_ENTER_EVENT = 13;
+	private static final int MOUSE_LEAVE_EVENT = 14;
+	private static final int CLICK_EVENT = 15;
+	private static final int RIGHT_CLICK_EVENT = 16;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
 
+	private byte[] chartImage = null;
 	private Map<Integer, String> chartData = null;
 	private HandlerManager handlerManager = null;
 	private DataSeries dataSeries = null;
 	private Options options = null;
+	private Button downloadButton = null;
 
+	private Boolean downloadButtonEnable = null;
+	private String downloadFilename = null;
+	private DownloadButtonLocation downloadButtonLocation = null;
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
-	private int marginTop = 0;
-	private int marginRight = 0;
-	private int marginBottom = 0;
-	private int marginLeft = 0;
+	private Integer marginTop = null;
+	private Integer marginRight = null;
+	private Integer marginBottom = null;
+	private Integer marginLeft = null;
 
 	private Boolean enableChartDataMouseEnterEvent = null;
 	private Boolean enableChartDataMouseLeaveEvent = null;
@@ -80,6 +95,15 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private Boolean enableChartDataRightClickEvent = null;
 
 	public DCharts() {
+		downloadButtonEnable = false;
+		downloadFilename = "chart";
+		downloadButtonLocation = DownloadButtonLocation.TOP_RIGHT;
+
+		marginTop = 0;
+		marginRight = 0;
+		marginBottom = 0;
+		marginLeft = 0;
+
 		handlerManager = new HandlerManager(this);
 		enableChartDataMouseEnterEvent = false;
 		enableChartDataMouseLeaveEvent = false;
@@ -87,7 +111,6 @@ public class DCharts extends AbstractSingleComponentContainer {
 		enableChartDataRightClickEvent = false;
 		chartData = new HashMap<Integer, String>();
 
-		setId("aaaaaaaaa");
 		setSizeFull();
 		addChartContainer();
 		registerRpc(new DChartsServerRpc() {
@@ -132,12 +155,32 @@ public class DCharts extends AbstractSingleComponentContainer {
 		this.dataSeries = dataSeries;
 	}
 
+	private StreamResource getChartResource() {
+		return new StreamResource(new StreamSource() {
+			private static final long serialVersionUID = -6463786579404065303L;
+
+			@Override
+			public InputStream getStream() {
+				return new ByteArrayInputStream(chartImage);
+			}
+		}, downloadFilename + ".png");
+	}
+
 	private void addChartContainer() {
-		VerticalLayout container = new VerticalLayout();
-		container.setSizeFull();
-		container.setId("dCharts-"
-				+ ((long) (Math.random() * 10000000000000000L)));
-		setContent(container);
+		String id = "dCharts-" + ((long) (Math.random() * 10000000000000000L));
+		chartData.put(ID, id);
+
+		downloadButton = new Button("Download chart");
+		downloadButton.setId(id + "-button");
+		downloadButton.addStyleName("small");
+		downloadButton.setSizeUndefined();
+		setContent(downloadButton);
+
+		FileDownloader fileDownloader = new FileDownloader(getChartResource());
+		fileDownloader.setOverrideContentType(true);
+		fileDownloader.extend(downloadButton);
+
+		setSizeFull();
 		markAsDirty();
 	}
 
@@ -190,6 +233,17 @@ public class DCharts extends AbstractSingleComponentContainer {
 				case PIE_RIGHT_CLICK:
 					handlerManager.fireEvent(new ChartDataRightClickEvent(
 							chartData));
+					break;
+
+				case RAW_IMAGE_DATA:
+					try {
+						String data = chartData.getData()[0].toString()
+								.substring("data:image/png;base64,".length());
+						chartImage = Base64.decodeBase64(data);
+						downloadButton.setEnabled(chartImage.length > 0);
+					} catch (Exception e) {
+						downloadButton.setEnabled(false);
+					}
 					break;
 
 				case NOT_DEFINED:
@@ -250,18 +304,22 @@ public class DCharts extends AbstractSingleComponentContainer {
 		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getGroupingSeparator());
+		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
+		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
 	}
 
 	public void autoSelectDecimalSeparator(Locale locale) {
 		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getDecimalSeparator());
+		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
 	}
 
 	public void autoSelectThousandsSeparator(Locale locale) {
 		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getGroupingSeparator());
+		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
 	}
 
 	public String getDecimalSeparator() {
@@ -339,6 +397,44 @@ public class DCharts extends AbstractSingleComponentContainer {
 		this.marginLeft = marginLeft;
 		chartData.put(MARGIN_LEFT, Integer.toString(marginLeft));
 		return this;
+	}
+
+	public Boolean isEnableDownload() {
+		return downloadButtonEnable;
+	}
+
+	public void setEnableDownload(boolean enable) {
+		downloadButtonEnable = enable;
+		chartData.put(DOWNLOAD_BUTTON_ENABLE, Boolean.toString(enable));
+	}
+
+	public String getDownloadFilename() {
+		return downloadFilename;
+	}
+
+	public void setDownloadFilename(String filename) {
+		if (filename != null && !filename.trim().isEmpty()) {
+			downloadFilename = filename;
+		}
+	}
+
+	public DownloadButtonLocation getDownloadButtonLocation() {
+		return downloadButtonLocation;
+	}
+
+	public void setDownloadButtonLocation(DownloadButtonLocation location) {
+		downloadButtonLocation = location;
+		chartData.put(DOWNLOAD_BUTTON_LOCATION, location.toString());
+	}
+
+	public String getDownloadButtonCaption() {
+		return downloadButton.getCaption();
+	}
+
+	public void setDownloadButtonCaption(String caption) {
+		if (caption != null && !caption.trim().isEmpty()) {
+			downloadButton.setCaption(caption);
+		}
 	}
 
 	public DataSeries getDataSeries() {
@@ -421,8 +517,9 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return this;
 	}
 
-	public DCharts replot(boolean resetAxes) {
-		chartData.put(REPLOT_CHART, Boolean.toString(resetAxes));
+	public DCharts replot(boolean clean, boolean resetAxes) {
+		chartData.put(REPLOT_CHART_CLEAR, Boolean.toString(resetAxes));
+		chartData.put(REPLOT_CHART_RESET_AXES, Boolean.toString(resetAxes));
 		markAsDirty();
 		return this;
 	}

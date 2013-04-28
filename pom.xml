@@ -5,7 +5,7 @@
 	<groupId>org.dussan.vaadin</groupId>
 	<artifactId>dcharts</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>dCharts Widget</name>
 
 	<licenses>
@@ -134,6 +134,12 @@
 			<version>${org.apache.commons.commons-lang3}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.7</version>
+			<scope>compile</scope>
+		</dependency>		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
