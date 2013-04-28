@@ -18,6 +18,7 @@ package org.dussan.vaadin.dcharts.events;
 public enum ChartEventType {
 
 	NOT_DEFINED("notDefined"), //
+	RAW_IMAGE_DATA("rawImageData"), //
 	BAR_MOUSE_ENTER("barMouseEnter"), //
 	BAR_MOUSE_LEAVE("barMouseLeave"), //
 	BAR_CLICK("barClick"), //

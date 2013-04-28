@@ -135,6 +135,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.7</version>
+			<scope>compile</scope>
+		</dependency>		
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>${javax.servlet.servlet-api}</version>
