@@ -30,6 +30,8 @@ import org.dussan.vaadin.dcharts.client.handlers.PyramidDataHandler;
 import org.dussan.vaadin.dcharts.client.js.JqPlot;
 import org.dussan.vaadin.dcharts.client.js.injector.JavaScriptInjector;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Float;
@@ -379,17 +381,25 @@ public class VDCharts extends VHorizontalLayout implements
 		return eventData;
 	}
 
-	private void fireEvent(String id, String event, String data) {
+	private void fireEvent(final String id, final String event,
+			final String data) {
 		EventObject tempEventObject = new EventObject(id, event, data);
 		if (!event.equals("rawImageData")
 				&& (eventObject == null || !eventObject.equals(tempEventObject))) {
 			eventObject = tempEventObject;
-			EventProcessor.fireEvent(this, getEventData(id, event, data));
+			EventProcessor.fireEvent(getThis(), getEventData(id, event, data));
 		} else if (downloadButtonEnabled
 				&& (chartImageEventObject == null || !chartImageEventObject
 						.equals(tempEventObject))) {
 			chartImageEventObject = tempEventObject;
-			EventProcessor.fireEvent(this, getEventData(id, event, data));
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+				@Override
+				public boolean execute() {
+					EventProcessor.fireEvent(getThis(),
+							getEventData(id, event, data));
+					return false;
+				}
+			}, 300);
 		}
 	}
 

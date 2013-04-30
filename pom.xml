@@ -40,6 +40,8 @@
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
 		<!-- com.vaadin -->
 		<com.vaadin.vaadin>7.0.5</com.vaadin.vaadin>
+		<!-- commons -->
+		<commons-codec.commons-codec>1.7</commons-codec.commons-codec>
 		<!-- javax -->
 		<javax.servlet.servlet-api>2.4</javax.servlet.servlet-api>
 		<javax.validation.validation-api>1.0.0.GA</javax.validation.validation-api>
@@ -137,7 +139,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
+			<version>${commons-codec.commons-codec}</version>
 			<scope>compile</scope>
 		</dependency>		
 		<dependency>

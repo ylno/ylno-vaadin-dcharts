@@ -15,14 +15,18 @@
  */
 package org.dussan.vaadin.dcharts.test;
 
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.dussan.vaadin.dcharts.ChartImageFormat;
 import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
 import org.dussan.vaadin.dcharts.events.ChartData;
+import org.dussan.vaadin.dcharts.events.chartImageChange.ChartImageChangeEvent;
+import org.dussan.vaadin.dcharts.events.chartImageChange.ChartImageChangeHandler;
 import org.dussan.vaadin.dcharts.events.click.ChartDataClickEvent;
 import org.dussan.vaadin.dcharts.events.click.ChartDataClickHandler;
 import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterEvent;
@@ -57,37 +61,46 @@ public class DChartsTestUI extends UI {
 
 	private static final long serialVersionUID = -7077515649056486386L;
 
-	private void showNotification(String event, ChartData chartData) {
+	private void showEventNotification(String event, Object chartObject) {
 		String caption = "<span style='color:#ff6600'>Event: " + event
 				+ "</span>";
 		StringBuilder description = new StringBuilder();
-		description.append("<b>Chart id:</b> " + chartData.getChartId());
 
-		if (chartData.getSeriesIndex() != null) {
-			description.append("<br /><b>Series index:</b> "
-					+ chartData.getSeriesIndex());
-		}
+		if (chartObject instanceof ChartData) {
+			ChartData chartData = (ChartData) chartObject;
+			description.append("<b>Chart id:</b> " + chartData.getChartId());
 
-		if (chartData.getPointIndex() != null) {
-			description.append("<br /><b>Point index:</b> "
-					+ chartData.getPointIndex());
-		}
-
-		if (chartData.getData() != null) {
-			description.append("<br /><b>Chart data:</b> "
-					+ Arrays.toString(chartData.getData()));
-		}
-
-		if (chartData.getOriginData() != null) {
-			if (chartData.getOriginData() instanceof Object[]) {
-				description
-						.append("<br /><b>Origin data:</b> "
-								+ Arrays.toString((Object[]) chartData
-										.getOriginData()));
-			} else {
-				description.append("<br /><b>Origin data:</b> "
-						+ chartData.getOriginData().toString());
+			if (chartData.getSeriesIndex() != null) {
+				description.append("<br /><b>Series index:</b> "
+						+ chartData.getSeriesIndex());
 			}
+
+			if (chartData.getPointIndex() != null) {
+				description.append("<br /><b>Point index:</b> "
+						+ chartData.getPointIndex());
+			}
+
+			if (chartData.getData() != null) {
+				description.append("<br /><b>Chart data:</b> "
+						+ Arrays.toString(chartData.getData()));
+			}
+
+			if (chartData.getOriginData() != null) {
+				if (chartData.getOriginData() instanceof Object[]) {
+					description.append("<br /><b>Origin data:</b> "
+							+ Arrays.toString((Object[]) chartData
+									.getOriginData()));
+				} else {
+					description.append("<br /><b>Origin data:</b> "
+							+ chartData.getOriginData().toString());
+				}
+			}
+		} else if (chartObject instanceof BufferedImage) {
+			BufferedImage chartImage = (BufferedImage) chartObject;
+			description.append("<b>Chart image width:</b> "
+					+ chartImage.getWidth() + "px");
+			description.append("<br /><b>Chart image height:</b> "
+					+ chartImage.getHeight() + "px");
 		}
 
 		Notification notification = new Notification(caption,
@@ -110,6 +123,7 @@ public class DChartsTestUI extends UI {
 		chart.setHeight("300px");
 		chart.setCaption("test");
 		chart.setEnableDownload(true);
+		chart.setChartImageFormat(ChartImageFormat.GIF);
 		layout.addComponent(chart);
 
 		Label version = new Label("dCharts version: " + DCharts.getVersion()
@@ -156,28 +170,40 @@ public class DChartsTestUI extends UI {
 		chart.addHandler(new ChartDataMouseEnterHandler() {
 			@Override
 			public void onChartDataMouseEnter(ChartDataMouseEnterEvent event) {
-				showNotification("CHART DATA MOUSE ENTER", event.getChartData());
+				showEventNotification("CHART DATA MOUSE ENTER",
+						event.getChartData());
 			}
 		});
 
 		chart.addHandler(new ChartDataMouseLeaveHandler() {
 			@Override
 			public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
-				showNotification("CHART DATA MOUSE LEAVE", event.getChartData());
+				showEventNotification("CHART DATA MOUSE LEAVE",
+						event.getChartData());
 			}
 		});
 
 		chart.addHandler(new ChartDataClickHandler() {
 			@Override
 			public void onChartDataClick(ChartDataClickEvent event) {
-				showNotification("CHART DATA CLICK", event.getChartData());
+				showEventNotification("CHART DATA CLICK", event.getChartData());
 			}
 		});
 
 		chart.addHandler(new ChartDataRightClickHandler() {
 			@Override
 			public void onChartDataRightClick(ChartDataRightClickEvent event) {
-				showNotification("CHART DATA RIGHT CLICK", event.getChartData());
+				showEventNotification("CHART DATA RIGHT CLICK",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartImageChangeHandler() {
+
+			@Override
+			public void onChartImageChange(ChartImageChangeEvent event) {
+				showEventNotification("CHART IMAGE CHANGE",
+						event.getChartImage());
 			}
 		});
 	}
