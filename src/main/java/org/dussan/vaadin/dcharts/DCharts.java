@@ -343,11 +343,12 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return chartImageFormat;
 	}
 
-	public void setChartImageFormat(ChartImageFormat chartImageFormat) {
+	public DCharts setChartImageFormat(ChartImageFormat chartImageFormat) {
 		this.chartImageFormat = chartImageFormat;
+		return this;
 	}
 
-	public void autoSelectDecimalAndThousandsSeparator(Locale locale) {
+	public DCharts autoSelectDecimalAndThousandsSeparator(Locale locale) {
 		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getDecimalSeparator());
@@ -356,44 +357,48 @@ public class DCharts extends AbstractSingleComponentContainer {
 				.getGroupingSeparator());
 		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
 		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
+		return this;
 	}
 
-	public void autoSelectDecimalSeparator(Locale locale) {
+	public DCharts autoSelectDecimalSeparator(Locale locale) {
 		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getDecimalSeparator());
 		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
+		return this;
 	}
 
-	public void autoSelectThousandsSeparator(Locale locale) {
+	public DCharts autoSelectThousandsSeparator(Locale locale) {
 		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getGroupingSeparator());
 		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
+		return this;
 	}
 
 	public String getDecimalSeparator() {
 		return decimalSeparator;
 	}
 
-	public void setDecimalSeparator(String decimalSeparator) {
+	public DCharts setDecimalSeparator(String decimalSeparator) {
 		if (decimalSeparator != null && decimalSeparator.length() > 0) {
 			this.decimalSeparator = decimalSeparator;
 			chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
 		}
+		return this;
 	}
 
 	public String getThousandsSeparator() {
 		return thousandsSeparator;
 	}
 
-	public void setThousandsSeparator(String thousandsSeparator) {
+	public DCharts setThousandsSeparator(String thousandsSeparator) {
 		this.thousandsSeparator = thousandsSeparator;
 		if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
 			this.thousandsSeparator = thousandsSeparator;
 			chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
 		}
-
+		return this;
 	}
 
 	public DCharts setMargins(int marginTop, int marginRight, int marginBottom,
@@ -453,38 +458,42 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return downloadButtonEnable;
 	}
 
-	public void setEnableDownload(boolean enable) {
+	public DCharts setEnableDownload(boolean enable) {
 		downloadButtonEnable = enable;
 		chartData.put(DOWNLOAD_BUTTON_ENABLE, Boolean.toString(enable));
+		return this;
 	}
 
 	public String getDownloadFilename() {
 		return downloadFilename;
 	}
 
-	public void setDownloadFilename(String filename) {
+	public DCharts setDownloadFilename(String filename) {
 		if (filename != null && !filename.trim().isEmpty()) {
 			downloadFilename = filename;
 		}
+		return this;
 	}
 
 	public DownloadButtonLocation getDownloadButtonLocation() {
 		return downloadButtonLocation;
 	}
 
-	public void setDownloadButtonLocation(DownloadButtonLocation location) {
+	public DCharts setDownloadButtonLocation(DownloadButtonLocation location) {
 		downloadButtonLocation = location;
 		chartData.put(DOWNLOAD_BUTTON_LOCATION, location.toString());
+		return this;
 	}
 
 	public String getDownloadButtonCaption() {
 		return downloadButton.getCaption();
 	}
 
-	public void setDownloadButtonCaption(String caption) {
+	public DCharts setDownloadButtonCaption(String caption) {
 		if (caption != null && !caption.trim().isEmpty()) {
 			downloadButton.setCaption(caption);
 		}
+		return this;
 	}
 
 	public DataSeries getDataSeries() {

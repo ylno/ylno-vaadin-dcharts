@@ -256,7 +256,6 @@ public class DChartsTestUI extends UI {
 		});
 
 		chart.addHandler(new ChartImageChangeHandler() {
-
 			@Override
 			public void onChartImageChange(ChartImageChangeEvent event) {
 				showEventNotification("CHART IMAGE CHANGE",

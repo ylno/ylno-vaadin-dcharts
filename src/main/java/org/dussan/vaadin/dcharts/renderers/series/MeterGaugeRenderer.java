@@ -15,6 +15,7 @@
  */
 package org.dussan.vaadin.dcharts.renderers.series;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.dussan.vaadin.dcharts.base.renderers.SeriesRenderer;
 import org.dussan.vaadin.dcharts.defaults.renderers.series.DefaultMeterGaugeRenderer;
 import org.dussan.vaadin.dcharts.metadata.LabelPositions;
@@ -59,18 +60,17 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		super(new DefaultMeterGaugeRenderer());
 	}
 
-	public MeterGaugeRenderer(Float diameter, Integer padding,
-			Float shadowOffset, Float shadowAlpha, Integer shadowDepth,
-			String background, String ringColor, String needleColor,
-			String tickColor, Float ringWidth, Float min, Float max,
-			Float[] ticks, Boolean showTicks, Boolean showTickLabels,
-			String label, Integer labelHeightAdjust,
-			LabelPositions labelPosition, Float[] intervals,
-			String[] intervalColors, Float intervalInnerRadius,
-			Float intervalOuterRadius, TickRenderers tickRenderer,
-			Float[] tickPositions, Integer tickSpacing,
-			Integer numberMinorTicks, Float hubRadius, Float tickPadding,
-			Float needleThickness, Integer needlePad, Boolean pegNeedle) {
+	public MeterGaugeRenderer(float diameter, int padding, float shadowOffset,
+			float shadowAlpha, int shadowDepth, String background,
+			String ringColor, String needleColor, String tickColor,
+			float ringWidth, float min, float max, float[] ticks,
+			boolean showTicks, boolean showTickLabels, String label,
+			int labelHeightAdjust, LabelPositions labelPosition,
+			float[] intervals, String[] intervalColors,
+			float intervalInnerRadius, float intervalOuterRadius,
+			TickRenderers tickRenderer, float[] tickPositions, int tickSpacing,
+			int numberMinorTicks, float hubRadius, float tickPadding,
+			float needleThickness, int needlePad, boolean pegNeedle) {
 		super(new DefaultMeterGaugeRenderer());
 		setDiameter(diameter);
 		setPadding(padding);
@@ -105,47 +105,47 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		setPegNeedle(pegNeedle);
 	}
 
-	public Float getDiameter() {
+	public float getDiameter() {
 		return diameter;
 	}
 
-	public MeterGaugeRenderer setDiameter(Float diameter) {
+	public MeterGaugeRenderer setDiameter(float diameter) {
 		this.diameter = diameter;
 		return this;
 	}
 
-	public Integer getPadding() {
+	public int getPadding() {
 		return padding;
 	}
 
-	public MeterGaugeRenderer setPadding(Integer padding) {
+	public MeterGaugeRenderer setPadding(int padding) {
 		this.padding = padding;
 		return this;
 	}
 
-	public Float getShadowOffset() {
+	public float getShadowOffset() {
 		return shadowOffset;
 	}
 
-	public MeterGaugeRenderer setShadowOffset(Float shadowOffset) {
+	public MeterGaugeRenderer setShadowOffset(float shadowOffset) {
 		this.shadowOffset = shadowOffset;
 		return this;
 	}
 
-	public Float getShadowAlpha() {
+	public float getShadowAlpha() {
 		return shadowAlpha;
 	}
 
-	public MeterGaugeRenderer setShadowAlpha(Float shadowAlpha) {
+	public MeterGaugeRenderer setShadowAlpha(float shadowAlpha) {
 		this.shadowAlpha = shadowAlpha;
 		return this;
 	}
 
-	public Integer getShadowDepth() {
+	public int getShadowDepth() {
 		return shadowDepth;
 	}
 
-	public MeterGaugeRenderer setShadowDepth(Integer shadowDepth) {
+	public MeterGaugeRenderer setShadowDepth(int shadowDepth) {
 		this.shadowDepth = shadowDepth;
 		return this;
 	}
@@ -186,56 +186,56 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		return this;
 	}
 
-	public Float getRingWidth() {
+	public float getRingWidth() {
 		return ringWidth;
 	}
 
-	public MeterGaugeRenderer setRingWidth(Float ringWidth) {
+	public MeterGaugeRenderer setRingWidth(float ringWidth) {
 		this.ringWidth = ringWidth;
 		return this;
 	}
 
-	public Float getMin() {
+	public float getMin() {
 		return min;
 	}
 
-	public MeterGaugeRenderer setMin(Float min) {
+	public MeterGaugeRenderer setMin(float min) {
 		this.min = min;
 		return this;
 	}
 
-	public Float getMax() {
+	public float getMax() {
 		return max;
 	}
 
-	public MeterGaugeRenderer setMax(Float max) {
+	public MeterGaugeRenderer setMax(float max) {
 		this.max = max;
 		return this;
 	}
 
-	public Float[] getTicks() {
-		return ticks;
+	public float[] getTicks() {
+		return ArrayUtils.toPrimitive(ticks);
 	}
 
-	public MeterGaugeRenderer setTicks(Float[] ticks) {
-		this.ticks = ticks;
+	public MeterGaugeRenderer setTicks(float... ticks) {
+		this.ticks = ArrayUtils.toObject(ticks);
 		return this;
 	}
 
-	public Boolean getShowTicks() {
+	public boolean getShowTicks() {
 		return showTicks;
 	}
 
-	public MeterGaugeRenderer setShowTicks(Boolean showTicks) {
+	public MeterGaugeRenderer setShowTicks(boolean showTicks) {
 		this.showTicks = showTicks;
 		return this;
 	}
 
-	public Boolean getShowTickLabels() {
+	public boolean getShowTickLabels() {
 		return showTickLabels;
 	}
 
-	public MeterGaugeRenderer setShowTickLabels(Boolean showTickLabels) {
+	public MeterGaugeRenderer setShowTickLabels(boolean showTickLabels) {
 		this.showTickLabels = showTickLabels;
 		return this;
 	}
@@ -249,11 +249,11 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		return this;
 	}
 
-	public Integer getLabelHeightAdjust() {
+	public int getLabelHeightAdjust() {
 		return labelHeightAdjust;
 	}
 
-	public MeterGaugeRenderer setLabelHeightAdjust(Integer labelHeightAdjust) {
+	public MeterGaugeRenderer setLabelHeightAdjust(int labelHeightAdjust) {
 		this.labelHeightAdjust = labelHeightAdjust;
 		return this;
 	}
@@ -267,12 +267,12 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		return this;
 	}
 
-	public Float[] getIntervals() {
-		return intervals;
+	public float[] getIntervals() {
+		return ArrayUtils.toPrimitive(intervals);
 	}
 
-	public MeterGaugeRenderer setIntervals(Float[] intervals) {
-		this.intervals = intervals;
+	public MeterGaugeRenderer setIntervals(float... intervals) {
+		this.intervals = ArrayUtils.toObject(intervals);
 		return this;
 	}
 
@@ -280,25 +280,25 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		return intervalColors;
 	}
 
-	public MeterGaugeRenderer setIntervalColors(String[] intervalColors) {
+	public MeterGaugeRenderer setIntervalColors(String... intervalColors) {
 		this.intervalColors = intervalColors;
 		return this;
 	}
 
-	public Float getIntervalInnerRadius() {
+	public float getIntervalInnerRadius() {
 		return intervalInnerRadius;
 	}
 
-	public MeterGaugeRenderer setIntervalInnerRadius(Float intervalInnerRadius) {
+	public MeterGaugeRenderer setIntervalInnerRadius(float intervalInnerRadius) {
 		this.intervalInnerRadius = intervalInnerRadius;
 		return this;
 	}
 
-	public Float getIntervalOuterRadius() {
+	public float getIntervalOuterRadius() {
 		return intervalOuterRadius;
 	}
 
-	public MeterGaugeRenderer setIntervalOuterRadius(Float intervalOuterRadius) {
+	public MeterGaugeRenderer setIntervalOuterRadius(float intervalOuterRadius) {
 		this.intervalOuterRadius = intervalOuterRadius;
 		return this;
 	}
@@ -312,74 +312,74 @@ public class MeterGaugeRenderer extends SeriesRenderer<MeterGaugeRenderer> {
 		return this;
 	}
 
-	public Float[] getTickPositions() {
-		return tickPositions;
+	public float[] getTickPositions() {
+		return ArrayUtils.toPrimitive(tickPositions);
 	}
 
-	public MeterGaugeRenderer setTickPositions(Float[] tickPositions) {
-		this.tickPositions = tickPositions;
+	public MeterGaugeRenderer setTickPositions(float... tickPositions) {
+		this.tickPositions = ArrayUtils.toObject(tickPositions);
 		return this;
 	}
 
-	public Integer getTickSpacing() {
+	public int getTickSpacing() {
 		return tickSpacing;
 	}
 
-	public MeterGaugeRenderer setTickSpacing(Integer tickSpacing) {
+	public MeterGaugeRenderer setTickSpacing(int tickSpacing) {
 		this.tickSpacing = tickSpacing;
 		return this;
 	}
 
-	public Integer getNumberMinorTicks() {
+	public int getNumberMinorTicks() {
 		return numberMinorTicks;
 	}
 
-	public MeterGaugeRenderer setNumberMinorTicks(Integer numberMinorTicks) {
+	public MeterGaugeRenderer setNumberMinorTicks(int numberMinorTicks) {
 		this.numberMinorTicks = numberMinorTicks;
 		return this;
 	}
 
-	public Float getHubRadius() {
+	public float getHubRadius() {
 		return hubRadius;
 	}
 
-	public MeterGaugeRenderer setHubRadius(Float hubRadius) {
+	public MeterGaugeRenderer setHubRadius(float hubRadius) {
 		this.hubRadius = hubRadius;
 		return this;
 	}
 
-	public Float getTickPadding() {
+	public float getTickPadding() {
 		return tickPadding;
 	}
 
-	public MeterGaugeRenderer setTickPadding(Float tickPadding) {
+	public MeterGaugeRenderer setTickPadding(float tickPadding) {
 		this.tickPadding = tickPadding;
 		return this;
 	}
 
-	public Float getNeedleThickness() {
+	public float getNeedleThickness() {
 		return needleThickness;
 	}
 
-	public MeterGaugeRenderer setNeedleThickness(Float needleThickness) {
+	public MeterGaugeRenderer setNeedleThickness(float needleThickness) {
 		this.needleThickness = needleThickness;
 		return this;
 	}
 
-	public Integer getNeedlePad() {
+	public int getNeedlePad() {
 		return needlePad;
 	}
 
-	public MeterGaugeRenderer setNeedlePad(Integer needlePad) {
+	public MeterGaugeRenderer setNeedlePad(int needlePad) {
 		this.needlePad = needlePad;
 		return this;
 	}
 
-	public Boolean getPegNeedle() {
+	public boolean getPegNeedle() {
 		return pegNeedle;
 	}
 
-	public MeterGaugeRenderer setPegNeedle(Boolean pegNeedle) {
+	public MeterGaugeRenderer setPegNeedle(boolean pegNeedle) {
 		this.pegNeedle = pegNeedle;
 		return this;
 	}
