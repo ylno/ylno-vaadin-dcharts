@@ -15,7 +15,10 @@
  */
 package org.dussan.vaadin.dcharts;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -23,11 +26,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.codec.binary.Base64;
 import org.dussan.vaadin.dcharts.client.rpc.DChartsServerRpc;
 import org.dussan.vaadin.dcharts.client.state.DChartsState;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.events.ChartData;
+import org.dussan.vaadin.dcharts.events.chartImageChange.ChartImageChangeEvent;
+import org.dussan.vaadin.dcharts.events.chartImageChange.ChartImageChangeHandler;
 import org.dussan.vaadin.dcharts.events.click.ChartDataClickEvent;
 import org.dussan.vaadin.dcharts.events.click.ChartDataClickHandler;
 import org.dussan.vaadin.dcharts.events.mouseenter.ChartDataMouseEnterEvent;
@@ -69,19 +76,24 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private static final int MOUSE_LEAVE_EVENT = 14;
 	private static final int CLICK_EVENT = 15;
 	private static final int RIGHT_CLICK_EVENT = 16;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
 
 	private byte[] chartImage = null;
 	private Map<Integer, String> chartData = null;
+	private ChartImageFormat chartImageFormat = null;
+
 	private HandlerManager handlerManager = null;
 	private DataSeries dataSeries = null;
 	private Options options = null;
-	private Button downloadButton = null;
 
 	private Boolean downloadButtonEnable = null;
+	private Button downloadButton = null;
 	private String downloadFilename = null;
 	private DownloadButtonLocation downloadButtonLocation = null;
+	private FileDownloader fileDownloader = null;
+
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
 	private Integer marginTop = null;
@@ -93,12 +105,9 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private Boolean enableChartDataMouseLeaveEvent = null;
 	private Boolean enableChartDataClickEvent = null;
 	private Boolean enableChartDataRightClickEvent = null;
+	private Boolean enableChartImageChangeEvent = null;
 
 	public DCharts() {
-		downloadButtonEnable = false;
-		downloadFilename = "chart";
-		downloadButtonLocation = DownloadButtonLocation.TOP_RIGHT;
-
 		marginTop = 0;
 		marginRight = 0;
 		marginBottom = 0;
@@ -109,9 +118,15 @@ public class DCharts extends AbstractSingleComponentContainer {
 		enableChartDataMouseLeaveEvent = false;
 		enableChartDataClickEvent = false;
 		enableChartDataRightClickEvent = false;
-		chartData = new HashMap<Integer, String>();
+		enableChartImageChangeEvent = false;
 
-		setSizeFull();
+		chartData = new HashMap<Integer, String>();
+		chartImageFormat = ChartImageFormat.PNG;
+
+		downloadButtonEnable = false;
+		downloadFilename = "chart";
+		downloadButtonLocation = DownloadButtonLocation.TOP_RIGHT;
+
 		addChartContainer();
 		registerRpc(new DChartsServerRpc() {
 			private static final long serialVersionUID = -3805014254043430235L;
@@ -161,9 +176,16 @@ public class DCharts extends AbstractSingleComponentContainer {
 
 			@Override
 			public InputStream getStream() {
-				return new ByteArrayInputStream(chartImage);
+				try {
+					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					ImageIO.write(getChartImage(), getChartImageFormat()
+							.getFormat(), bos);
+					return new ByteArrayInputStream(bos.toByteArray());
+				} catch (Exception e) {
+					return new ByteArrayInputStream("".getBytes());
+				}
 			}
-		}, downloadFilename + ".png");
+		}, getDownloadFilename() + getChartImageFormat().getFormatExtension());
 	}
 
 	private void addChartContainer() {
@@ -176,8 +198,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 		downloadButton.setSizeUndefined();
 		setContent(downloadButton);
 
-		FileDownloader fileDownloader = new FileDownloader(getChartResource());
-		fileDownloader.setOverrideContentType(true);
+		fileDownloader = new FileDownloader(getChartResource());
 		fileDownloader.extend(downloadButton);
 
 		setSizeFull();
@@ -187,7 +208,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private void processEvent(Map<String, String> eventData) {
 		if (eventData != null && !eventData.isEmpty()) {
 			ChartData chartData = ChartDataHelper.process(eventData);
-			if (chartData.getSeriesIndex() != null
+			if (chartData != null && chartData.getSeriesIndex() != null
 					&& chartData.getPointIndex() != null) {
 				chartData.setOriginData(dataSeries.getSeriesValue(chartData
 						.getSeriesIndex().intValue(), chartData.getPointIndex()
@@ -241,8 +262,18 @@ public class DCharts extends AbstractSingleComponentContainer {
 								.substring("data:image/png;base64,".length());
 						chartImage = Base64.decodeBase64(data);
 						downloadButton.setEnabled(chartImage.length > 0);
+						fileDownloader
+								.setFileDownloadResource(getChartResource());
+						if (enableChartImageChangeEvent) {
+							handlerManager.fireEvent(new ChartImageChangeEvent(
+									getChartImage()));
+						}
 					} catch (Exception e) {
 						downloadButton.setEnabled(false);
+						if (enableChartImageChangeEvent) {
+							handlerManager.fireEvent(new ChartImageChangeEvent(
+									null));
+						}
 					}
 					break;
 
@@ -297,7 +328,27 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return null;
 	}
 
-	public void autoSelectDecimalAndThousandsSeparator(Locale locale) {
+	public BufferedImage getChartImage() {
+		if (chartImage != null && chartImage.length > 0) {
+			try {
+				return ImageIO.read(new ByteArrayInputStream(chartImage));
+			} catch (IOException e) {
+				// not catch any error
+			}
+		}
+		return null;
+	}
+
+	public ChartImageFormat getChartImageFormat() {
+		return chartImageFormat;
+	}
+
+	public DCharts setChartImageFormat(ChartImageFormat chartImageFormat) {
+		this.chartImageFormat = chartImageFormat;
+		return this;
+	}
+
+	public DCharts autoSelectDecimalAndThousandsSeparator(Locale locale) {
 		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getDecimalSeparator());
@@ -306,44 +357,48 @@ public class DCharts extends AbstractSingleComponentContainer {
 				.getGroupingSeparator());
 		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
 		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
+		return this;
 	}
 
-	public void autoSelectDecimalSeparator(Locale locale) {
+	public DCharts autoSelectDecimalSeparator(Locale locale) {
 		decimalSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getDecimalSeparator());
 		chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
+		return this;
 	}
 
-	public void autoSelectThousandsSeparator(Locale locale) {
+	public DCharts autoSelectThousandsSeparator(Locale locale) {
 		thousandsSeparator = Character.toString(((DecimalFormat) NumberFormat
 				.getNumberInstance(locale)).getDecimalFormatSymbols()
 				.getGroupingSeparator());
 		chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
+		return this;
 	}
 
 	public String getDecimalSeparator() {
 		return decimalSeparator;
 	}
 
-	public void setDecimalSeparator(String decimalSeparator) {
+	public DCharts setDecimalSeparator(String decimalSeparator) {
 		if (decimalSeparator != null && decimalSeparator.length() > 0) {
 			this.decimalSeparator = decimalSeparator;
 			chartData.put(DECIMAL_SEPARATOR, decimalSeparator);
 		}
+		return this;
 	}
 
 	public String getThousandsSeparator() {
 		return thousandsSeparator;
 	}
 
-	public void setThousandsSeparator(String thousandsSeparator) {
+	public DCharts setThousandsSeparator(String thousandsSeparator) {
 		this.thousandsSeparator = thousandsSeparator;
 		if (thousandsSeparator != null && thousandsSeparator.length() > 0) {
 			this.thousandsSeparator = thousandsSeparator;
 			chartData.put(THOUSANDS_SEPARATOR, thousandsSeparator);
 		}
-
+		return this;
 	}
 
 	public DCharts setMargins(int marginTop, int marginRight, int marginBottom,
@@ -403,38 +458,42 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return downloadButtonEnable;
 	}
 
-	public void setEnableDownload(boolean enable) {
+	public DCharts setEnableDownload(boolean enable) {
 		downloadButtonEnable = enable;
 		chartData.put(DOWNLOAD_BUTTON_ENABLE, Boolean.toString(enable));
+		return this;
 	}
 
 	public String getDownloadFilename() {
 		return downloadFilename;
 	}
 
-	public void setDownloadFilename(String filename) {
+	public DCharts setDownloadFilename(String filename) {
 		if (filename != null && !filename.trim().isEmpty()) {
 			downloadFilename = filename;
 		}
+		return this;
 	}
 
 	public DownloadButtonLocation getDownloadButtonLocation() {
 		return downloadButtonLocation;
 	}
 
-	public void setDownloadButtonLocation(DownloadButtonLocation location) {
+	public DCharts setDownloadButtonLocation(DownloadButtonLocation location) {
 		downloadButtonLocation = location;
 		chartData.put(DOWNLOAD_BUTTON_LOCATION, location.toString());
+		return this;
 	}
 
 	public String getDownloadButtonCaption() {
 		return downloadButton.getCaption();
 	}
 
-	public void setDownloadButtonCaption(String caption) {
+	public DCharts setDownloadButtonCaption(String caption) {
 		if (caption != null && !caption.trim().isEmpty()) {
 			downloadButton.setCaption(caption);
 		}
+		return this;
 	}
 
 	public DataSeries getDataSeries() {
@@ -465,42 +524,59 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return enableChartDataMouseEnterEvent;
 	}
 
-	public void setEnableChartDataMouseEnterEvent(
+	public DCharts setEnableChartDataMouseEnterEvent(
 			boolean enableChartDataMouseEnterEvent) {
 		this.enableChartDataMouseEnterEvent = enableChartDataMouseEnterEvent;
 		chartData.put(MOUSE_ENTER_EVENT,
 				Boolean.toString(enableChartDataMouseEnterEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataMouseLeaveEvent() {
 		return enableChartDataMouseLeaveEvent;
 	}
 
-	public void setEnableChartDataMouseLeaveEvent(
+	public DCharts setEnableChartDataMouseLeaveEvent(
 			boolean enableChartDataMouseLeaveEvent) {
 		this.enableChartDataMouseLeaveEvent = enableChartDataMouseLeaveEvent;
 		chartData.put(MOUSE_LEAVE_EVENT,
 				Boolean.toString(enableChartDataMouseLeaveEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataClickEvent() {
 		return enableChartDataClickEvent;
 	}
 
-	public void setEnableChartDataClickEvent(boolean enableChartDataClickEvent) {
+	public DCharts setEnableChartDataClickEvent(
+			boolean enableChartDataClickEvent) {
 		this.enableChartDataClickEvent = enableChartDataClickEvent;
 		chartData.put(CLICK_EVENT, Boolean.toString(enableChartDataClickEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataRightClickEvent() {
 		return enableChartDataRightClickEvent;
 	}
 
-	public void setEnableChartDataRightClickEvent(
+	public DCharts setEnableChartDataRightClickEvent(
 			boolean enableChartDataRightClickEvent) {
 		this.enableChartDataRightClickEvent = enableChartDataRightClickEvent;
 		chartData.put(RIGHT_CLICK_EVENT,
 				Boolean.toString(enableChartDataRightClickEvent));
+		return this;
+	}
+
+	public boolean isEnableChartImageChangeEvent() {
+		return enableChartImageChangeEvent;
+	}
+
+	public DCharts setEnableChartImageChangeEvent(
+			boolean enableChartImageChangeEvent) {
+		this.enableChartImageChangeEvent = enableChartImageChangeEvent;
+		chartData.put(CHART_IMAGE_CHANGE_EVENT,
+				Boolean.toString(enableChartImageChangeEvent));
+		return this;
 	}
 
 	public DCharts show() {
@@ -581,6 +657,17 @@ public class DCharts extends AbstractSingleComponentContainer {
 	public void removeHandler(ChartDataRightClickHandler handler) {
 		if (handlerManager.isEventHandled(ChartDataRightClickEvent.getType())) {
 			handlerManager.removeHandler(ChartDataRightClickEvent.getType(),
+					handler);
+		}
+	}
+
+	public void addHandler(ChartImageChangeHandler handler) {
+		handlerManager.addHandler(ChartImageChangeEvent.getType(), handler);
+	}
+
+	public void removeHandler(ChartImageChangeHandler handler) {
+		if (handlerManager.isEventHandled(ChartImageChangeEvent.getType())) {
+			handlerManager.removeHandler(ChartImageChangeEvent.getType(),
 					handler);
 		}
 	}

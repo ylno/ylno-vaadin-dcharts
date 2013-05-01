@@ -31,6 +31,10 @@ public interface JqPlot extends ClientBundle {
 	@Source("code/jqplot/jquery.min.js")
 	public TextResource jQuery();
 
+	// code to bind a listener function to any HTML element on attribute change
+	@Source("code/jqplot/attrchange.min.js")
+	public TextResource attrChange();
+
 	@Source("code/jqplot/jquery.jqplot.min.js")
 	public TextResource jqPlot();
 
