@@ -4,5 +4,8 @@
 .settings
 target
 *~
+src/main/gwt-unitCache/*
 src/main/webapp/VAADIN/*
+src/main/webapp/org.dussan.vaadin.dcharts.DchartsWidgetset/*
+src/main/webapp/WEB-INF/deploy/*
 !src/main/webapp/VAADIN/themes

@@ -76,8 +76,9 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private static final int MOUSE_LEAVE_EVENT = 14;
 	private static final int CLICK_EVENT = 15;
 	private static final int RIGHT_CLICK_EVENT = 16;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
 
 	private byte[] chartImage = null;
 	private Map<Integer, String> chartData = null;
@@ -104,6 +105,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private Boolean enableChartDataMouseLeaveEvent = null;
 	private Boolean enableChartDataClickEvent = null;
 	private Boolean enableChartDataRightClickEvent = null;
+	private Boolean enableChartImageChangeEvent = null;
 
 	public DCharts() {
 		marginTop = 0;
@@ -116,6 +118,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 		enableChartDataMouseLeaveEvent = false;
 		enableChartDataClickEvent = false;
 		enableChartDataRightClickEvent = false;
+		enableChartImageChangeEvent = false;
 
 		chartData = new HashMap<Integer, String>();
 		chartImageFormat = ChartImageFormat.PNG;
@@ -124,7 +127,6 @@ public class DCharts extends AbstractSingleComponentContainer {
 		downloadFilename = "chart";
 		downloadButtonLocation = DownloadButtonLocation.TOP_RIGHT;
 
-		setSizeFull();
 		addChartContainer();
 		registerRpc(new DChartsServerRpc() {
 			private static final long serialVersionUID = -3805014254043430235L;
@@ -197,7 +199,6 @@ public class DCharts extends AbstractSingleComponentContainer {
 		setContent(downloadButton);
 
 		fileDownloader = new FileDownloader(getChartResource());
-		fileDownloader.setOverrideContentType(true);
 		fileDownloader.extend(downloadButton);
 
 		setSizeFull();
@@ -207,7 +208,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private void processEvent(Map<String, String> eventData) {
 		if (eventData != null && !eventData.isEmpty()) {
 			ChartData chartData = ChartDataHelper.process(eventData);
-			if (chartData.getSeriesIndex() != null
+			if (chartData != null && chartData.getSeriesIndex() != null
 					&& chartData.getPointIndex() != null) {
 				chartData.setOriginData(dataSeries.getSeriesValue(chartData
 						.getSeriesIndex().intValue(), chartData.getPointIndex()
@@ -261,13 +262,18 @@ public class DCharts extends AbstractSingleComponentContainer {
 								.substring("data:image/png;base64,".length());
 						chartImage = Base64.decodeBase64(data);
 						downloadButton.setEnabled(chartImage.length > 0);
-						fileDownloader.setFileDownloadResource(getChartResource());
-						handlerManager.fireEvent(new ChartImageChangeEvent(
-								getChartImage()));
+						fileDownloader
+								.setFileDownloadResource(getChartResource());
+						if (enableChartImageChangeEvent) {
+							handlerManager.fireEvent(new ChartImageChangeEvent(
+									getChartImage()));
+						}
 					} catch (Exception e) {
 						downloadButton.setEnabled(false);
-						handlerManager
-								.fireEvent(new ChartImageChangeEvent(null));
+						if (enableChartImageChangeEvent) {
+							handlerManager.fireEvent(new ChartImageChangeEvent(
+									null));
+						}
 					}
 					break;
 
@@ -509,42 +515,59 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return enableChartDataMouseEnterEvent;
 	}
 
-	public void setEnableChartDataMouseEnterEvent(
+	public DCharts setEnableChartDataMouseEnterEvent(
 			boolean enableChartDataMouseEnterEvent) {
 		this.enableChartDataMouseEnterEvent = enableChartDataMouseEnterEvent;
 		chartData.put(MOUSE_ENTER_EVENT,
 				Boolean.toString(enableChartDataMouseEnterEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataMouseLeaveEvent() {
 		return enableChartDataMouseLeaveEvent;
 	}
 
-	public void setEnableChartDataMouseLeaveEvent(
+	public DCharts setEnableChartDataMouseLeaveEvent(
 			boolean enableChartDataMouseLeaveEvent) {
 		this.enableChartDataMouseLeaveEvent = enableChartDataMouseLeaveEvent;
 		chartData.put(MOUSE_LEAVE_EVENT,
 				Boolean.toString(enableChartDataMouseLeaveEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataClickEvent() {
 		return enableChartDataClickEvent;
 	}
 
-	public void setEnableChartDataClickEvent(boolean enableChartDataClickEvent) {
+	public DCharts setEnableChartDataClickEvent(
+			boolean enableChartDataClickEvent) {
 		this.enableChartDataClickEvent = enableChartDataClickEvent;
 		chartData.put(CLICK_EVENT, Boolean.toString(enableChartDataClickEvent));
+		return this;
 	}
 
 	public boolean isEnableChartDataRightClickEvent() {
 		return enableChartDataRightClickEvent;
 	}
 
-	public void setEnableChartDataRightClickEvent(
+	public DCharts setEnableChartDataRightClickEvent(
 			boolean enableChartDataRightClickEvent) {
 		this.enableChartDataRightClickEvent = enableChartDataRightClickEvent;
 		chartData.put(RIGHT_CLICK_EVENT,
 				Boolean.toString(enableChartDataRightClickEvent));
+		return this;
+	}
+
+	public boolean isEnableChartImageChangeEvent() {
+		return enableChartImageChangeEvent;
+	}
+
+	public DCharts setEnableChartImageChangeEvent(
+			boolean enableChartImageChangeEvent) {
+		this.enableChartImageChangeEvent = enableChartImageChangeEvent;
+		chartData.put(CHART_IMAGE_CHANGE_EVENT,
+				Boolean.toString(enableChartImageChangeEvent));
+		return this;
 	}
 
 	public DCharts show() {
