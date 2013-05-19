@@ -22,7 +22,7 @@ public class PieDataHandler {
 	public static native void activateMouseEnter(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPieDataMouseEnter', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPieDataMouseEnter', function(ev, data) {
 				var event = 'pieMouseEnter';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -32,7 +32,7 @@ public class PieDataHandler {
 	public static native void activateMouseLeave(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPieDataMouseLeave', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPieDataMouseLeave', function(ev, data) {
 				var event = 'pieMouseLeave';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -42,7 +42,7 @@ public class PieDataHandler {
 	public static native void activateClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPieDataClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPieDataClick', function(ev, data) {
 				var event = 'pieClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -52,7 +52,7 @@ public class PieDataHandler {
 	public static native void activateRightClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPieDataRightClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPieDataRightClick', function(ev, data) {
 				var event = 'pieRightClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});

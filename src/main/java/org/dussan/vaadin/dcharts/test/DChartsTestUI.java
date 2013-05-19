@@ -47,6 +47,7 @@ import org.dussan.vaadin.dcharts.options.Highlighter;
 import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.label.CanvasAxisLabelRenderer;
+import org.dussan.vaadin.dcharts.renderers.series.BubbleRenderer;
 import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 
 import com.vaadin.server.Page;
@@ -117,6 +118,11 @@ public class DChartsTestUI extends UI {
 		setContent(layout);
 		Page.getCurrent().setTitle("dCharts Application");
 
+		chartsDemo1(layout);
+		chartsDemo2(layout);
+	}
+
+	private void chartsDemo1(VerticalLayout layout) {
 		DCharts chart = new DCharts();
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
 		chart.setWidth("300px");
@@ -199,11 +205,71 @@ public class DChartsTestUI extends UI {
 		});
 
 		chart.addHandler(new ChartImageChangeHandler() {
-
 			@Override
 			public void onChartImageChange(ChartImageChangeEvent event) {
 				showEventNotification("CHART IMAGE CHANGE",
 						event.getChartImage());
+			}
+		});
+	}
+
+	private void chartsDemo2(VerticalLayout layout) {
+		DCharts chart = new DCharts();
+		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
+		chart.setCaption("test");
+		layout.addComponent(chart);
+
+		DataSeries dataSeries = new DataSeries().newSeries()
+				.add(11, 123, 1236, "Acura").add(45, 92, 1067, "Alfa Romeo")
+				.add(24, 104, 1176, "AM General")
+				.add(50, 23, 610, "Aston Martin Lagonda")
+				.add(18, 17, 539, "Audi").add(7, 89, 864, "BMW")
+				.add(2, 13, 1026, "Bugatti");
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults()
+				.setRenderer(SeriesRenderers.BUBBLE)
+				.setRendererOptions(
+						new BubbleRenderer().setBubbleAlpha(0.6f)
+								.setHighlightAlpha(0.8f)).setShadow(true)
+				.setShadowAlpha(0.05f);
+
+		Options options = new Options().setCaptureRightClick(true)
+				.setSeriesDefaults(seriesDefaults);
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+
+		chart.setEnableChartDataMouseEnterEvent(true);
+		chart.setEnableChartDataMouseLeaveEvent(true);
+		chart.setEnableChartDataClickEvent(true);
+		chart.setEnableChartDataRightClickEvent(true);
+
+		chart.addHandler(new ChartDataMouseEnterHandler() {
+			@Override
+			public void onChartDataMouseEnter(ChartDataMouseEnterEvent event) {
+				showEventNotification("CHART DATA MOUSE ENTER",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataMouseLeaveHandler() {
+			@Override
+			public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
+				showEventNotification("CHART DATA MOUSE LEAVE",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataClickHandler() {
+			@Override
+			public void onChartDataClick(ChartDataClickEvent event) {
+				showEventNotification("CHART DATA CLICK", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataRightClickHandler() {
+			@Override
+			public void onChartDataRightClick(ChartDataRightClickEvent event) {
+				showEventNotification("CHART DATA RIGHT CLICK",
+						event.getChartData());
 			}
 		});
 	}

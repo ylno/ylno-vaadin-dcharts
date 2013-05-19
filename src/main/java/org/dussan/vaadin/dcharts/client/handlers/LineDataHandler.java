@@ -22,7 +22,7 @@ public class LineDataHandler {
 	public static native void activateClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotLineDataClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotLineDataClick', function(ev, data) {
 				var event = 'lineClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -32,7 +32,7 @@ public class LineDataHandler {
 	public static native void activateRightClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotLineDataRightClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotLineDataRightClick', function(ev, data) {
 				var event = 'lineRightClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});

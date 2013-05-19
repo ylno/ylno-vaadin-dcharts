@@ -22,7 +22,7 @@ public class OhlcDataHandler {
 	public static native void activateMouseEnter(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataMouseEnter', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotOhlcDataMouseEnter', function(ev, data) {
 				var event = 'ohlcMouseEnter';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -32,7 +32,7 @@ public class OhlcDataHandler {
 	public static native void activateMouseLeave(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataMouseLeave', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotOhlcDataMouseLeave', function(ev, data) {
 				var event = 'ohlcMouseLeave';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -42,7 +42,7 @@ public class OhlcDataHandler {
 	public static native void activateClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotOhlcDataClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotOhlcDataClick', function(ev, data) {
 				var event = 'ohlcClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});

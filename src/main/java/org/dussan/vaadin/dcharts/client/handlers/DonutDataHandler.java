@@ -22,7 +22,7 @@ public class DonutDataHandler {
 	public static native void activateMouseEnter(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotDonutDataMouseEnter', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotDonutDataMouseEnter', function(ev, data) {
 				var event = 'donutMouseEnter';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -32,7 +32,7 @@ public class DonutDataHandler {
 	public static native void activateMouseLeave(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotDonutDataMouseLeave', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotDonutDataMouseLeave', function(ev, data) {
 				var event = 'donutMouseLeave';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -42,7 +42,7 @@ public class DonutDataHandler {
 	public static native void activateClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotDonutDataClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotDonutDataClick', function(ev, data) {
 				var event = 'donutClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -52,7 +52,7 @@ public class DonutDataHandler {
 	public static native void activateRightClick(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotDonutDataRightClick', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotDonutDataRightClick', function(ev, data) {
 				var event = 'donutRightClick';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
