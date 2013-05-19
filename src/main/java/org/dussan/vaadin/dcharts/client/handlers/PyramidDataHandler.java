@@ -22,7 +22,7 @@ public class PyramidDataHandler {
 	public static native void activateMouseEnter(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPyramidDataMouseEnter', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPyramidDataMouseEnter', function(ev, data) {
 				var event = 'pyramidMouseEnter';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});
@@ -32,7 +32,7 @@ public class PyramidDataHandler {
 	public static native void activateMouseLeave(VDCharts c, String id)
 	/*-{
 		$wnd.jQuery($doc).ready(function($){
-			$wnd.jQuery('#'.concat(id)).bind('jqplotPyramidDataMouseLeave', function(ev, data) {
+			$wnd.jQuery('#'.concat(id)).on('jqplotPyramidDataMouseLeave', function(ev, data) {
 				var event = 'pyramidMouseLeave';
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
 			});

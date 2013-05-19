@@ -18,8 +18,8 @@ package org.dussan.vaadin.dcharts.client.connector;
 import java.util.Map;
 
 import org.dussan.vaadin.dcharts.DCharts;
+import org.dussan.vaadin.dcharts.client.rpc.DChartsClientRPC;
 import org.dussan.vaadin.dcharts.client.rpc.DChartsServerRpc;
-import org.dussan.vaadin.dcharts.client.state.DChartsState;
 import org.dussan.vaadin.dcharts.client.ui.VDCharts;
 
 import com.google.gwt.core.client.GWT;
@@ -30,7 +30,6 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.communication.RpcProxy;
-import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
@@ -55,13 +54,23 @@ public class DChartsConnector extends AbstractComponentContainerConnector
 	}
 
 	@Override
-	public DChartsState getState() {
-		return (DChartsState) super.getState();
-	}
-
-	@Override
 	protected void init() {
 		super.init();
+
+		registerRpc(DChartsClientRPC.class, new DChartsClientRPC() {
+			private static final long serialVersionUID = -3966553309119744743L;
+
+			@Override
+			public void setChartId(String id) {
+				getWidget().setChartId(id);
+			}
+
+			@Override
+			public void setChartData(Map<Integer, String> chartData) {
+				getWidget().processChartData(chartData);
+			}
+		});
+
 		LayoutManager.get(getConnection()).addElementResizeListener(
 				getWidget().getElement(), new ElementResizeListener() {
 					@Override
@@ -85,12 +94,6 @@ public class DChartsConnector extends AbstractComponentContainerConnector
 	public void onConnectorHierarchyChange(
 			ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
 		getWidget().add(getChildComponents().get(0).getWidget());
-	}
-
-	@Override
-	public void onStateChanged(StateChangeEvent stateChangeEvent) {
-		super.onStateChanged(stateChangeEvent);
-		getWidget().processChartData(getState().getChartData());
 	}
 
 	@SuppressWarnings("unchecked")

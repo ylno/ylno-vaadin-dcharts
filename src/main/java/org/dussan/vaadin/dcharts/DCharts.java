@@ -29,8 +29,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
+import org.dussan.vaadin.dcharts.client.rpc.DChartsClientRPC;
 import org.dussan.vaadin.dcharts.client.rpc.DChartsServerRpc;
-import org.dussan.vaadin.dcharts.client.state.DChartsState;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.events.ChartData;
 import org.dussan.vaadin.dcharts.events.chartImageChange.ChartImageChangeEvent;
@@ -94,6 +94,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private DownloadButtonLocation downloadButtonLocation = null;
 	private FileDownloader fileDownloader = null;
 
+	private String chartId = null;
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
 	private Integer marginTop = null;
@@ -108,6 +109,12 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private Boolean enableChartImageChangeEvent = null;
 
 	public DCharts() {
+		chartId = "dCharts-" + ((long) (Math.random() * 10000000000000000L));
+		getRpcProxy(DChartsClientRPC.class).setChartId(chartId);
+
+		// set init chart's dimensions
+		setSizeFull();
+		
 		marginTop = 0;
 		marginRight = 0;
 		marginBottom = 0;
@@ -189,11 +196,10 @@ public class DCharts extends AbstractSingleComponentContainer {
 	}
 
 	private void addChartContainer() {
-		String id = "dCharts-" + ((long) (Math.random() * 10000000000000000L));
-		chartData.put(ID, id);
+		chartData.put(ID, chartId);
 
 		downloadButton = new Button("Download chart");
-		downloadButton.setId(id + "-button");
+		downloadButton.setId(chartId + "-button");
 		downloadButton.addStyleName("small");
 		downloadButton.setSizeUndefined();
 		setContent(downloadButton);
@@ -208,98 +214,102 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private void processEvent(Map<String, String> eventData) {
 		if (eventData != null && !eventData.isEmpty()) {
 			ChartData chartData = ChartDataHelper.process(eventData);
-			if (chartData != null && chartData.getSeriesIndex() != null
-					&& chartData.getPointIndex() != null) {
-				chartData.setOriginData(dataSeries.getSeriesValue(chartData
-						.getSeriesIndex().intValue(), chartData.getPointIndex()
-						.intValue()));
-			}
+			if (chartId.equals(chartData.getChartId())) {
+				if (chartData != null && chartData.getSeriesIndex() != null
+						&& chartData.getPointIndex() != null) {
+					chartData.setOriginData(dataSeries.getSeriesValue(chartData
+							.getSeriesIndex().intValue(), chartData
+							.getPointIndex().intValue()));
+				}
 
-			if (chartData != null) {
-				switch (chartData.getChartEventType()) {
-				case BAR_MOUSE_ENTER:
-				case BUBBLE_MOUSE_ENTER:
-				case DONUT_MOUSE_ENTER:
-				case OHLC_MOUSE_ENTER:
-				case PIE_MOUSE_ENTER:
-				case PYRAMID_MOUSE_ENTER:
-					handlerManager.fireEvent(new ChartDataMouseEnterEvent(
-							chartData));
-					break;
+				if (chartData != null) {
+					switch (chartData.getChartEventType()) {
+					case BAR_MOUSE_ENTER:
+					case BUBBLE_MOUSE_ENTER:
+					case DONUT_MOUSE_ENTER:
+					case OHLC_MOUSE_ENTER:
+					case PIE_MOUSE_ENTER:
+					case PYRAMID_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 
-				case BAR_MOUSE_LEAVE:
-				case BUBBLE_MOUSE_LEAVE:
-				case DONUT_MOUSE_LEAVE:
-				case OHLC_MOUSE_LEAVE:
-				case PIE_MOUSE_LEAVE:
-				case PYRAMID_MOUSE_LEAVE:
-					handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
-							chartData));
-					break;
+					case BAR_MOUSE_LEAVE:
+					case BUBBLE_MOUSE_LEAVE:
+					case DONUT_MOUSE_LEAVE:
+					case OHLC_MOUSE_LEAVE:
+					case PIE_MOUSE_LEAVE:
+					case PYRAMID_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 
-				case BAR_CLICK:
-				case BUBBLE_CLICK:
-				case DONUT_CLICK:
-				case LINE_CLICK:
-				case OHLC_CLICK:
-				case PIE_CLICK:
-					handlerManager
-							.fireEvent(new ChartDataClickEvent(chartData));
-					break;
+					case BAR_CLICK:
+					case BUBBLE_CLICK:
+					case DONUT_CLICK:
+					case LINE_CLICK:
+					case OHLC_CLICK:
+					case PIE_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 
-				case BAR_RIGHT_CLICK:
-				case BUBBLE_RIGHT_CLICK:
-				case DONUT_RIGHT_CLICK:
-				case LINE_RIGHT_CLICK:
-				case PIE_RIGHT_CLICK:
-					handlerManager.fireEvent(new ChartDataRightClickEvent(
-							chartData));
-					break;
+					case BAR_RIGHT_CLICK:
+					case BUBBLE_RIGHT_CLICK:
+					case DONUT_RIGHT_CLICK:
+					case LINE_RIGHT_CLICK:
+					case PIE_RIGHT_CLICK:
+						handlerManager.fireEvent(new ChartDataRightClickEvent(
+								chartData));
+						break;
 
-				case RAW_IMAGE_DATA:
-					try {
-						String data = chartData.getData()[0].toString()
-								.substring("data:image/png;base64,".length());
-						chartImage = Base64.decodeBase64(data);
-						downloadButton.setEnabled(chartImage.length > 0);
-						fileDownloader
-								.setFileDownloadResource(getChartResource());
-						if (enableChartImageChangeEvent) {
-							handlerManager.fireEvent(new ChartImageChangeEvent(
-									getChartImage()));
+					case RAW_IMAGE_DATA:
+						try {
+							String data = chartData.getData()[0].toString()
+									.substring(
+											"data:image/png;base64,".length());
+							chartImage = Base64.decodeBase64(data);
+							downloadButton.setEnabled(chartImage.length > 0);
+							fileDownloader
+									.setFileDownloadResource(getChartResource());
+							if (enableChartImageChangeEvent) {
+								handlerManager
+										.fireEvent(new ChartImageChangeEvent(
+												getChartImage()));
+							}
+						} catch (Exception e) {
+							downloadButton.setEnabled(false);
+							if (enableChartImageChangeEvent) {
+								handlerManager
+										.fireEvent(new ChartImageChangeEvent(
+												null));
+							}
 						}
-					} catch (Exception e) {
-						downloadButton.setEnabled(false);
-						if (enableChartImageChangeEvent) {
-							handlerManager.fireEvent(new ChartImageChangeEvent(
-									null));
-						}
+						break;
+
+					case NOT_DEFINED:
+					default:
+						String caption = "UNKNOWN EVENT";
+						String description = "Cannot process unknown chart data event!";
+						Notification.show(caption, description,
+								Type.ERROR_MESSAGE);
+						break;
 					}
-					break;
-
-				case NOT_DEFINED:
-				default:
-					String caption = "UNKNOWN EVENT";
-					String description = "Cannot process unknown chart data event!";
-					Notification.show(caption, description, Type.ERROR_MESSAGE);
-					break;
 				}
 			}
 		}
 	}
 
 	@Override
-	protected DChartsState getState() {
-		return (DChartsState) super.getState();
-	}
-
-	@Override
 	public void beforeClientResponse(boolean initial) {
 		super.beforeClientResponse(initial);
 		if (chartData != null && chartData.size() > 0) {
+			// always put chart id into chart data
+			chartData.put(ID, chartId);
+
 			Map<Integer, String> cloneData = new HashMap<Integer, String>();
 			cloneData.putAll(chartData);
-			getState().setChartData(cloneData);
+			getRpcProxy(DChartsClientRPC.class).setChartData(cloneData);
 			chartData.clear();
 		}
 	}
