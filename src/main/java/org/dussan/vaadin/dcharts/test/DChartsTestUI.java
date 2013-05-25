@@ -48,13 +48,15 @@ import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.renderers.label.CanvasAxisLabelRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BubbleRenderer;
+import org.dussan.vaadin.dcharts.renderers.series.PieRenderer;
 import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -118,24 +120,29 @@ public class DChartsTestUI extends UI {
 		setContent(layout);
 		Page.getCurrent().setTitle("dCharts Application");
 
-		chartsDemo1(layout);
-		chartsDemo2(layout);
+		DCharts charts1 = chartsDemo1();
+		DCharts charts2 = chartsDemo2();
+		DCharts charts3 = chartsDemo3();
+		DCharts charts4 = chartsDemo4();
+
+		HorizontalLayout layout3 = new HorizontalLayout();
+		layout3.addComponent(charts3);
+		layout3.addComponent(charts4);
+
+		TabSheet demoTabSheet = new TabSheet();
+		layout.addComponent(demoTabSheet);
+		demoTabSheet.addTab(charts1, "Demo 1");
+		demoTabSheet.addTab(charts2, "Demo 2");
+		demoTabSheet.addTab(layout3, "Demo 3");
 	}
 
-	private void chartsDemo1(VerticalLayout layout) {
+	private DCharts chartsDemo1() {
 		DCharts chart = new DCharts();
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
-		chart.setWidth("300px");
-		chart.setHeight("300px");
+		chart.setHeight("400px");
 		chart.setCaption("test");
 		chart.setEnableDownload(true);
 		chart.setChartImageFormat(ChartImageFormat.GIF);
-		layout.addComponent(chart);
-
-		Label version = new Label("dCharts version: " + DCharts.getVersion()
-				+ "  ,  dChart git version: " + DCharts.getGitVersion()
-				+ "  ,  dChart jqPlot version: " + DCharts.getJqPlotVersion());
-		layout.addComponent(version);
 
 		DataSeries dataSeries = new DataSeries().add(2000.20, 1116, 7, 10);
 
@@ -211,13 +218,14 @@ public class DChartsTestUI extends UI {
 						event.getChartImage());
 			}
 		});
+
+		return chart;
 	}
 
-	private void chartsDemo2(VerticalLayout layout) {
+	private DCharts chartsDemo2() {
 		DCharts chart = new DCharts();
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
 		chart.setCaption("test");
-		layout.addComponent(chart);
 
 		DataSeries dataSeries = new DataSeries().newSeries()
 				.add(11, 123, 1236, "Acura").add(45, 92, 1067, "Alfa Romeo")
@@ -272,6 +280,118 @@ public class DChartsTestUI extends UI {
 						event.getChartData());
 			}
 		});
+
+		return chart;
+	}
+
+	private DCharts chartsDemo3() {
+		DataSeries dataSeries = new DataSeries().newSeries().add("none", 23)
+				.add("error", 0).add("click", 5).add("impression", 25);
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(
+				SeriesRenderers.PIE).setRendererOptions(
+				new PieRenderer().setShowDataLabels(true));
+
+		Options options = new Options().setCaptureRightClick(true)
+				.setSeriesDefaults(seriesDefaults);
+
+		final DCharts chart = new DCharts();
+		chart.setWidth("400px");
+		chart.setHeight("400px");
+		chart.setEnableChartDataMouseEnterEvent(true);
+		chart.setEnableChartDataMouseLeaveEvent(true);
+		chart.setEnableChartDataClickEvent(true);
+		chart.setEnableChartDataRightClickEvent(true);
+
+		chart.addHandler(new ChartDataMouseEnterHandler() {
+			@Override
+			public void onChartDataMouseEnter(ChartDataMouseEnterEvent event) {
+				showEventNotification("CHART DATA MOUSE ENTER",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataMouseLeaveHandler() {
+			@Override
+			public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
+				showEventNotification("CHART DATA MOUSE LEAVE",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataClickHandler() {
+			@Override
+			public void onChartDataClick(ChartDataClickEvent event) {
+				showEventNotification("CHART DATA CLICK", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataRightClickHandler() {
+			@Override
+			public void onChartDataRightClick(ChartDataRightClickEvent event) {
+				showEventNotification("CHART DATA RIGHT CLICK",
+						event.getChartData());
+			}
+		});
+
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+
+		return chart;
+	}
+
+	private DCharts chartsDemo4() {
+		DataSeries dataSeries = new DataSeries().newSeries().add("none", 23)
+				.add("error", 0).add("click", 5).add("impression", 25);
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(
+				SeriesRenderers.PIE).setRendererOptions(
+				new PieRenderer().setShowDataLabels(true));
+
+		Options options = new Options().setCaptureRightClick(true)
+				.setSeriesDefaults(seriesDefaults);
+
+		DCharts chart = new DCharts();
+		chart.setWidth("400px");
+		chart.setHeight("400px");
+		chart.setEnableChartDataMouseEnterEvent(true);
+		chart.setEnableChartDataMouseLeaveEvent(true);
+		chart.setEnableChartDataClickEvent(true);
+		chart.setEnableChartDataRightClickEvent(true);
+
+		chart.addHandler(new ChartDataMouseEnterHandler() {
+			@Override
+			public void onChartDataMouseEnter(ChartDataMouseEnterEvent event) {
+				showEventNotification("CHART DATA MOUSE ENTER",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataMouseLeaveHandler() {
+			@Override
+			public void onChartDataMouseLeave(ChartDataMouseLeaveEvent event) {
+				showEventNotification("CHART DATA MOUSE LEAVE",
+						event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataClickHandler() {
+			@Override
+			public void onChartDataClick(ChartDataClickEvent event) {
+				showEventNotification("CHART DATA CLICK", event.getChartData());
+			}
+		});
+
+		chart.addHandler(new ChartDataRightClickHandler() {
+			@Override
+			public void onChartDataRightClick(ChartDataRightClickEvent event) {
+				showEventNotification("CHART DATA RIGHT CLICK",
+						event.getChartData());
+			}
+		});
+
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+
+		return chart;
 	}
 
 }
