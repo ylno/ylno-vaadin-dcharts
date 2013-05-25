@@ -55,18 +55,17 @@ public class VDCharts extends VHorizontalLayout implements
 	private static final int SHOW_CHART = 5;
 	private static final int REPLOT_CHART_CLEAR = 6;
 	private static final int REPLOT_CHART_RESET_AXES = 7;
-	private static final int REFRESH_CHART = 8;
-	private static final int MARGIN_TOP = 9;
-	private static final int MARGIN_RIGHT = 10;
-	private static final int MARGIN_BOTTOM = 11;
-	private static final int MARGIN_LEFT = 12;
-	private static final int MOUSE_ENTER_EVENT = 13;
-	private static final int MOUSE_LEAVE_EVENT = 14;
-	private static final int CLICK_EVENT = 15;
-	private static final int RIGHT_CLICK_EVENT = 16;
-	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
+	private static final int MARGIN_TOP = 8;
+	private static final int MARGIN_RIGHT = 9;
+	private static final int MARGIN_BOTTOM = 10;
+	private static final int MARGIN_LEFT = 11;
+	private static final int MOUSE_ENTER_EVENT = 12;
+	private static final int MOUSE_LEAVE_EVENT = 13;
+	private static final int CLICK_EVENT = 14;
+	private static final int RIGHT_CLICK_EVENT = 15;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 16;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
 
 	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_LEFT = 0;
 	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT = 1;
@@ -114,19 +113,32 @@ public class VDCharts extends VHorizontalLayout implements
 
 	private native boolean isJQueryLibraryLoaded()
 	/*-{
-	 	return !(typeof $wnd.jQuery == 'undefined');
+		if($wnd.jQuery){return true;}
+		return false;
 	}-*/;
 
 	private native boolean isJqPlotLibraryLoaded()
 	/*-{
-	 	return !(typeof $wnd.chart === 'undefined');
+		if($wnd.jQuery.jqplot){return true;}
+		return false;
+	}-*/;
+
+	private native boolean isLibraryLoaded()
+	/*-{
+		$wnd.jQuery(document).ready(function($){
+			if($wnd.jQuery.jqplot.PieRenderer){alert('PieRenderer yes');}
+			else{alert('PieRenderer no');}
+			if($wnd.jQuery.jqplot.BubbleRenderer){alert('BubbleRenderer yes');}
+			else{alert('BubbleRenderer no');}
+		});
+		return true;
 	}-*/;
 
 	private void loadJQueryLibrary() {
 		if (!isJQueryLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.jQuery().getText());
+			JavaScriptInjector.inject(JqPlot.CODE.attrChange().getText());
 		}
-		JavaScriptInjector.inject(JqPlot.CODE.attrChange().getText());
 	}
 
 	private void loadJqPlotLibrary() {
@@ -142,23 +154,21 @@ public class VDCharts extends VHorizontalLayout implements
 		// initialize main JqPlot libraries
 		if (!isJqPlotLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.jqPlot().getText());
+			JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer()
+					.getText());
 		}
-		JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer().getText());
 	}
 
 	private native void showChart(VDCharts c, String id, String dataSeries,
 			String options, String decimalSeparator, String thousandsSeparator)
 	/*-{
-	 	if(typeof $wnd.chart === 'undefined') {
-	 		$wnd.chart={};
-	 	}
-	 	eval("var _options="+options+";");
-	 	eval("var _dataSeries="+dataSeries+";");
 		$wnd.jQuery(document).ready(function($){
+		 	var _options = eval("("+options+")");
+		 	var _dataSeries = eval("("+dataSeries+")");
 			$wnd.jQuery('#'.concat(id)).empty();
 			$.jqplot.sprintf.decimalMark=decimalSeparator;
 			$.jqplot.sprintf.thousandsSeparator=thousandsSeparator;
-			$wnd.chart[id]=$.jqplot(id, _dataSeries, _options);
+			$.jqplot(id, _dataSeries, _options);
 			// send first chart image
 			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendChartImageToServer()();
 			// and then watch for changes
@@ -171,24 +181,20 @@ public class VDCharts extends VHorizontalLayout implements
 	private native void replotChart(VDCharts c, String id, Boolean clearChart,
 			Boolean resetChartAxes)
 	/*-{
-	 	if(typeof $wnd.chart !== 'undefined' && $wnd.chart[id]) {
-			$wnd.jQuery(document).ready(function($){
-				$wnd.chart[id].replot({clear:clearChart,resetAxes:resetChartAxes});
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendChartImageToServer()();
-			});
-		}
+		$wnd.jQuery(document).ready(function($){
+			$wnd.jQuery('#'.concat(id)).replot({clear:clearChart,resetAxes:resetChartAxes});
+			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendChartImageToServer()();
+		});
 	}-*/;
 
 	private native void fireEventForSendingChartImageToServer(VDCharts c,
 			String id)
 	/*-{
-	 	if(typeof $wnd.chart !== 'undefined' && $wnd.chart[id]) {
-			$wnd.jQuery(document).ready(function($) {
-				var event = 'rawImageData';
-				var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
-				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
-			});
-		}
+		$wnd.jQuery(document).ready(function($) {
+			var event = 'rawImageData';
+			var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
+			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+		});
 	}-*/;
 
 	private void activateJqPlotPlugins(String options) {
@@ -201,7 +207,9 @@ public class VDCharts extends VHorizontalLayout implements
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.BarRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.barRenderer().getText());
+			if (!JavaScriptInjector.isBarRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.barRenderer().getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				BarDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -217,7 +225,10 @@ public class VDCharts extends VHorizontalLayout implements
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.BubbleRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.bubbleRenderer().getText());
+			if (!JavaScriptInjector.isBubbleRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.bubbleRenderer()
+						.getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				BubbleDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -232,26 +243,34 @@ public class VDCharts extends VHorizontalLayout implements
 			}
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.CategoryAxisRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.CategoryAxisRenderer")
+				&& !JavaScriptInjector.isCategoryAxisRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.categoryAxisRenderer()
 					.getText());
 		}
-		if (options.contains("$wnd.jQuery.jqplot.CanvasAxisLabelRenderer")) {
+
+		if (options.contains("$wnd.jQuery.jqplot.CanvasAxisLabelRenderer")
+				&& !JavaScriptInjector.isCategoryAxisRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.canvasAxisLabelRenderer()
 					.getText());
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.CanvasAxisTickRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.CanvasAxisTickRenderer")
+				&& !JavaScriptInjector.isCanvasAxisTickRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.canvasAxisTickRenderer()
 					.getText());
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.DateAxisRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.DateAxisRenderer")
+				&& !JavaScriptInjector.isDateAxisRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.dateAxisRenderer().getText());
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.DonutRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.donutRenderer().getText());
+			if (!JavaScriptInjector.isDonutRendererLoaded()) {
+				JavaScriptInjector
+						.inject(JqPlot.CODE.donutRenderer().getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				DonutDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -266,22 +285,27 @@ public class VDCharts extends VHorizontalLayout implements
 			}
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.EnhancedLegendRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.EnhancedLegendRenderer")
+				&& !JavaScriptInjector.isEnhancedLegendRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.enhancedLegendRenderer()
 					.getText());
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.LogAxisRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.LogAxisRenderer")
+				&& !JavaScriptInjector.isLogAxisRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.logAxisRenderer().getText());
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.MeterGaugeRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.MeterGaugeRenderer")
+				&& !JavaScriptInjector.isMeterGaugeRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.meterGaugeRenderer()
 					.getText());
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.PieRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.pieRenderer().getText());
+			if (!JavaScriptInjector.isPieRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.pieRenderer().getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				PieDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -296,18 +320,23 @@ public class VDCharts extends VHorizontalLayout implements
 			}
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.PyramidAxisRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.PyramidAxisRenderer")
+				&& !JavaScriptInjector.isPyramidAxisRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.pyramidAxisRenderer()
 					.getText());
 		}
 
-		if (options.contains("$wnd.jQuery.jqplot.PyramidGridRenderer")) {
+		if (options.contains("$wnd.jQuery.jqplot.PyramidGridRenderer")
+				&& !JavaScriptInjector.isPyramidGridRendererLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.pyramidGridRenderer()
 					.getText());
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.PyramidRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.pyramidRenderer().getText());
+			if (!JavaScriptInjector.isPyramidRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.pyramidRenderer()
+						.getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				PyramidDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -317,7 +346,9 @@ public class VDCharts extends VHorizontalLayout implements
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.OHLCRenderer")) {
-			JavaScriptInjector.inject(JqPlot.CODE.ohlcRenderer().getText());
+			if (!JavaScriptInjector.isOHLCRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.ohlcRenderer().getText());
+			}
 			if (enableChartDataMouseEnterEvent) {
 				OhlcDataHandler.activateMouseEnter(this, chart.getId());
 			}
@@ -329,19 +360,23 @@ public class VDCharts extends VHorizontalLayout implements
 			}
 		}
 
-		if (options.contains("cursor:")) {
+		if (options.contains("cursor:")
+				&& !JavaScriptInjector.isCursorLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.cursor().getText());
 		}
 
-		if (options.contains("highlighter:")) {
+		if (options.contains("highlighter:")
+				&& !JavaScriptInjector.isHighlighterLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.highlighter().getText());
 		}
 
-		if (options.contains("pointLabels:")) {
+		if (options.contains("pointLabels:")
+				&& !JavaScriptInjector.isPointLabelsLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.pointLabels().getText());
 		}
 
-		if (options.contains("trendline:")) {
+		if (options.contains("trendline:")
+				&& !JavaScriptInjector.isTrendlineLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.trendline().getText());
 		}
 	}
@@ -359,10 +394,10 @@ public class VDCharts extends VHorizontalLayout implements
 		int buttonHeight = button != null ? button.getOffsetHeight() : 0;
 		StringBuilder value = new StringBuilder();
 		if (options != null && options.length() > 0) {
-			value.append("{width: '");
-			value.append(getOffsetWidth());
-			value.append("px', height: '");
-			value.append((getOffsetHeight() - buttonHeight) + "px', ");
+			int width = getOffsetWidth() == 0 ? 300 : getOffsetWidth();
+			int height = getOffsetHeight() == 0 ? 300 : getOffsetHeight();
+			value.append("{width: '" + width + "px',");
+			value.append("height: '" + (height - buttonHeight) + "px',");
 			value.append(options.substring(1));
 		}
 		return value.toString();
@@ -475,27 +510,27 @@ public class VDCharts extends VHorizontalLayout implements
 		}
 	}
 
-	public void refreshChart() {
-		if (isChartPrepared() && showChart) {
-			showChart(this, chartId, dataSeries, options, decimalSeparator,
-					thousandsSeparator);
-		}
-	}
-
 	public void processChartData(Map<Integer, String> chartData) {
 		if (isValidChartData(chartData)) {
 			if (!isChartPrepared()) {
 				this.chartData = chartData;
-
 				if (chartData.containsKey(DOWNLOAD_BUTTON_ENABLE)) {
 					downloadButtonEnabled = Boolean.parseBoolean(chartData
 							.get(DOWNLOAD_BUTTON_ENABLE));
 				}
-
 				if (chartData.containsKey(DOWNLOAD_BUTTON_LOCATION)) {
 					downloadButtonLocation = Integer.parseInt(chartData
 							.get(DOWNLOAD_BUTTON_LOCATION));
 				}
+			} else if (isChartPrepared()
+					&& chartData.containsKey(REPLOT_CHART_CLEAR)
+					&& chartData.containsKey(REPLOT_CHART_RESET_AXES)
+					&& showChart) {
+				boolean clear = Boolean.parseBoolean(chartData
+						.get(REPLOT_CHART_CLEAR));
+				boolean resetAxes = Boolean.parseBoolean(chartData
+						.get(REPLOT_CHART_RESET_AXES));
+				replotChart(this, chart.getId(), clear, resetAxes);
 			} else {
 				if (chartData.containsKey(MARGIN_TOP)
 						|| chartData.containsKey(MARGIN_BOTTOM)) {
@@ -578,22 +613,6 @@ public class VDCharts extends VHorizontalLayout implements
 								decimalSeparator, thousandsSeparator);
 					} else {
 						getElement().getStyle().setDisplay(Display.NONE);
-					}
-				}
-
-				if (chartData.containsKey(REPLOT_CHART_CLEAR)
-						&& chartData.containsKey(REPLOT_CHART_RESET_AXES)
-						&& showChart) {
-					boolean clear = Boolean.parseBoolean(chartData
-							.get(REPLOT_CHART_CLEAR));
-					boolean resetAxes = Boolean.parseBoolean(chartData
-							.get(REPLOT_CHART_RESET_AXES));
-					replotChart(this, chart.getId(), clear, resetAxes);
-				}
-
-				if (chartData.containsKey(REFRESH_CHART) && showChart) {
-					if (Boolean.parseBoolean(chartData.get(REFRESH_CHART))) {
-						refreshChart();
 					}
 				}
 			}

@@ -77,8 +77,6 @@ public class DChartsConnector extends AbstractComponentContainerConnector
 					public void onElementResize(ElementResizeEvent e) {
 						if (!getWidget().isChartPrepared()) {
 							getWidget().prepareChart();
-						} else if (getWidget().isChartPrepared()) {
-							getWidget().refreshChart();
 						}
 					}
 				});
@@ -93,7 +91,9 @@ public class DChartsConnector extends AbstractComponentContainerConnector
 	@Override
 	public void onConnectorHierarchyChange(
 			ConnectorHierarchyChangeEvent connectorHierarchyChangeEvent) {
-		getWidget().add(getChildComponents().get(0).getWidget());
+		if (getChildComponents() != null && getChildComponents().size() > 0) {
+			getWidget().add(getChildComponents().get(0).getWidget());
+		}
 	}
 
 	@SuppressWarnings("unchecked")

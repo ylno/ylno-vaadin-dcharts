@@ -67,18 +67,17 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private static final int SHOW_CHART = 5;
 	private static final int REPLOT_CHART_CLEAR = 6;
 	private static final int REPLOT_CHART_RESET_AXES = 7;
-	private static final int REFRESH_CHART = 8;
-	private static final int MARGIN_TOP = 9;
-	private static final int MARGIN_RIGHT = 10;
-	private static final int MARGIN_BOTTOM = 11;
-	private static final int MARGIN_LEFT = 12;
-	private static final int MOUSE_ENTER_EVENT = 13;
-	private static final int MOUSE_LEAVE_EVENT = 14;
-	private static final int CLICK_EVENT = 15;
-	private static final int RIGHT_CLICK_EVENT = 16;
-	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
+	private static final int MARGIN_TOP = 8;
+	private static final int MARGIN_RIGHT = 9;
+	private static final int MARGIN_BOTTOM = 10;
+	private static final int MARGIN_LEFT = 11;
+	private static final int MOUSE_ENTER_EVENT = 12;
+	private static final int MOUSE_LEAVE_EVENT = 13;
+	private static final int CLICK_EVENT = 14;
+	private static final int RIGHT_CLICK_EVENT = 15;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 16;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
 
 	private byte[] chartImage = null;
 	private Map<Integer, String> chartData = null;
@@ -110,11 +109,9 @@ public class DCharts extends AbstractSingleComponentContainer {
 
 	public DCharts() {
 		chartId = "dCharts-" + ((long) (Math.random() * 10000000000000000L));
-		getRpcProxy(DChartsClientRPC.class).setChartId(chartId);
-
 		// set init chart's dimensions
 		setSizeFull();
-		
+
 		marginTop = 0;
 		marginRight = 0;
 		marginBottom = 0;
@@ -224,45 +221,103 @@ public class DCharts extends AbstractSingleComponentContainer {
 
 				if (chartData != null) {
 					switch (chartData.getChartEventType()) {
+					// mouse enter
 					case BAR_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 					case BUBBLE_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 					case DONUT_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 					case OHLC_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 					case PIE_MOUSE_ENTER:
+						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
+								chartData));
+						break;
 					case PYRAMID_MOUSE_ENTER:
 						handlerManager.fireEvent(new ChartDataMouseEnterEvent(
 								chartData));
 						break;
-
+					// mouse leave
 					case BAR_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 					case BUBBLE_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 					case DONUT_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 					case OHLC_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 					case PIE_MOUSE_LEAVE:
+						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
+								chartData));
+						break;
 					case PYRAMID_MOUSE_LEAVE:
 						handlerManager.fireEvent(new ChartDataMouseLeaveEvent(
 								chartData));
 						break;
-
+					// left click
 					case BAR_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 					case BUBBLE_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 					case DONUT_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 					case LINE_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 					case OHLC_CLICK:
+						handlerManager.fireEvent(new ChartDataClickEvent(
+								chartData));
+						break;
 					case PIE_CLICK:
 						handlerManager.fireEvent(new ChartDataClickEvent(
 								chartData));
 						break;
-
+					// right click
 					case BAR_RIGHT_CLICK:
+						handlerManager.fireEvent(new ChartDataRightClickEvent(
+								chartData));
+						break;
 					case BUBBLE_RIGHT_CLICK:
+						handlerManager.fireEvent(new ChartDataRightClickEvent(
+								chartData));
+						break;
 					case DONUT_RIGHT_CLICK:
+						handlerManager.fireEvent(new ChartDataRightClickEvent(
+								chartData));
+						break;
 					case LINE_RIGHT_CLICK:
+						handlerManager.fireEvent(new ChartDataRightClickEvent(
+								chartData));
+						break;
 					case PIE_RIGHT_CLICK:
 						handlerManager.fireEvent(new ChartDataRightClickEvent(
 								chartData));
 						break;
-
+					// raw image
 					case RAW_IMAGE_DATA:
 						try {
 							String data = chartData.getData()[0].toString()
@@ -306,11 +361,8 @@ public class DCharts extends AbstractSingleComponentContainer {
 		if (chartData != null && chartData.size() > 0) {
 			// always put chart id into chart data
 			chartData.put(ID, chartId);
-
-			Map<Integer, String> cloneData = new HashMap<Integer, String>();
-			cloneData.putAll(chartData);
-			getRpcProxy(DChartsClientRPC.class).setChartData(cloneData);
-			chartData.clear();
+			getRpcProxy(DChartsClientRPC.class).setChartId(chartId);
+			getRpcProxy(DChartsClientRPC.class).setChartData(chartData);
 		}
 	}
 
@@ -610,8 +662,8 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return this;
 	}
 
+	@Deprecated
 	public DCharts refresh() {
-		chartData.put(REFRESH_CHART, Boolean.TRUE.toString());
 		markAsDirty();
 		return this;
 	}

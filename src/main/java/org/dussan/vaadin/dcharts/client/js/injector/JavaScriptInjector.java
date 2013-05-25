@@ -35,9 +35,9 @@ public class JavaScriptInjector {
 		if (head == null) {
 			Element element = Document.get().getElementsByTagName("head")
 					.getItem(0);
-			
-			assert element != null : "HTML Head element required";
-			
+
+			assert (element != null) : "HTML Head element required";
+
 			HeadElement head = HeadElement.as(element);
 			JavaScriptInjector.head = head;
 		}
@@ -49,5 +49,119 @@ public class JavaScriptInjector {
 		script.setAttribute("language", "javascript");
 		return script;
 	}
+
+	public static native boolean isBarRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.BarRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isBubbleRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.BubbleRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isCategoryAxisRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.CategoryAxisRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isCanvasAxisLabelRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.CanvasAxisLabelRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isCanvasAxisTickRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.CanvasAxisTickRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isCursorLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.Cursor){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isDateAxisRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.DateAxisRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isDonutRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.DonutRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isEnhancedLegendRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.EnhancedLegendRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isHighlighterLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.Highlighter){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isLogAxisRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.LogAxisRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isMeterGaugeRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.MeterGaugeRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isPieRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.PieRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isPointLabelsLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.PointLabels){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isPyramidAxisRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.PyramidAxisRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isPyramidGridRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.PyramidGridRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isPyramidRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.PyramidRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isOHLCRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.OHLCRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isTrendlineLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.Trendline){return true;}
+		return false;
+	}-*/;
 
 }
