@@ -71,7 +71,7 @@ public class HorizontalLine extends CanvasOverlayObject<HorizontalLine> {
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 	}
@@ -103,11 +103,11 @@ public class HorizontalLine extends CanvasOverlayObject<HorizontalLine> {
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public HorizontalLine setxOffset(Object xOffset) {
+	public HorizontalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}

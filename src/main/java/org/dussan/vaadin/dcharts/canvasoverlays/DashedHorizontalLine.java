@@ -75,7 +75,7 @@ public class DashedHorizontalLine extends
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 		setDashPattern(dashPattern);
@@ -108,11 +108,11 @@ public class DashedHorizontalLine extends
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public DashedHorizontalLine setxOffset(Object xOffset) {
+	public DashedHorizontalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}

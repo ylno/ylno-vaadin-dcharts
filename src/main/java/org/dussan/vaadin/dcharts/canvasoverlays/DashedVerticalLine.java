@@ -74,7 +74,7 @@ public class DashedVerticalLine extends CanvasOverlayObject<DashedVerticalLine> 
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 		setDashPattern(dashPattern);
@@ -107,11 +107,11 @@ public class DashedVerticalLine extends CanvasOverlayObject<DashedVerticalLine> 
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public DashedVerticalLine setxOffset(Object xOffset) {
+	public DashedVerticalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}

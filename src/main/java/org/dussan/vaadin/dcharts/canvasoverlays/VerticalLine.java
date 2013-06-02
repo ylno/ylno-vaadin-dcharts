@@ -71,7 +71,7 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 	}
@@ -103,11 +103,11 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public VerticalLine setxOffset(Object xOffset) {
+	public VerticalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}
