@@ -15,6 +15,7 @@
  */
 package org.dussan.vaadin.dcharts.options;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.dussan.vaadin.dcharts.base.elements.Option;
 import org.dussan.vaadin.dcharts.base.elements.PointLabels;
 import org.dussan.vaadin.dcharts.base.elements.Trendline;
@@ -400,7 +401,7 @@ public class SeriesDefaults extends Option<SeriesDefaults> {
 	}
 
 	public SeriesDefaults setLinePattern(int... linePattern) {
-		this.linePattern = linePattern;
+		this.linePattern = ArrayUtils.toObject(linePattern);
 		return this;
 	}
 

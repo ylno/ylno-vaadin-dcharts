@@ -20,7 +20,14 @@ import java.util.List;
 
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.base.elements.Option;
+import org.dussan.vaadin.dcharts.canvasoverlays.DashedHorizontalLine;
+import org.dussan.vaadin.dcharts.canvasoverlays.DashedVerticalLine;
+import org.dussan.vaadin.dcharts.canvasoverlays.HorizontalLine;
+import org.dussan.vaadin.dcharts.canvasoverlays.Line;
+import org.dussan.vaadin.dcharts.canvasoverlays.VerticalLine;
 import org.dussan.vaadin.dcharts.defaults.DefaultCanvasOverlay;
+import org.dussan.vaadin.dcharts.helpers.JsonHelper;
+import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 
 public class CanvasOverlay extends Option<CanvasOverlay> {
 
@@ -70,15 +77,32 @@ public class CanvasOverlay extends Option<CanvasOverlay> {
 	@Override
 	public String getValue() {
 		StringBuilder value = new StringBuilder();
+		value.append(show != null ? "show: " + show + ", " : "");
+		value.append(deferDraw != null ? "deferDraw: " + deferDraw + ", " : "");
+		value.append("objects: [");
 		for (CanvasOverlayObject<?> object : this.objects) {
 			if (object != null) {
-				value.append(value.length() > 0 ? "," : "");
-				value.append(object.getValue());
+				if (object instanceof DashedHorizontalLine) {
+					value.append("{"
+							+ CanvasOverlayObjects.DASHED_HORIZONTAL_LINE
+									.getObject());
+				} else if (object instanceof DashedVerticalLine) {
+					value.append("{"
+							+ CanvasOverlayObjects.DASHED_VERTICAL_LINE
+									.getObject());
+				} else if (object instanceof HorizontalLine) {
+					value.append("{"
+							+ CanvasOverlayObjects.HORIZONTAL_LINE.getObject());
+				} else if (object instanceof Line) {
+					value.append("{" + CanvasOverlayObjects.LINE.getObject());
+				} else if (object instanceof VerticalLine) {
+					value.append("{"
+							+ CanvasOverlayObjects.VERTICAL_LINE.getObject());
+				}
+				value.append(": " + JsonHelper.toJsonString(object) + "},");
 			}
 		}
-
-		return (value.length() > 0 ? value.insert(0, "[").append("]")
-				.toString() : null);
+		return "{" + value.substring(0, value.length() - 1) + "]}";
 	}
 
 }

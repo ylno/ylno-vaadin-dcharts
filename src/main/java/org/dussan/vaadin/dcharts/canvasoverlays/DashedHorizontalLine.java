@@ -15,11 +15,10 @@
  */
 package org.dussan.vaadin.dcharts.canvasoverlays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.defaults.canvasoverlays.DefaultDashedHorizontalLine;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
-import org.dussan.vaadin.dcharts.helpers.ObjectHelper;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -39,21 +38,20 @@ public class DashedHorizontalLine extends
 
 	public DashedHorizontalLine() {
 		super(new DefaultDashedHorizontalLine());
-		setName(CanvasOverlayObjects.DASHED_HORIZONTAL_LINE);
 		setShow(true);
 	}
 
-	public DashedHorizontalLine(boolean show, int lineWidth, LineCaps lineCaps,
-			String color, boolean shadow, int shadowAngle, int shadowOffset,
-			int shadowDepth, String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
-			boolean showTooltip, float showTooltipPrecision,
-			TooltipLocations tooltipLocations, boolean fadeTooltip,
-			TooltipFadeSpeeds tooltipFadeSpeeds, int tooltipOffset,
-			String tooltipFormatString, Object y, Object xmin, Object xmax,
-			Object xOffset, Object xminOffset, Object xmaxOffset,
-			int[] dashPattern) {
+	public DashedHorizontalLine(String name, boolean show, int lineWidth,
+			LineCaps lineCaps, String color, boolean shadow, int shadowAngle,
+			int shadowOffset, int shadowDepth, String shadowAlpha,
+			XYaxes xaxis, XYaxes yaxis, boolean showTooltip,
+			float showTooltipPrecision, TooltipLocations tooltipLocations,
+			boolean fadeTooltip, TooltipFadeSpeeds tooltipFadeSpeeds,
+			int tooltipOffset, String tooltipFormatString, Object y,
+			Object xmin, Object xmax, Object xOffset, Object xminOffset,
+			Object xmaxOffset, int[] dashPattern) {
 		super(new DefaultDashedHorizontalLine());
-		setName(CanvasOverlayObjects.DASHED_HORIZONTAL_LINE);
+		setName(name);
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCaps);
@@ -75,7 +73,7 @@ public class DashedHorizontalLine extends
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 		setDashPattern(dashPattern);
@@ -108,11 +106,11 @@ public class DashedHorizontalLine extends
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public DashedHorizontalLine setxOffset(Object xOffset) {
+	public DashedHorizontalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}
@@ -139,8 +137,8 @@ public class DashedHorizontalLine extends
 		return dashPattern;
 	}
 
-	public DashedHorizontalLine setDashPattern(int[] dashPattern) {
-		this.dashPattern = ObjectHelper.toArrayString(dashPattern);
+	public DashedHorizontalLine setDashPattern(int... dashPattern) {
+		this.dashPattern = ArrayUtils.toObject(dashPattern);
 		return this;
 	}
 

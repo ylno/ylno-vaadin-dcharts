@@ -18,7 +18,6 @@ package org.dussan.vaadin.dcharts.canvasoverlays;
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.defaults.canvasoverlays.DefaultVerticalLine;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -36,11 +35,10 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 
 	public VerticalLine() {
 		super(new DefaultVerticalLine());
-		setName(CanvasOverlayObjects.VERTICAL_LINE);
 		setShow(true);
 	}
 
-	public VerticalLine(boolean show, int lineWidth, LineCaps lineCaps,
+	public VerticalLine(String name, boolean show, int lineWidth, LineCaps lineCaps,
 			String color, boolean shadow, int shadowAngle, int shadowOffset,
 			int shadowDepth, String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
 			boolean showTooltip, float showTooltipPrecision,
@@ -49,7 +47,7 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 			String tooltipFormatString, Object y, Object xmin, Object xmax,
 			Object xOffset, Object xminOffset, Object xmaxOffset) {
 		super(new DefaultVerticalLine());
-		setName(CanvasOverlayObjects.VERTICAL_LINE);
+		setName(name);
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCaps);
@@ -71,7 +69,7 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 		setY(y);
 		setXmin(xmin);
 		setXmax(xmax);
-		setxOffset(xOffset);
+		setXoffset(xOffset);
 		setXminOffset(xminOffset);
 		setXmaxOffset(xmaxOffset);
 	}
@@ -103,11 +101,11 @@ public class VerticalLine extends CanvasOverlayObject<VerticalLine> {
 		return this;
 	}
 
-	public Object getxOffset() {
+	public Object getXoffset() {
 		return xOffset;
 	}
 
-	public VerticalLine setxOffset(Object xOffset) {
+	public VerticalLine setXoffset(Object xOffset) {
 		this.xOffset = xOffset;
 		return this;
 	}

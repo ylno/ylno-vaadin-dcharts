@@ -50,9 +50,27 @@ public class JavaScriptInjector {
 		return script;
 	}
 
+	public static native boolean isJQueryLibraryLoaded()
+	/*-{
+		if($wnd.jQuery){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isJqPlotLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot){return true;}
+		return false;
+	}-*/;
+
 	public static native boolean isBarRendererLoaded()
 	/*-{
 		if($wnd.jQuery.jqplot.BarRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isBlockRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.BlockRenderer){return true;}
 		return false;
 	}-*/;
 
@@ -77,6 +95,12 @@ public class JavaScriptInjector {
 	public static native boolean isCanvasAxisTickRendererLoaded()
 	/*-{
 		if($wnd.jQuery.jqplot.CanvasAxisTickRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isCanvasOverlayLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.CanvasOverlay){return true;}
 		return false;
 	}-*/;
 

@@ -18,7 +18,6 @@ package org.dussan.vaadin.dcharts.canvasoverlays;
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.defaults.canvasoverlays.DefaultLine;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -32,11 +31,10 @@ public class Line extends CanvasOverlayObject<Line> {
 
 	public Line() {
 		super(new DefaultLine());
-		setName(CanvasOverlayObjects.LINE);
 		setShow(true);
 	}
 
-	public Line(boolean show, int lineWidth, LineCaps lineCap, String color,
+	public Line(String name, boolean show, int lineWidth, LineCaps lineCap, String color,
 			boolean shadow, int shadowAngle, int shadowOffset, int shadowDepth,
 			String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
 			boolean showTooltip, float showTooltipPrecision,
@@ -44,7 +42,7 @@ public class Line extends CanvasOverlayObject<Line> {
 			TooltipFadeSpeeds tooltipFadeSpeeds, int tooltipOffset,
 			String tooltipFormatString, Object[][] start, Object[][] stop) {
 		super(new DefaultLine());
-		setName(CanvasOverlayObjects.LINE);
+		setName(name);
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCap);

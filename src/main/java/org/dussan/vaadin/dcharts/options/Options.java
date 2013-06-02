@@ -291,6 +291,15 @@ public class Options extends Option<Options> {
 		return this;
 	}
 
+	public Cursor getCanvasOverlay() {
+		return (Cursor) getOption("canvasOverlay");
+	}
+
+	public Options setCanvasOverlay(Option<CanvasOverlay> canvasOverlay) {
+		addOption(canvasOverlay);
+		return this;
+	}
+
 	public Cursor getCursor() {
 		return (Cursor) getOption("cursor");
 	}
