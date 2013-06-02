@@ -111,31 +111,8 @@ public class VDCharts extends VHorizontalLayout implements
 		return this;
 	}
 
-	private native boolean isJQueryLibraryLoaded()
-	/*-{
-		if($wnd.jQuery){return true;}
-		return false;
-	}-*/;
-
-	private native boolean isJqPlotLibraryLoaded()
-	/*-{
-		if($wnd.jQuery.jqplot){return true;}
-		return false;
-	}-*/;
-
-	private native boolean isLibraryLoaded()
-	/*-{
-		$wnd.jQuery(document).ready(function($){
-			if($wnd.jQuery.jqplot.PieRenderer){alert('PieRenderer yes');}
-			else{alert('PieRenderer no');}
-			if($wnd.jQuery.jqplot.BubbleRenderer){alert('BubbleRenderer yes');}
-			else{alert('BubbleRenderer no');}
-		});
-		return true;
-	}-*/;
-
 	private void loadJQueryLibrary() {
-		if (!isJQueryLibraryLoaded()) {
+		if (!JavaScriptInjector.isJQueryLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.jQuery().getText());
 			JavaScriptInjector.inject(JqPlot.CODE.attrChange().getText());
 		}
@@ -152,7 +129,7 @@ public class VDCharts extends VHorizontalLayout implements
 		}
 
 		// initialize main JqPlot libraries
-		if (!isJqPlotLibraryLoaded()) {
+		if (!JavaScriptInjector.isJqPlotLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.jqPlot().getText());
 			JavaScriptInjector.inject(JqPlot.CODE.canvasTextRenderer()
 					.getText());
@@ -222,6 +199,11 @@ public class VDCharts extends VHorizontalLayout implements
 			if (enableChartDataRightClickEvent) {
 				BarDataHandler.activateRightClick(this, chart.getId());
 			}
+		}
+
+		if (options.contains("$wnd.jQuery.jqplot.BlockRenderer")
+				&& !JavaScriptInjector.isBlockRendererLoaded()) {
+			JavaScriptInjector.inject(JqPlot.CODE.blockRenderer().getText());
 		}
 
 		if (options.contains("$wnd.jQuery.jqplot.BubbleRenderer")) {
@@ -538,11 +520,11 @@ public class VDCharts extends VHorizontalLayout implements
 							.parseInt(chartData.get(MARGIN_TOP)) : 0;
 					int bottom = chartData.containsKey(MARGIN_BOTTOM) ? Integer
 							.parseInt(chartData.get(MARGIN_BOTTOM)) : 0;
-					getElement().getStyle().setHeight(
+					chart.getStyle().setMarginTop(top, Unit.PX);
+					chart.getStyle().setMarginBottom(bottom, Unit.PX);
+					chart.getStyle().setHeight(
 							getElement().getOffsetHeight() - top - bottom,
 							Unit.PX);
-					getElement().getStyle().setMarginTop(top, Unit.PX);
-					getElement().getStyle().setMarginBottom(bottom, Unit.PX);
 				}
 
 				if (chartData.containsKey(MARGIN_LEFT)
@@ -552,7 +534,8 @@ public class VDCharts extends VHorizontalLayout implements
 					int right = chartData.containsKey(MARGIN_RIGHT) ? Integer
 							.parseInt(chartData.get(MARGIN_RIGHT)) : 0;
 					getElement().getStyle().setWidth(
-							getElement().getOffsetWidth() - left, Unit.PX);
+							getElement().getOffsetWidth() - left - right,
+							Unit.PX);
 					getElement().getStyle().setMarginLeft(left, Unit.PX);
 					chart.getStyle().setMarginRight(right, Unit.PX);
 				}

@@ -31,6 +31,7 @@ import org.dussan.vaadin.dcharts.metadata.lines.LinePatterns;
 import org.dussan.vaadin.dcharts.metadata.renderers.MarkerRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
 import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
+import org.dussan.vaadin.dcharts.renderers.series.BlockRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BubbleRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.DonutRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.LineRenderer;
@@ -326,6 +327,8 @@ public class XYseries extends BaseElement<XYseries> {
 	public XYseries setRendererOptions(SeriesRenderer<?> seriesRenderer) {
 		if (seriesRenderer instanceof BarRenderer) {
 			setRenderer(SeriesRenderers.BAR);
+		} else if (seriesRenderer instanceof BlockRenderer) {
+			setRenderer(SeriesRenderers.BLOCK);
 		} else if (seriesRenderer instanceof BubbleRenderer) {
 			setRenderer(SeriesRenderers.BUBBLE);
 		} else if (seriesRenderer instanceof DonutRenderer) {

@@ -18,6 +18,7 @@ package org.dussan.vaadin.dcharts.metadata.renderers;
 public enum SeriesRenderers {
 
 	BAR("$wnd.jQuery.jqplot.BarRenderer"), //
+	BLOCK("$wnd.jQuery.jqplot.BlockRenderer"), //
 	BUBBLE("$wnd.jQuery.jqplot.BubbleRenderer"), //
 	DONUT("$wnd.jQuery.jqplot.DonutRenderer"), //
 	LINE("$wnd.jQuery.jqplot.LineRenderer"), //

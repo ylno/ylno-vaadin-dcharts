@@ -50,9 +50,27 @@ public class JavaScriptInjector {
 		return script;
 	}
 
+	public static native boolean isJQueryLibraryLoaded()
+	/*-{
+		if($wnd.jQuery){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isJqPlotLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot){return true;}
+		return false;
+	}-*/;
+
 	public static native boolean isBarRendererLoaded()
 	/*-{
 		if($wnd.jQuery.jqplot.BarRenderer){return true;}
+		return false;
+	}-*/;
+
+	public static native boolean isBlockRendererLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.BlockRenderer){return true;}
 		return false;
 	}-*/;
 
