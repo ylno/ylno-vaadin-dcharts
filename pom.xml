@@ -5,7 +5,7 @@
 	<groupId>org.dussan.vaadin</groupId>
 	<artifactId>dcharts</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.0-SNAPSHOT</version>
+	<version>1.5.0</version>
 	<name>dCharts Widget</name>
 
 	<licenses>
