@@ -98,6 +98,12 @@ public class JavaScriptInjector {
 		return false;
 	}-*/;
 
+	public static native boolean isCanvasOverlayLibraryLoaded()
+	/*-{
+		if($wnd.jQuery.jqplot.CanvasOverlay){return true;}
+		return false;
+	}-*/;
+
 	public static native boolean isCursorLibraryLoaded()
 	/*-{
 		if($wnd.jQuery.jqplot.Cursor){return true;}

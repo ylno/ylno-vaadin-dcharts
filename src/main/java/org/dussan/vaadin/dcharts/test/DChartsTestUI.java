@@ -23,6 +23,8 @@ import org.dussan.vaadin.dcharts.ChartImageFormat;
 import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.base.elements.XYseries;
+import org.dussan.vaadin.dcharts.canvasoverlays.DashedHorizontalLine;
+import org.dussan.vaadin.dcharts.canvasoverlays.HorizontalLine;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
 import org.dussan.vaadin.dcharts.events.ChartData;
@@ -40,6 +42,7 @@ import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
+import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
 import org.dussan.vaadin.dcharts.metadata.locations.LegendLocations;
 import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
 import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
@@ -48,6 +51,7 @@ import org.dussan.vaadin.dcharts.metadata.renderers.LegendRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
 import org.dussan.vaadin.dcharts.metadata.ticks.TickFormatters;
 import org.dussan.vaadin.dcharts.options.Axes;
+import org.dussan.vaadin.dcharts.options.CanvasOverlay;
 import org.dussan.vaadin.dcharts.options.Grid;
 import org.dussan.vaadin.dcharts.options.Highlighter;
 import org.dussan.vaadin.dcharts.options.Legend;
@@ -138,6 +142,7 @@ public class DChartsTestUI extends UI {
 		DCharts charts3_2 = chartsDemo3_2();
 		DCharts charts4 = chartsDemo4();
 		DCharts charts5 = chartsDemo5();
+		DCharts charts6 = chartsDemo6();
 
 		HorizontalLayout layout3 = new HorizontalLayout();
 		layout3.addComponent(charts3_1);
@@ -150,6 +155,7 @@ public class DChartsTestUI extends UI {
 		demoTabSheet.addTab(layout3, "Demo 3");
 		demoTabSheet.addTab(charts4, "Demo 4");
 		demoTabSheet.addTab(charts5, "Demo 5");
+		demoTabSheet.addTab(charts6, "Demo 6");
 	}
 
 	private DCharts chartsDemo1() {
@@ -548,6 +554,52 @@ public class DChartsTestUI extends UI {
 		DCharts chart = new DCharts();
 		chart.setWidth("500px");
 		chart.setHeight("300px");
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+		return chart;
+	}
+
+	private DCharts chartsDemo6() {
+		DataSeries dataSeries = new DataSeries().add(2, 6, 7, 12);
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults()
+				.setRenderer(SeriesRenderers.BAR);
+
+		Axes axes = new Axes().addAxis(new XYaxis().setRenderer(
+				AxisRenderers.CATEGORY).setTicks(
+				new Ticks().add("a", "b", "c", "d")));
+
+		Highlighter highlighter = new Highlighter().setShow(false);
+
+		CanvasOverlay canvasOverlay = new CanvasOverlay()
+				.setShow(true)
+				.setObject(
+						new HorizontalLine().setY(4).setLineWidth(6)
+								.setColor("rgb(100, 55, 124)").setShadow(false))
+				.setObject(
+						new HorizontalLine().setY(6).setLineWidth(12)
+								.setXminOffset("8px").setXmaxOffset("29px")
+								.setColor("rgb(50, 55, 30)").setShadow(false))
+				.setObject(
+						new DashedHorizontalLine().setY(8).setLineWidth(6)
+								.setXoffset(1).setColor("rgb(133, 120, 24)")
+								.setShadow(false))
+				.setObject(
+						new HorizontalLine().setY(10).setLineWidth(3)
+								.setXoffset(0).setColor("rgb(89, 198, 154)")
+								.setShadow(false))
+				.setObject(
+						new DashedHorizontalLine().setY(13).setLineWidth(3)
+								.setDashPattern(16, 12).setXoffset(0)
+								.setLineCap(LineCaps.ROUND)
+								.setColor("rgb(66, 98, 144)").setShadow(false));
+
+		Options options = new Options().setSeriesDefaults(seriesDefaults)
+				.setAxes(axes).setHighlighter(highlighter)
+				.setCanvasOverlay(canvasOverlay);
+
+		DCharts chart = new DCharts();
+		chart.setWidth(450, Unit.PIXELS);
+		chart.setHeight(300, Unit.PIXELS);
 		chart.setDataSeries(dataSeries).setOptions(options).show();
 		return chart;
 	}

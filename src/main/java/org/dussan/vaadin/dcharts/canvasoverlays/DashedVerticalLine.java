@@ -15,11 +15,10 @@
  */
 package org.dussan.vaadin.dcharts.canvasoverlays;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.defaults.canvasoverlays.DefaultDashedVerticalLine;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
-import org.dussan.vaadin.dcharts.helpers.ObjectHelper;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -38,21 +37,20 @@ public class DashedVerticalLine extends CanvasOverlayObject<DashedVerticalLine> 
 
 	public DashedVerticalLine() {
 		super(new DefaultDashedVerticalLine());
-		setName(CanvasOverlayObjects.DASHED_VERTICAL_LINE);
 		setShow(true);
 	}
 
-	public DashedVerticalLine(boolean show, int lineWidth, LineCaps lineCaps,
-			String color, boolean shadow, int shadowAngle, int shadowOffset,
-			int shadowDepth, String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
-			boolean showTooltip, float showTooltipPrecision,
-			TooltipLocations tooltipLocations, boolean fadeTooltip,
-			TooltipFadeSpeeds tooltipFadeSpeeds, int tooltipOffset,
-			String tooltipFormatString, Object y, Object xmin, Object xmax,
-			Object xOffset, Object xminOffset, Object xmaxOffset,
-			int[] dashPattern) {
+	public DashedVerticalLine(String name, boolean show, int lineWidth,
+			LineCaps lineCaps, String color, boolean shadow, int shadowAngle,
+			int shadowOffset, int shadowDepth, String shadowAlpha,
+			XYaxes xaxis, XYaxes yaxis, boolean showTooltip,
+			float showTooltipPrecision, TooltipLocations tooltipLocations,
+			boolean fadeTooltip, TooltipFadeSpeeds tooltipFadeSpeeds,
+			int tooltipOffset, String tooltipFormatString, Object y,
+			Object xmin, Object xmax, Object xOffset, Object xminOffset,
+			Object xmaxOffset, int[] dashPattern) {
 		super(new DefaultDashedVerticalLine());
-		setName(CanvasOverlayObjects.DASHED_VERTICAL_LINE);
+		setName(name);
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCaps);
@@ -139,7 +137,7 @@ public class DashedVerticalLine extends CanvasOverlayObject<DashedVerticalLine> 
 	}
 
 	public DashedVerticalLine setDashPattern(int... dashPattern) {
-		this.dashPattern = ObjectHelper.toArrayString(dashPattern);
+		this.dashPattern = ArrayUtils.toObject(dashPattern);
 		return this;
 	}
 

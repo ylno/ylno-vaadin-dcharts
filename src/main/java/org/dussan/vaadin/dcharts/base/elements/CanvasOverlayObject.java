@@ -16,7 +16,6 @@
 package org.dussan.vaadin.dcharts.base.elements;
 
 import org.dussan.vaadin.dcharts.base.BaseElement;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -50,13 +49,13 @@ public abstract class CanvasOverlayObject<T> extends BaseElement<T> {
 		setShow(true);
 	}
 
-	public CanvasOverlayObject(boolean show, int lineWidth, LineCaps lineCaps,
-			String color, boolean shadow, int shadowAngle, int shadowOffset,
-			int shadowDepth, String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
-			boolean showTooltip, float showTooltipPrecision,
-			TooltipLocations tooltipLocations, boolean fadeTooltip,
-			TooltipFadeSpeeds tooltipFadeSpeeds, int tooltipOffset,
-			String tooltipFormatString) {
+	public CanvasOverlayObject(String name, boolean show, int lineWidth,
+			LineCaps lineCaps, String color, boolean shadow, int shadowAngle,
+			int shadowOffset, int shadowDepth, String shadowAlpha,
+			XYaxes xaxis, XYaxes yaxis, boolean showTooltip,
+			float showTooltipPrecision, TooltipLocations tooltipLocations,
+			boolean fadeTooltip, TooltipFadeSpeeds tooltipFadeSpeeds,
+			int tooltipOffset, String tooltipFormatString) {
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCaps);
@@ -81,8 +80,8 @@ public abstract class CanvasOverlayObject<T> extends BaseElement<T> {
 		return name;
 	}
 
-	public T setName(CanvasOverlayObjects name) {
-		this.name = name.getObject();
+	public T setName(String name) {
+		this.name = name;
 		return (T) this;
 	}
 

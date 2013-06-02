@@ -18,7 +18,6 @@ package org.dussan.vaadin.dcharts.canvasoverlays;
 import org.dussan.vaadin.dcharts.base.elements.CanvasOverlayObject;
 import org.dussan.vaadin.dcharts.defaults.canvasoverlays.DefaultHorizontalLine;
 import org.dussan.vaadin.dcharts.helpers.JsonHelper;
-import org.dussan.vaadin.dcharts.metadata.CanvasOverlayObjects;
 import org.dussan.vaadin.dcharts.metadata.TooltipFadeSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
@@ -36,20 +35,20 @@ public class HorizontalLine extends CanvasOverlayObject<HorizontalLine> {
 
 	public HorizontalLine() {
 		super(new DefaultHorizontalLine());
-		setName(CanvasOverlayObjects.HORIZONTAL_LINE);
 		setShow(true);
 	}
 
-	public HorizontalLine(boolean show, int lineWidth, LineCaps lineCaps,
-			String color, boolean shadow, int shadowAngle, int shadowOffset,
-			int shadowDepth, String shadowAlpha, XYaxes xaxis, XYaxes yaxis,
-			boolean showTooltip, float showTooltipPrecision,
-			TooltipLocations tooltipLocations, boolean fadeTooltip,
-			TooltipFadeSpeeds tooltipFadeSpeeds, int tooltipOffset,
-			String tooltipFormatString, Object y, Object xmin, Object xmax,
-			Object xOffset, Object xminOffset, Object xmaxOffset) {
+	public HorizontalLine(String name, boolean show, int lineWidth,
+			LineCaps lineCaps, String color, boolean shadow, int shadowAngle,
+			int shadowOffset, int shadowDepth, String shadowAlpha,
+			XYaxes xaxis, XYaxes yaxis, boolean showTooltip,
+			float showTooltipPrecision, TooltipLocations tooltipLocations,
+			boolean fadeTooltip, TooltipFadeSpeeds tooltipFadeSpeeds,
+			int tooltipOffset, String tooltipFormatString, Object y,
+			Object xmin, Object xmax, Object xOffset, Object xminOffset,
+			Object xmaxOffset) {
 		super(new DefaultHorizontalLine());
-		setName(CanvasOverlayObjects.HORIZONTAL_LINE);
+		setName(name);
 		setShow(show);
 		setLineWidth(lineWidth);
 		setLineCap(lineCaps);

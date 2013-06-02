@@ -342,6 +342,11 @@ public class VDCharts extends VHorizontalLayout implements
 			}
 		}
 
+		if (options.contains("canvasOverlay:")
+				&& !JavaScriptInjector.isCanvasOverlayLibraryLoaded()) {
+			JavaScriptInjector.inject(JqPlot.CODE.canvasOverlay().getText());
+		}
+
 		if (options.contains("cursor:")
 				&& !JavaScriptInjector.isCursorLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.cursor().getText());
