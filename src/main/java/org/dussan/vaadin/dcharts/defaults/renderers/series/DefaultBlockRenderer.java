@@ -15,14 +15,12 @@
  */
 package org.dussan.vaadin.dcharts.defaults.renderers.series;
 
-
 public class DefaultBlockRenderer {
 
-	public static final String[] CSS = new String[] { "padding:'2px'",
-			"border:'1px solid #999", "textAlign:'center'" };
+	public static final String CSS = "padding:'2px', border:'1px solid #999, textAlign:'center'";
 	public static final Boolean ESCAPE_HTML = Boolean.FALSE;
 	public static final Boolean INSERT_BREAKS = Boolean.TRUE;
-	public static final Boolean VARY_BLOCK_COLORS=Boolean.FALSE;
+	public static final Boolean VARY_BLOCK_COLORS = Boolean.FALSE;
 
 	public DefaultBlockRenderer() {
 	}

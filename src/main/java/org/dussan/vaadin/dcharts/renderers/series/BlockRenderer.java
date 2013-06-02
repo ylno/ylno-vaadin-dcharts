@@ -21,7 +21,7 @@ import org.dussan.vaadin.dcharts.defaults.renderers.series.DefaultBlockRenderer;
 public class BlockRenderer extends SeriesRenderer<BlockRenderer> {
 
 	private static final long serialVersionUID = 5231093434453162096L;
-	private String[] css = null;
+	private String css = null;
 	private Boolean escapeHtml = null;
 	private Boolean insertBreaks = null;
 	private Boolean varyBlockColors = null;
@@ -30,8 +30,8 @@ public class BlockRenderer extends SeriesRenderer<BlockRenderer> {
 		super(new DefaultBlockRenderer());
 	}
 
-	public BlockRenderer(String[] css, boolean escapeHtml,
-			boolean insertBreaks, boolean varyBlockColors) {
+	public BlockRenderer(String css, boolean escapeHtml, boolean insertBreaks,
+			boolean varyBlockColors) {
 		super(new DefaultBlockRenderer());
 		setCss(css);
 		setEscapeHtml(escapeHtml);
@@ -39,12 +39,12 @@ public class BlockRenderer extends SeriesRenderer<BlockRenderer> {
 		setVaryBlockColors(varyBlockColors);
 	}
 
-	public String[] getCss() {
+	public String getCss() {
 		return css;
 	}
 
-	public BlockRenderer setCss(String... css) {
-		this.css = css;
+	public BlockRenderer setCss(String css) {
+		this.css = "{" + css.replace("{", "").replace("}", "") + "}";
 		return this;
 	}
 
