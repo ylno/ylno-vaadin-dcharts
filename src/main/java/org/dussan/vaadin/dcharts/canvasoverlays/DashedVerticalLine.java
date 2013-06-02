@@ -138,7 +138,7 @@ public class DashedVerticalLine extends CanvasOverlayObject<DashedVerticalLine> 
 		return dashPattern;
 	}
 
-	public DashedVerticalLine setDashPattern(int[] dashPattern) {
+	public DashedVerticalLine setDashPattern(int... dashPattern) {
 		this.dashPattern = ObjectHelper.toArrayString(dashPattern);
 		return this;
 	}

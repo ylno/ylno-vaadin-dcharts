@@ -139,7 +139,7 @@ public class DashedHorizontalLine extends
 		return dashPattern;
 	}
 
-	public DashedHorizontalLine setDashPattern(int[] dashPattern) {
+	public DashedHorizontalLine setDashPattern(int... dashPattern) {
 		this.dashPattern = ObjectHelper.toArrayString(dashPattern);
 		return this;
 	}
