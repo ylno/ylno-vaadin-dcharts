@@ -26,6 +26,7 @@ public class EnhancedLegendRenderer extends
 	private Integer numberRows = null;
 	private Integer numberColumns = null;
 	private Object seriesToggle = null;
+	private Object seriesToggleReplot = null;
 	private Boolean disableIEFading = null;
 
 	public EnhancedLegendRenderer() {
@@ -94,6 +95,17 @@ public class EnhancedLegendRenderer extends
 
 	public EnhancedLegendRenderer setSeriesToggle(SeriesToggles seriesToggle) {
 		this.seriesToggle = seriesToggle;
+		return this;
+	}
+
+	public Object getSeriesToggleReplot() {
+		return seriesToggleReplot;
+	}
+
+	public EnhancedLegendRenderer setSeriesToggleReplot(
+			boolean seriesToggleReplot) {
+		this.seriesToggleReplot = !seriesToggleReplot ? seriesToggleReplot
+				: new String("{resetAxes:true}");
 		return this;
 	}
 

@@ -376,16 +376,29 @@ public class VDCharts extends VHorizontalLayout implements
 		return options;
 	}
 
-	private String setChartDimensions(String options) {
+	private String setChartDimensions(String options, int marigTop,
+			int marigRight, int marigBottom, int marigLeft) {
 		Element button = DOM.getElementById(chart.getId() + "-button");
 		int buttonHeight = button != null ? button.getOffsetHeight() : 0;
 		StringBuilder value = new StringBuilder();
 		if (options != null && options.length() > 0) {
 			int width = getOffsetWidth() == 0 ? 300 : getOffsetWidth();
 			int height = getOffsetHeight() == 0 ? 300 : getOffsetHeight();
+
+			height += -buttonHeight - marigTop - marigBottom;
+			width += -marigLeft - marigRight;
+
 			value.append("{width: '" + width + "px',");
-			value.append("height: '" + (height - buttonHeight) + "px',");
+			value.append("height: '" + height + "px',");
 			value.append(options.substring(1));
+
+			chart.getStyle().setMarginLeft(marigLeft, Unit.PX);
+			chart.getStyle().setMarginRight(marigRight, Unit.PX);
+			chart.getStyle().setWidth(width, Unit.PX);
+
+			chart.getStyle().setMarginTop(marigTop, Unit.PX);
+			chart.getStyle().setMarginBottom(marigBottom, Unit.PX);
+			chart.getStyle().setHeight(height, Unit.PX);
 		}
 		return value.toString();
 	}
@@ -519,30 +532,25 @@ public class VDCharts extends VHorizontalLayout implements
 						.get(REPLOT_CHART_RESET_AXES));
 				replotChart(this, chart.getId(), clear, resetAxes);
 			} else {
+				int marigTop = 0;
+				int marigBottom = 0;
 				if (chartData.containsKey(MARGIN_TOP)
 						|| chartData.containsKey(MARGIN_BOTTOM)) {
-					int top = chartData.containsKey(MARGIN_TOP) ? Integer
-							.parseInt(chartData.get(MARGIN_TOP)) : 0;
-					int bottom = chartData.containsKey(MARGIN_BOTTOM) ? Integer
-							.parseInt(chartData.get(MARGIN_BOTTOM)) : 0;
-					chart.getStyle().setMarginTop(top, Unit.PX);
-					chart.getStyle().setMarginBottom(bottom, Unit.PX);
-					chart.getStyle().setHeight(
-							getElement().getOffsetHeight() - top - bottom,
-							Unit.PX);
+					marigTop = chartData.containsKey(MARGIN_TOP) ? Integer
+							.parseInt(chartData.get(MARGIN_TOP)) : marigTop;
+					marigBottom = chartData.containsKey(MARGIN_BOTTOM) ? Integer
+							.parseInt(chartData.get(MARGIN_BOTTOM))
+							: marigBottom;
 				}
 
+				int marigLeft = 0;
+				int marigRight = 0;
 				if (chartData.containsKey(MARGIN_LEFT)
 						|| chartData.containsKey(MARGIN_RIGHT)) {
-					int left = chartData.containsKey(MARGIN_LEFT) ? Integer
-							.parseInt(chartData.get(MARGIN_LEFT)) : 0;
-					int right = chartData.containsKey(MARGIN_RIGHT) ? Integer
-							.parseInt(chartData.get(MARGIN_RIGHT)) : 0;
-					getElement().getStyle().setWidth(
-							getElement().getOffsetWidth() - left - right,
-							Unit.PX);
-					getElement().getStyle().setMarginLeft(left, Unit.PX);
-					chart.getStyle().setMarginRight(right, Unit.PX);
+					marigLeft = chartData.containsKey(MARGIN_LEFT) ? Integer
+							.parseInt(chartData.get(MARGIN_LEFT)) : marigLeft;
+					marigRight = chartData.containsKey(MARGIN_RIGHT) ? Integer
+							.parseInt(chartData.get(MARGIN_RIGHT)) : marigRight;
 				}
 
 				if (chartData.containsKey(MOUSE_ENTER_EVENT)) {
@@ -591,7 +599,8 @@ public class VDCharts extends VHorizontalLayout implements
 					options = checkEnabledAnimationEffects(options);
 					activateJqPlotPlugins(options);
 				}
-				options = setChartDimensions(options);
+				options = setChartDimensions(options, marigTop, marigRight,
+						marigBottom, marigLeft);
 
 				if (chartData.containsKey(SHOW_CHART)) {
 					showChart = Boolean.parseBoolean(chartData.get(SHOW_CHART));
