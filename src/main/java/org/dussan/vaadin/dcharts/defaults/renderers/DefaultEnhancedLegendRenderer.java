@@ -22,6 +22,7 @@ public class DefaultEnhancedLegendRenderer {
 	public static final Integer NUMBER_ROWS = null;
 	public static final Integer NUMBER_COLUMNS = null;
 	public static final SeriesToggles SERIES_TOGGLE = SeriesToggles.NORMAL;
+	public static final Boolean SERIES_TOGGLE_REPLOT = Boolean.FALSE;
 	public static final Boolean DISABLE_I_E_FADING = Boolean.TRUE;
 
 	public DefaultEnhancedLegendRenderer() {

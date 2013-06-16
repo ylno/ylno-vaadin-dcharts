@@ -39,9 +39,11 @@ import org.dussan.vaadin.dcharts.events.mouseleave.ChartDataMouseLeaveHandler;
 import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickEvent;
 import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickHandler;
 import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
+import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
+import org.dussan.vaadin.dcharts.metadata.directions.BarDirections;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
 import org.dussan.vaadin.dcharts.metadata.locations.LegendLocations;
 import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
@@ -61,6 +63,7 @@ import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.options.Title;
 import org.dussan.vaadin.dcharts.renderers.label.CanvasAxisLabelRenderer;
 import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
+import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BlockRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BubbleRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.PieRenderer;
@@ -143,6 +146,7 @@ public class DChartsTestUI extends UI {
 		DCharts charts4 = chartsDemo4();
 		DCharts charts5 = chartsDemo5();
 		DCharts charts6 = chartsDemo6();
+		DCharts charts7 = chartsDemo7();
 
 		HorizontalLayout layout3 = new HorizontalLayout();
 		layout3.addComponent(charts3_1);
@@ -156,6 +160,7 @@ public class DChartsTestUI extends UI {
 		demoTabSheet.addTab(charts4, "Demo 4");
 		demoTabSheet.addTab(charts5, "Demo 5");
 		demoTabSheet.addTab(charts6, "Demo 6");
+		demoTabSheet.addTab(charts7, "Demo 7");
 	}
 
 	private DCharts chartsDemo1() {
@@ -604,4 +609,38 @@ public class DChartsTestUI extends UI {
 		return chart;
 	}
 
+	private DCharts chartsDemo7() {
+		DataSeries dataSeries = new DataSeries();
+		dataSeries.newSeries().add(2, 1).add(4, 2).add(6, 3).add(3, 4);
+		dataSeries.newSeries().add(5, 1).add(1, 2).add(3, 3).add(4, 4);
+		dataSeries.newSeries().add(4, 1).add(12, 2).add(1, 3).add(2, 4);
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults()
+				.setRenderer(SeriesRenderers.BAR)
+				.setShadowAngle(135)
+				.setRendererOptions(
+						new BarRenderer()
+								.setBarDirection(BarDirections.HOTIZONTAL));
+
+		Axes axes = new Axes().addAxis(new XYaxis(XYaxes.Y)
+				.setRenderer(AxisRenderers.CATEGORY));
+
+		Legend legend = new Legend()
+				.setShow(true)
+				.setPlacement(LegendPlacements.OUTSIDE_GRID)
+				.setRenderer(LegendRenderers.ENHANCED)
+				.setRendererOptions(
+						new EnhancedLegendRenderer().setSeriesToggle(
+								SeriesToggles.SLOW).setSeriesToggleReplot(
+								true));
+
+		Options options = new Options().setSeriesDefaults(seriesDefaults)
+				.setAxes(axes).setLegend(legend);
+
+		DCharts chart = new DCharts();
+		chart.setWidth(450, Unit.PIXELS);
+		chart.setHeight(300, Unit.PIXELS);
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+		return chart;
+	}
 }
