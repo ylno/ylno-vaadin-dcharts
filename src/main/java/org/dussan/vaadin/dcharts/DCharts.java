@@ -656,7 +656,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	}
 
 	public DCharts replot(boolean clean, boolean resetAxes) {
-		chartData.put(REPLOT_CHART_CLEAR, Boolean.toString(resetAxes));
+		chartData.put(REPLOT_CHART_CLEAR, Boolean.toString(clean));
 		chartData.put(REPLOT_CHART_RESET_AXES, Boolean.toString(resetAxes));
 		markAsDirty();
 		return this;

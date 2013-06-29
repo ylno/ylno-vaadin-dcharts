@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.dussan.vaadin.dcharts.ChartImageFormat;
 import org.dussan.vaadin.dcharts.DCharts;
+import org.dussan.vaadin.dcharts.base.elements.PointLabels;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.base.elements.XYseries;
 import org.dussan.vaadin.dcharts.canvasoverlays.DashedHorizontalLine;
@@ -43,6 +44,7 @@ import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
 import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
+import org.dussan.vaadin.dcharts.metadata.Yaxes;
 import org.dussan.vaadin.dcharts.metadata.directions.BarDirections;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
 import org.dussan.vaadin.dcharts.metadata.locations.LegendLocations;
@@ -51,6 +53,7 @@ import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.LabelRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.LegendRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.SeriesRenderers;
+import org.dussan.vaadin.dcharts.metadata.renderers.TickRenderers;
 import org.dussan.vaadin.dcharts.metadata.ticks.TickFormatters;
 import org.dussan.vaadin.dcharts.options.Axes;
 import org.dussan.vaadin.dcharts.options.CanvasOverlay;
@@ -147,6 +150,7 @@ public class DChartsTestUI extends UI {
 		DCharts charts5 = chartsDemo5();
 		DCharts charts6 = chartsDemo6();
 		DCharts charts7 = chartsDemo7();
+		DCharts charts8 = chartsDemo8();
 
 		HorizontalLayout layout3 = new HorizontalLayout();
 		layout3.addComponent(charts3_1);
@@ -161,6 +165,7 @@ public class DChartsTestUI extends UI {
 		demoTabSheet.addTab(charts5, "Demo 5");
 		demoTabSheet.addTab(charts6, "Demo 6");
 		demoTabSheet.addTab(charts7, "Demo 7");
+		demoTabSheet.addTab(charts8, "Demo 8");
 	}
 
 	private DCharts chartsDemo1() {
@@ -502,6 +507,8 @@ public class DChartsTestUI extends UI {
 		chart.setWidth(750, Unit.PIXELS);
 		chart.setHeight(300, Unit.PIXELS);
 		chart.setMarginRight(10);
+		chart.setEnableDownload(true);
+		chart.setChartImageFormat(ChartImageFormat.GIF);
 		chart.setDataSeries(dataSeries).setOptions(options).show();
 
 		return chart;
@@ -531,8 +538,12 @@ public class DChartsTestUI extends UI {
 		SeriesDefaults seriesDefaults = new SeriesDefaults()
 				.setRenderer(SeriesRenderers.BLOCK);
 
-		Legend legend = new Legend().setShow(true).setRenderer(
-				LegendRenderers.ENHANCED);
+		Legend legend = new Legend()
+				.setShow(true)
+				.setRenderer(LegendRenderers.ENHANCED)
+				.setRendererOptions(
+						new EnhancedLegendRenderer()
+								.setSeriesToggleReplot(true));
 
 		Axes axes = new Axes()
 				.addAxis(new XYaxis(XYaxes.X).setMin(0).setMax(8)).addAxis(
@@ -631,8 +642,7 @@ public class DChartsTestUI extends UI {
 				.setRenderer(LegendRenderers.ENHANCED)
 				.setRendererOptions(
 						new EnhancedLegendRenderer().setSeriesToggle(
-								SeriesToggles.SLOW).setSeriesToggleReplot(
-								true));
+								SeriesToggles.SLOW).setSeriesToggleReplot(true));
 
 		Options options = new Options().setSeriesDefaults(seriesDefaults)
 				.setAxes(axes).setLegend(legend);
@@ -643,4 +653,44 @@ public class DChartsTestUI extends UI {
 		chart.setDataSeries(dataSeries).setOptions(options).show();
 		return chart;
 	}
+
+	private DCharts chartsDemo8() {
+		DataSeries dataSeries = new DataSeries()
+				.add(14, 3, 4, -3, 5, 2, -3, -7);
+
+		SeriesDefaults seriesDefaults = new SeriesDefaults()
+				.setRenderer(SeriesRenderers.BAR)
+				.setRendererOptions(
+						new BarRenderer().setWaterfall(true).setVaryBarColor(
+								true))
+				.setPointLabels(new PointLabels().setHideZeros(true))
+				.setYaxis(Yaxes.Y2);
+
+		Ticks ticks = new Ticks().add("2008", "Apricots", "Tomatoes",
+				"Potatoes", "Rhubarb", "Squash", "Grapes", "Peanuts");
+		ticks.add("2009");
+
+		Axes axes = new Axes().addAxis(
+				new XYaxis()
+						.setRenderer(AxisRenderers.CATEGORY)
+						.setTicks(ticks)
+						.setTickRenderer(TickRenderers.CANVAS)
+						.setTickOptions(
+								new CanvasAxisTickRenderer().setAngle(-90)
+										.setFontSize("10pt").setShowMark(false)
+										.setShowGridline(false))).addAxis(
+				new XYaxis(XYaxes.Y2).setMin(0).setTickInterval(5));
+
+		Title title = new Title("Crop Yield Charnge, 2008 to 2009");
+
+		Options options = new Options().setSeriesDefaults(seriesDefaults)
+				.setAxes(axes).setTitle(title);
+
+		DCharts chart = new DCharts();
+		chart.setWidth(450, Unit.PIXELS);
+		chart.setHeight(300, Unit.PIXELS);
+		chart.setDataSeries(dataSeries).setOptions(options).show();
+		return chart;
+	}
+
 }

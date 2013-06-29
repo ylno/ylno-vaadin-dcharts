@@ -34,29 +34,13 @@ public class EnhancedLegendRenderer extends
 	}
 
 	public EnhancedLegendRenderer(int numberRows, int numberColumns,
-			boolean seriesToggle, boolean disableIEFading) {
+			boolean seriesToggle, boolean seriesToggleReplot,
+			boolean disableIEFading) {
 		super(new DefaultEnhancedLegendRenderer());
 		setNumberRows(numberRows);
 		setNumberColumns(numberColumns);
 		setSeriesToggle(seriesToggle);
-		setDisableIEFading(disableIEFading);
-	}
-
-	public EnhancedLegendRenderer(int numberRows, int numberColumns,
-			int seriesToggle, boolean disableIEFading) {
-		super(new DefaultEnhancedLegendRenderer());
-		setNumberRows(numberRows);
-		setNumberColumns(numberColumns);
-		setSeriesToggle(seriesToggle);
-		setDisableIEFading(disableIEFading);
-	}
-
-	public EnhancedLegendRenderer(int numberRows, int numberColumns,
-			SeriesToggles seriesToggle, boolean disableIEFading) {
-		super(new DefaultEnhancedLegendRenderer());
-		setNumberRows(numberRows);
-		setNumberColumns(numberColumns);
-		setSeriesToggle(seriesToggle);
+		setSeriesToggleReplot(seriesToggleReplot);
 		setDisableIEFading(disableIEFading);
 	}
 
@@ -104,8 +88,8 @@ public class EnhancedLegendRenderer extends
 
 	public EnhancedLegendRenderer setSeriesToggleReplot(
 			boolean seriesToggleReplot) {
-		this.seriesToggleReplot = !seriesToggleReplot ? seriesToggleReplot
-				: new String("{resetAxes:true}");
+		this.seriesToggleReplot = !seriesToggleReplot ? Boolean
+				.valueOf(seriesToggleReplot) : new String("{resetAxes:true}");
 		return this;
 	}
 

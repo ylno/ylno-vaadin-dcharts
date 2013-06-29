@@ -16,6 +16,9 @@
 package org.dussan.vaadin.dcharts.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.dussan.vaadin.dcharts.base.BaseData;
 
@@ -25,6 +28,20 @@ public class Ticks extends BaseData<Ticks> implements Serializable {
 
 	public Ticks() {
 		super(false);
+	}
+
+	@Override
+	public Ticks add(Object... data) {
+		List<Object> series = getSeries();
+		if (series.isEmpty()) {
+			super.add(data);
+		} else {
+			List<Object> serie = new ArrayList<Object>();
+			serie.addAll(Arrays.asList((Object[]) series.get(0)));
+			serie.addAll(Arrays.asList(data));
+			super.clean().add(serie.toArray());
+		}
+		return this;
 	}
 
 }

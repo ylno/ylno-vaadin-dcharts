@@ -355,6 +355,10 @@ public class VDCharts extends VHorizontalLayout implements
 		if (options.contains("highlighter:")
 				&& !JavaScriptInjector.isHighlighterLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.highlighter().getText());
+			if (!JavaScriptInjector.isBubbleRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.bubbleRenderer()
+						.getText());
+			}
 		}
 
 		if (options.contains("pointLabels:")
