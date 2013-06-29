@@ -41,14 +41,11 @@ import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickEvent;
 import org.dussan.vaadin.dcharts.events.rightclick.ChartDataRightClickHandler;
 import org.dussan.vaadin.dcharts.metadata.LegendPlacements;
 import org.dussan.vaadin.dcharts.metadata.SeriesToggles;
-import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
-import org.dussan.vaadin.dcharts.metadata.TooltipMoveSpeeds;
 import org.dussan.vaadin.dcharts.metadata.XYaxes;
 import org.dussan.vaadin.dcharts.metadata.Yaxes;
 import org.dussan.vaadin.dcharts.metadata.directions.BarDirections;
 import org.dussan.vaadin.dcharts.metadata.lines.LineCaps;
 import org.dussan.vaadin.dcharts.metadata.locations.LegendLocations;
-import org.dussan.vaadin.dcharts.metadata.locations.TooltipLocations;
 import org.dussan.vaadin.dcharts.metadata.renderers.AxisRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.LabelRenderers;
 import org.dussan.vaadin.dcharts.metadata.renderers.LegendRenderers;
@@ -64,7 +61,6 @@ import org.dussan.vaadin.dcharts.options.Options;
 import org.dussan.vaadin.dcharts.options.Series;
 import org.dussan.vaadin.dcharts.options.SeriesDefaults;
 import org.dussan.vaadin.dcharts.options.Title;
-import org.dussan.vaadin.dcharts.renderers.label.CanvasAxisLabelRenderer;
 import org.dussan.vaadin.dcharts.renderers.legend.EnhancedLegendRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BarRenderer;
 import org.dussan.vaadin.dcharts.renderers.series.BlockRenderer;
@@ -176,39 +172,39 @@ public class DChartsTestUI extends UI {
 		chart.setEnableDownload(true);
 		chart.setChartImageFormat(ChartImageFormat.GIF);
 
-		DataSeries dataSeries = new DataSeries().add(2000.20, 1116, 7, 10);
+		DataSeries dataSeries = new DataSeries();
+		dataSeries.add(200, 600, 700, 1000);
+		dataSeries.add(460, -210, 690, 820);
+		dataSeries.add(-260, -440, 320, 200);
 
 		SeriesDefaults seriesDefaults = new SeriesDefaults()
-				.setRenderer(SeriesRenderers.BAR);
+				.setFillToZero(true).setRenderer(SeriesRenderers.BAR);
+
+		Series series = new Series()
+				.addSeries(new XYseries().setLabel("Hotel"))
+				.addSeries(new XYseries().setLabel("Event Regristration"))
+				.addSeries(new XYseries().setLabel("Airfare"));
+
+		Legend legend = new Legend()
+				.setShow(true)
+				.setRendererOptions(
+						new EnhancedLegendRenderer().setSeriesToggle(
+								SeriesToggles.SLOW).setSeriesToggleReplot(true))
+				.setPlacement(LegendPlacements.OUTSIDE_GRID);
 
 		Axes axes = new Axes().addAxis(
 				new XYaxis().setRenderer(AxisRenderers.CATEGORY).setTicks(
-						new Ticks().add("a", "b", "c", "d")))
+						new Ticks().add("May", "June", "July", "August")))
 				.addAxis(
-						new XYaxis(XYaxes.Y)
-								.setTickOptions(
-										new AxisTickRenderer()
-												.setFormatString("%'.2f"))
-								.setLabel("Test Value")
-								.setLabelRenderer(LabelRenderers.CANVAS)
-								.setLabelOptions(
-										new CanvasAxisLabelRenderer()
-												.setAngle(-90)));
+						new XYaxis(XYaxes.Y).setPad(1.05f).setTickOptions(
+								new AxisTickRenderer().setFormatString("$%d")));
 
-		Highlighter highlighter = new Highlighter().setShow(true)
-				.setTooltipMoveSpeed(TooltipMoveSpeeds.FAST)
-				.setTooltipAlwaysVisible(true)
-				.setTooltipLocation(TooltipLocations.EAST)
-				.setTooltipAxes(TooltipAxes.XY_BAR);
+		Options options = new Options().setSeriesDefaults(seriesDefaults)
+				.setSeries(series).setLegend(legend).setAxes(axes);
 
-		Legend legend = new Legend().setShow(true).setPlacement(
-				LegendPlacements.OUTSIDE_GRID);
-
-		Options options = new Options().setCaptureRightClick(true)
-				.setSeriesDefaults(seriesDefaults).setAxes(axes)
-				.setHighlighter(highlighter).setLegend(legend);
-
-		chart.setDataSeries(dataSeries).setOptions(options).show();
+		chart.setDataSeries(dataSeries).setOptions(options)
+				.setEnableDownload(true)
+				.setChartImageFormat(ChartImageFormat.GIF).show();
 
 		chart.setEnableChartDataMouseEnterEvent(true);
 		chart.setEnableChartDataMouseLeaveEvent(true);
@@ -327,8 +323,11 @@ public class DChartsTestUI extends UI {
 				SeriesRenderers.PIE).setRendererOptions(
 				new PieRenderer().setShowDataLabels(true));
 
+		Legend legend = new Legend().setShow(true).setLocation(
+				LegendLocations.SOUTH);
+
 		Options options = new Options().setCaptureRightClick(true)
-				.setSeriesDefaults(seriesDefaults);
+				.setSeriesDefaults(seriesDefaults).setLegend(legend);
 
 		final DCharts chart = new DCharts();
 		chart.setWidth("400px");
