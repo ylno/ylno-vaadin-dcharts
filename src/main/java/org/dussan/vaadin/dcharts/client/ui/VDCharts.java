@@ -416,7 +416,7 @@ public class VDCharts extends VHorizontalLayout implements
 							chart.getId());
 					return false;
 				}
-			}, 500);
+			}, 300);
 		}
 	}
 

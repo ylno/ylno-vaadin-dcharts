@@ -201,9 +201,12 @@ public class DChartsTestUI extends UI {
 				.setTooltipLocation(TooltipLocations.EAST)
 				.setTooltipAxes(TooltipAxes.XY_BAR);
 
+		Legend legend = new Legend().setShow(true).setPlacement(
+				LegendPlacements.OUTSIDE_GRID);
+
 		Options options = new Options().setCaptureRightClick(true)
 				.setSeriesDefaults(seriesDefaults).setAxes(axes)
-				.setHighlighter(highlighter);
+				.setHighlighter(highlighter).setLegend(legend);
 
 		chart.setDataSeries(dataSeries).setOptions(options).show();
 
