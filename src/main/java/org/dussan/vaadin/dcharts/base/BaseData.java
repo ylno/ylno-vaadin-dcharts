@@ -35,6 +35,16 @@ public class BaseData<T> implements Serializable {
 		series = new ArrayList<Object>();
 	}
 
+	protected List<Object> getSeries() {
+		return series;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected T clean() {
+		series = new ArrayList<Object>();
+		return (T) this;
+	}
+
 	@SuppressWarnings("unchecked")
 	public T newSeries() {
 		if (!hasSubSeries) {

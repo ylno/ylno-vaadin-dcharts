@@ -75,11 +75,13 @@ public class DCharts extends AbstractSingleComponentContainer {
 	private static final int MOUSE_LEAVE_EVENT = 13;
 	private static final int CLICK_EVENT = 14;
 	private static final int RIGHT_CLICK_EVENT = 15;
-	private static final int CHART_IMAGE_CHANGE_EVENT = 16;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
+	private static final int CHART_IMAGE_CHANGE_DELAY = 16;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
 
 	private byte[] chartImage = null;
+	private int chartImageChangeDelay;
 	private Map<Integer, String> chartData = null;
 	private ChartImageFormat chartImageFormat = null;
 
@@ -124,6 +126,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 		enableChartDataRightClickEvent = false;
 		enableChartImageChangeEvent = false;
 
+		chartImageChangeDelay = 600;
 		chartData = new HashMap<Integer, String>();
 		chartImageFormat = ChartImageFormat.PNG;
 
@@ -401,6 +404,16 @@ public class DCharts extends AbstractSingleComponentContainer {
 		return null;
 	}
 
+	public int getChartImageChangeDelay() {
+		return chartImageChangeDelay;
+	}
+
+	public void setChartImageChangeDelay(int delay) {
+		chartImageChangeDelay = Math.max(100, delay);
+		chartData.put(CHART_IMAGE_CHANGE_DELAY,
+				Integer.toString(chartImageChangeDelay));
+	}
+
 	public ChartImageFormat getChartImageFormat() {
 		return chartImageFormat;
 	}
@@ -656,7 +669,7 @@ public class DCharts extends AbstractSingleComponentContainer {
 	}
 
 	public DCharts replot(boolean clean, boolean resetAxes) {
-		chartData.put(REPLOT_CHART_CLEAR, Boolean.toString(resetAxes));
+		chartData.put(REPLOT_CHART_CLEAR, Boolean.toString(clean));
 		chartData.put(REPLOT_CHART_RESET_AXES, Boolean.toString(resetAxes));
 		markAsDirty();
 		return this;

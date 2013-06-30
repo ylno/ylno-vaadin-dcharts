@@ -5,7 +5,7 @@
 	<groupId>org.dussan.vaadin</groupId>
 	<artifactId>dcharts</artifactId>
 	<packaging>jar</packaging>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 	<name>dCharts Widget</name>
 
 	<licenses>
@@ -39,7 +39,7 @@
 		<!-- com.google -->
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
 		<!-- com.vaadin -->
-		<com.vaadin.vaadin>7.0.5</com.vaadin.vaadin>
+		<com.vaadin.vaadin>7.0.7</com.vaadin.vaadin>
 		<!-- commons -->
 		<commons-codec.commons-codec>1.7</commons-codec.commons-codec>
 		<!-- javax -->

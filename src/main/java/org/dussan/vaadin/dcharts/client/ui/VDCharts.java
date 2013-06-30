@@ -63,9 +63,10 @@ public class VDCharts extends VHorizontalLayout implements
 	private static final int MOUSE_LEAVE_EVENT = 13;
 	private static final int CLICK_EVENT = 14;
 	private static final int RIGHT_CLICK_EVENT = 15;
-	private static final int CHART_IMAGE_CHANGE_EVENT = 16;
-	private static final int DOWNLOAD_BUTTON_ENABLE = 17;
-	private static final int DOWNLOAD_BUTTON_LOCATION = 18;
+	private static final int CHART_IMAGE_CHANGE_DELAY = 16;
+	private static final int CHART_IMAGE_CHANGE_EVENT = 17;
+	private static final int DOWNLOAD_BUTTON_ENABLE = 18;
+	private static final int DOWNLOAD_BUTTON_LOCATION = 19;
 
 	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_LEFT = 0;
 	private static final int DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT = 1;
@@ -80,6 +81,7 @@ public class VDCharts extends VHorizontalLayout implements
 	private Boolean showChart = null;
 	private Boolean downloadButtonEnabled = null;
 	private Integer downloadButtonLocation = null;
+	private Integer chartImageChangeDelay = null;
 	private String chartId = null;
 	private String decimalSeparator = null;
 	private String thousandsSeparator = null;
@@ -93,6 +95,7 @@ public class VDCharts extends VHorizontalLayout implements
 	private Boolean enableChartImageChangeEvent = null;
 
 	public VDCharts() {
+		chartImageChangeDelay = 600;
 		downloadButtonEnabled = false;
 		downloadButtonLocation = DOWNLOAD_BUTTON_LOCATION_TOP_RIGHT;
 		decimalSeparator = ".";
@@ -150,6 +153,14 @@ public class VDCharts extends VHorizontalLayout implements
 			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendChartImageToServer()();
 			// and then watch for changes
 			$wnd.jQuery('#'.concat(id)).find('.jqplot-series-canvas').attrchange(function(attrName) {
+				if($wnd.jQuery('#'.concat(id).concat('-button')).size() == 1 && 
+					$wnd.jQuery('#'.concat(id).concat('-button-clone')).size() == 0) {
+					var button = $wnd.jQuery('#'.concat(id).concat('-button'));
+					button.clone().attr('id',button.attr('id').concat('-clone'))
+						.css('top',button.position().top).css('left',button.position().left)
+						.css('position','absolute').appendTo(button.parent());
+					$wnd.jQuery('#'.concat(id).concat('-button-clone')).find('.v-button-caption').css('color','red');
+				}
 				c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::sendChartImageToServer()();
 			});
 		});
@@ -171,6 +182,7 @@ public class VDCharts extends VHorizontalLayout implements
 			var event = 'rawImageData';
 			var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
 			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+			$wnd.jQuery('#'.concat(id).concat('-button-clone')).remove();
 		});
 	}-*/;
 
@@ -355,6 +367,10 @@ public class VDCharts extends VHorizontalLayout implements
 		if (options.contains("highlighter:")
 				&& !JavaScriptInjector.isHighlighterLibraryLoaded()) {
 			JavaScriptInjector.inject(JqPlot.CODE.highlighter().getText());
+			if (!JavaScriptInjector.isBubbleRendererLoaded()) {
+				JavaScriptInjector.inject(JqPlot.CODE.bubbleRenderer()
+						.getText());
+			}
 		}
 
 		if (options.contains("pointLabels:")
@@ -412,7 +428,7 @@ public class VDCharts extends VHorizontalLayout implements
 							chart.getId());
 					return false;
 				}
-			}, 500);
+			}, chartImageChangeDelay);
 		}
 	}
 
@@ -571,6 +587,11 @@ public class VDCharts extends VHorizontalLayout implements
 				if (chartData.containsKey(RIGHT_CLICK_EVENT)) {
 					enableChartDataRightClickEvent = Boolean
 							.parseBoolean(chartData.get(RIGHT_CLICK_EVENT));
+				}
+
+				if (chartData.containsKey(CHART_IMAGE_CHANGE_DELAY)) {
+					chartImageChangeDelay = Integer.parseInt(chartData
+							.get(CHART_IMAGE_CHANGE_DELAY));
 				}
 
 				if (chartData.containsKey(CHART_IMAGE_CHANGE_EVENT)) {
