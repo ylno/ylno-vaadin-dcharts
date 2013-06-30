@@ -169,8 +169,6 @@ public class DChartsTestUI extends UI {
 		chart.autoSelectDecimalAndThousandsSeparator(new Locale("sl", "SI"));
 		chart.setHeight("400px");
 		chart.setCaption("test");
-		chart.setEnableDownload(true);
-		chart.setChartImageFormat(ChartImageFormat.GIF);
 
 		DataSeries dataSeries = new DataSeries();
 		dataSeries.add(200, 600, 700, 1000);
@@ -203,13 +201,14 @@ public class DChartsTestUI extends UI {
 				.setSeries(series).setLegend(legend).setAxes(axes);
 
 		chart.setDataSeries(dataSeries).setOptions(options)
-				.setEnableDownload(true)
+//				.setEnableDownload(true)
 				.setChartImageFormat(ChartImageFormat.GIF).show();
 
 		chart.setEnableChartDataMouseEnterEvent(true);
 		chart.setEnableChartDataMouseLeaveEvent(true);
 		chart.setEnableChartDataClickEvent(true);
 		chart.setEnableChartDataRightClickEvent(true);
+		chart.setEnableChartImageChangeEvent(true);
 
 		chart.addHandler(new ChartDataMouseEnterHandler() {
 			@Override

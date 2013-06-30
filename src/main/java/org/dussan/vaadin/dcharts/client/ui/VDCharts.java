@@ -179,11 +179,10 @@ public class VDCharts extends VHorizontalLayout implements
 			String id)
 	/*-{
 		$wnd.jQuery(document).ready(function($) {
-		//alert('download');
 			var event = 'rawImageData';
 			var data = $wnd.jQuery('#'.concat(id)).jqplotToImageStr();
-			$wnd.jQuery('#'.concat(id).concat('-button-clone')).remove();
 			c.@org.dussan.vaadin.dcharts.client.ui.VDCharts::fireEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id, event, data);
+			$wnd.jQuery('#'.concat(id).concat('-button-clone')).remove();
 		});
 	}-*/;
 
