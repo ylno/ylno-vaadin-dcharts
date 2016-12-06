@@ -19,8 +19,8 @@
 	<properties>
 		<!-- general -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.source>1.6</jdk.source>
-		<jdk.target>1.6</jdk.target>
+		<jdk.source>1.8</jdk.source>
+		<jdk.target>1.8</jdk.target>
 		<!-- ftp server -->
 		<ftp.server.id>ftp.dussan.org</ftp.server.id>
 		<ftp.server.url>ftp://${ftp.server.id}</ftp.server.url>
@@ -39,7 +39,8 @@
 		<!-- com.google -->
 		<com.google.code.maven-license-plugin.maven-license-plugin>1.4.0</com.google.code.maven-license-plugin.maven-license-plugin>
 		<!-- com.vaadin -->
-		<com.vaadin.vaadin>7.0.7</com.vaadin.vaadin>
+		<com.vaadin.vaadin>7.7.5</com.vaadin.vaadin>
+		<vaadin.plugin.version>7.7.5</vaadin.plugin.version>
 		<!-- commons -->
 		<commons-codec.commons-codec>1.7</commons-codec.commons-codec>
 		<!-- javax -->
@@ -147,6 +148,11 @@
 			<artifactId>servlet-api</artifactId>
 			<version>${javax.servlet.servlet-api}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin.external.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>2.7.0.vaadin3</version>
 		</dependency>
 	</dependencies>
 
